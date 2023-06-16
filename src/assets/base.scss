@@ -1,14 +1,15 @@
-:root {
-  --c-theme-primary: #FFF;
-  --c-text-primary: #FFF;
-  --c-text-secondary: #777;
-  --c-border-primary: #444;
-  --c-bg-primary: #000;
-  --c-bg-secondary: #222;
+@import 'themes';
+
+body {
+  background: $color-bg-1;
 }
 
-h1, h2, h3, h4, h5, h6, p, li, a, button, b {
-  color: var(--c-text-primary);
+h1, h2, h3, h4, h5, h6, p, li, a, button, input, b {
+  color: $color-text-1;
+}
+
+label {
+  color: $color-text-2;
 }
 
 a {
@@ -19,16 +20,15 @@ p {
   line-height: 1.5em;
 }
 
-button {
-  font-family: inherit;
-  background: var(--c-bg-secondary);
-  border: 0;
-  // border: 1px solid var(--c-border-primary);
-  border-radius: 10px;
-  padding: 10px;
-  cursor: pointer;
-}
-
-body {
-  background: var(--c-bg-primary);
+button.icon {
+  display: flex;
+  justify-content: center;
+  width: calc(1.1em + 15px);
+  height: calc(1.1em + 15px);
+  padding: 0 !important;
+  
+  svg {
+    display: inline-block;
+    margin: auto
+  }
 }

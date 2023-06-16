@@ -1,0 +1,61 @@
+$color-theme-2: #fff;
+$color-theme-2-shade-1: #eee;
+$color-theme-2-shade-2: #ddd;
+$color-theme-2-shade-3: #ccc;
+$color-theme-2-shade-4: #bbb;
+$color-theme-2-shade-5: #aaa;
+$color-theme-2-shade-6: #999;
+$color-theme-2-shade-7: #888;
+$color-theme-2-shade-8: #777;
+$color-theme-2-shade-9: #666;
+$color-theme-2-shade-10: #555;
+$color-theme-2-shade-11: #444;
+$color-theme-2-shade-12: #333;
+$color-theme-2-shade-13: #222;
+$color-theme-2-shade-14: #111;
+$color-theme-2-shade-15: #000;
+
+// For color adjustments on events
+$shade-1: 10%;
+$shade-2: 20%;
+$shade-3: 30%;
+$shade-4: 40%;
+$shade-5: 50%;
+$shade-6: 60%;
+$shade-7: 70%;
+$shade-8: 80%;
+$shade-9: 90%;
+
+$color-bg-1: $color-theme-2-shade-15;
+$color-bg-1-invert: $color-theme-2;
+$color-bg-2: $color-theme-2-shade-13;
+
+// Border
+$color-border-1: $color-theme-2-shade-12;
+
+// Text
+$color-text-1: $color-theme-2;
+$color-text-2: $color-theme-2-shade-8;
+
+// Button (default)
+$color-button-bg: $color-bg-1;
+$color-button-bg-hover: lighten($color-bg-1, $shade-1);
+$color-button-border: $color-border-1;
+$color-button-text: $color-text-2;
+
+// Button (solid)
+$color-button-solid-bg: $color-bg-1-invert;
+$color-button-solid-bg-hover: darken($color-bg-1-invert, $shade-1);
+$color-button-solid-text: $color-bg-1;
+
+// Button (accent)
+$color-button-accent-bg: $color-bg-2;
+$color-button-accent-bg-hover: lighten($color-bg-2, $shade-1);
+$color-button-accent-text: $color-text-2;
+$color-button-accent-text-hover: lighten($color-text-2, $shade-1);
+
+// Button (outline)
+$color-button-outline-bg: $color-bg-1;
+$color-button-outline-border-hover: $color-bg-1-invert;
+$color-button-outline-text: $color-text-2;
+$color-button-outline-text-hover: $color-bg-1-invert;
