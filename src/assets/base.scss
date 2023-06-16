@@ -1,7 +1,15 @@
 @import 'themes';
 
+html, body {
+  overscroll-behavior-x: none;
+} 
+
 body {
   background: $color-bg-1;
+}
+
+* {
+  box-sizing: border-box !important;
 }
 
 h1, h2, h3, h4, h5, h6, p, li, a, button, input, b {
