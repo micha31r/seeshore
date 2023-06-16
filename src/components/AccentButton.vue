@@ -1,5 +1,5 @@
 <template>
-  <button class='button-accent' :='$attrs'>
+  <button class='button-accent'>
     <slot></slot>
   </button>
 </template>

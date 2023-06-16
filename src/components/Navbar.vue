@@ -25,13 +25,18 @@ const props = defineProps(['pageName'])
 </script>
 
 <style scoped lang='scss'>
+@import '../assets/themes';
 $element-height: calc(1.1em + 15px);
 
 nav {
   display: grid;
+  position: sticky;
   grid-template-columns: auto 1fr auto auto;
   gap: 15px;
   height: max-content;
+  top: 0;
+  background: rgba($color-theme-2-shade-15, $shade-2);
+  backdrop-filter: blur(20px);
   padding: 15px;
 
   .page-name {

@@ -1,5 +1,5 @@
 <template>
-  <button class='button-outline' :='$attrs'>
+  <button class='button-outline'>
     <slot></slot>
   </button>
 </template>
