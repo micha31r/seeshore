@@ -11,10 +11,8 @@
     <!-- Add story button -->
     <SolidButton class='solid add-story'>Add Story</SolidButton>
 
-    <!-- Search bar -->
-    <form @submit.prevent>
-      <IconInput placeholder='Search' icon='search' required />
-    </form>
+    <!-- Profile -->
+    <div class='avatar'></div>
   </nav>
 </template>
 
@@ -54,10 +52,12 @@ nav {
     height: $element-height;
   }
 
-  .icon-input {
+  .avatar {
+    display: block;
+    width: $element-height;
     height: $element-height;
-    padding-top: 0;
-    padding-bottom: 0;
+    background: $color-bg-2;
+    border-radius: 100%;
   }
 }
 </style>
