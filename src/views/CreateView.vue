@@ -6,7 +6,7 @@
       <div class='editor'>
         <p class='help-text'>Tap to add media. Hold to add text.</p>
         <div class='image'></div>
-        <SolidButton class='send'>Next</SolidButton>
+        <SolidButton class='next'>Next</SolidButton>
       </div>
     </div>
   </Protect>
@@ -47,7 +47,7 @@ import Navbar from '../components/Navbar.vue'
     margin: 0 auto;
   }
 
-  .send {
+  .next {
     border-radius: 100px;
     padding: 10px 15px;
     margin: 0 auto;
