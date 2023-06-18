@@ -6,7 +6,7 @@
       <div class='editor'>
         <p class='help-text'>Tap to add media. Hold to add text.</p>
         <div class='image'></div>
-        <SolidButton class='send'>Send</SolidButton>
+        <SolidButton class='send'>Next</SolidButton>
       </div>
     </div>
   </Protect>
