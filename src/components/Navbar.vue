@@ -36,6 +36,7 @@ nav {
   background: rgba($color-theme-2-shade-15, $shade-2);
   backdrop-filter: blur(20px);
   padding: 15px;
+  z-index: 100;
 
   .page-name {
     font-weight: normal;
