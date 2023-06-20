@@ -1,7 +1,7 @@
 <template>
   <nav>
     <!-- Home button -->
-    <AccentButton class='icon home'>
+    <AccentButton class='icon home' @click="$router.push('/')">
       <Icon class='secondary' icon='home' />
     </AccentButton>
 
@@ -9,10 +9,10 @@
     <h3 class='page-name'>{{ pageName }}</h3>
 
     <!-- Add story button -->
-    <SolidButton class='solid add-story'>Add Story</SolidButton>
+    <SolidButton class='solid add-story' @click="$router.push('/create')">Add Story</SolidButton>
 
     <!-- Profile -->
-    <div class='avatar'></div>
+    <div class='avatar' @click="$router.push('/account')"></div>
   </nav>
 </template>
 

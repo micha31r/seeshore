@@ -20,7 +20,7 @@ async function getProfile() {
   try {
     const { data, error, status } = await supabase
       .from('profiles')
-      .select(Object.keys(store.profile).join())
+      .select(Object.keys(store.profile).join()) // select fields based on store
       .eq('id', store.session.user.id)
       .single()
 
