@@ -15,8 +15,8 @@ import { supabase } from './supabase'
 import store from './store'
 
 async function getProfile() {
-  if (!store.session) return
-
+  if (!store.session) return 
+    
   try {
     const { data, error, status } = await supabase
       .from('profiles')
@@ -40,6 +40,7 @@ onMounted(() => {
   supabase.auth.getSession().then(async ({ data }) => {
     store.session = data.session
     store.profile = await getProfile()
+    store.isLoaded = true
   })
 
   supabase.auth.onAuthStateChange((_, _session) => {

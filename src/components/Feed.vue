@@ -1,33 +1,85 @@
 <template>
-  <div class='feed'>
-    <Story v-for='story in stories' :data='story' />
-  </div>
+  <Protect>
+    <div class='feed'>
+      <Story v-for='data in stacks' :data='data' />
+    </div>
+  </Protect>
 </template>
 
 <script setup>
 import { supabase } from '../supabase'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import store from '../store'
 import Story from './Story.vue'
 
-const stories = ref([
-  {
-    name: 'Michael',
-    chapters: [{}, {}, {}, {}]
-  },
-  {
-    name: 'Loak',
-    chapters: [{}]
-  },
-  {
-    name: 'Jake',
-    chapters: [{}, {}, {}]
-  },
-  {
-    name: 'Spider',
-    chapters: [{}, {}, {}]
+const stacks = ref([])
+
+async function getStories () {
+  let stories = []
+
+  // Get own stories
+  try {
+    const { data, error } = await supabase
+      .from('stories')
+      .select(`
+        id,
+        profile (id, avatar_url, full_name),
+        media_url
+      `)
+      .eq('profile', store.profile.id)
+      .order('id', { ascending: false })
+
+    if (error) throw error
+
+    stories = data;
+  } catch (error) {
+    console.error(error)
   }
-])
+
+  // Get other stories
+  try {
+    const { data, error } = await supabase
+      .from('sharing')
+      .select(`
+        profile,
+        story (
+          id,
+          profile (id, avatar_url, full_name),
+          media_url
+        )
+      `)
+      .eq('profile', store.profile.id)
+    
+    if (error) throw error
+
+    data.forEach(item => stories.push(item.story))
+  } catch (error) {
+    console.error(error)
+  }
+
+  return stories
+}
+
+function sortStories(stories) {
+  let sorted = {}
+
+  stories.forEach(item => {
+    const id = item.profile.id
+
+    if (!(id in sorted)) {
+      sorted[id] = []
+    }
+
+    sorted[id].push(item)
+  })
+
+  return sorted
+}
+
+onMounted(async () => {
+  const stories = await getStories()
+  stacks.value = Object.values(sortStories(stories))
+})
 </script>
 
 <style scoped lang='scss'>

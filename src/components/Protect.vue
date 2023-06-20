@@ -1,7 +1,7 @@
 <!-- Render components if user is authenticated -->
 
 <template>
-  <slot v-if='store.session' :session='store.session' />
+  <slot v-if='store.isLoaded && store.session' :session='store.session' />
   <Auth v-else />
 </template>
 

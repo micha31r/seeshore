@@ -3,11 +3,11 @@
     <div class='meta'>
       <div class='profile'>
         <div class='avatar'></div>
-        <p class='name'>{{ data.name }}</p>
+        <p class='name'>{{ data[0].profile.full_name }}</p>
       </div>
 
       <div class='progress'>
-        <span class='dot' v-for='(_, index) in data.chapters' :data-on='currentIndex == index'></span>
+        <span class='dot' v-for='(_, index) in data' :data-on='currentIndex == index'></span>
       </div>
 
       <AccentButton class='icon like'>
@@ -15,15 +15,50 @@
       </AccentButton>
     </div>
 
-    <div class='image'></div>
+    <Preview :type='"image"' :url='url' blur='true' @click='cycle' />
   </div>
 </template>
 
 <script setup>
-import { ref, defineProps } from 'vue'
+import { ref, toRefs, defineProps, onMounted } from 'vue'
+import { supabase } from '../supabase'
+import Preview from './Preview.vue'
 
+const props = defineProps(['data'])
+const { data } = toRefs(props)
 const currentIndex = ref(0)
-defineProps(['data'])
+const url = ref('')
+
+async function download (path) {
+  try {
+    const { data, error } = await supabase
+      .storage
+      .from('images')
+      .download(path)
+
+    if (error) throw error
+
+    return URL.createObjectURL(data)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function updatePreview () {
+  url.value = await download(data.value[currentIndex.value].media_url)
+}
+
+function cycle () {
+  (currentIndex.value) < data.value.length - 1
+    ? currentIndex.value++ 
+    : currentIndex.value = 0
+
+  updatePreview()
+}
+
+onMounted(() => {
+  updatePreview()
+})
 </script>
 
 <style scoped lang='scss'>
@@ -38,6 +73,7 @@ defineProps(['data'])
   background: $color-bg-2;
   border-radius: 15px;
   padding: 15px;
+  overflow: hidden;
 
   .meta {
     display: grid;
@@ -89,10 +125,15 @@ defineProps(['data'])
     }
   }
 
-  .image {
-    display: block;
-    border: 1px solid $color-border-1;
-    border-radius: 10px;
+  .preview {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
   }
+
+  // .blur {
+  //   // position: absolute;
+  //   filter: blur(20px);
+  // }
 }
 </style>

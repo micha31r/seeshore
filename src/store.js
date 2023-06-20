@@ -1,6 +1,7 @@
 import { reactive } from 'vue'
 
 export default reactive({
+  isLoaded: false,
   session: null,
   profile: {
     username: '',

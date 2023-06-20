@@ -63,8 +63,6 @@ const recipients = ref({})
 const keyword = ref('')
 
 async function getFollowers () {
-  if (!store.profile.id) return
-
   const { data, error } = await supabase.from('followers')
     .select(`
       profile ( id ),

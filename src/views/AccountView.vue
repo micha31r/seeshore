@@ -32,6 +32,24 @@ const story = ref({
     name: 'Michael',
     chapters: [{}, {}, {}, {}]
 })
+
+  // // Get own stories
+  // try {
+  //   const { data, error } = await supabase
+  //     .from('stories')
+  //     .select(`
+  //       id,
+  //       profile (id, username, avatar_url, full_name),
+  //       media_url
+  //     `)
+  //     .eq('profile', store.profile.id)
+
+  //   if (error) throw error
+
+  //   stories = data;
+  // } catch (error) {
+  //   console.error(error)
+  // }
 </script>
 
 <style scoped lang='scss'>
