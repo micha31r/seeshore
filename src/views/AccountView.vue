@@ -17,7 +17,7 @@
       <div class='stories'>
         <Preview type='image' :media='story.media_url' v-for='story in stories' @mouseleave='menuState = -1'>
           <div class='options'>
-            <AccentButton class='icon menu-toggle' @click='menuState = story.id'>
+            <AccentButton class='icon menu-toggle' @click='menuState = menuState > 0 ? -1 : story.id'>
               <Icon icon='more-horizontal'/>
             </AccentButton>
 
