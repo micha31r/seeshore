@@ -15,26 +15,6 @@ const stacks = ref([])
 async function getStories () {
   let stories = []
 
-  // Get own stories
-  try {
-    const { data, error } = await supabase
-      .from('stories')
-      .select(`
-        id,
-        profile (id, avatar_url, full_name),
-        media_url
-      `)
-      .eq('profile', store.profile.id)
-      .order('id', { ascending: false })
-
-    if (error) throw error
-
-    stories = data;
-  } catch (error) {
-    console.error(error)
-  }
-
-  // Get other stories
   try {
     const { data, error } = await supabase
       .from('sharing')

@@ -102,7 +102,21 @@ async function createStory () {
     console.log(error)
   }
 
-  // Update user access
+  // Set own access
+  try {
+    const { error } = await supabase
+      .from('sharing')
+      .insert({
+        profile: store.profile.id,
+        story: storyId
+      })
+
+    if (error) throw error
+  } catch (error) {
+    console.log(error)
+  }
+
+  // Set recipient access
   for (let username in recipients.value) {
     try {
       const { error } = await supabase
