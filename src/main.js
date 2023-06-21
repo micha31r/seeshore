@@ -7,6 +7,7 @@ import RadioInput from './components/RadioInput.vue'
 import AccentButton from './components/AccentButton.vue'
 import OutlineButton from './components/OutlineButton.vue'
 import SolidButton from './components/SolidButton.vue'
+import Prompt from './components/Prompt.vue'
 
 const app = createApp(App)
 
@@ -18,4 +19,5 @@ app
   .component('AccentButton', AccentButton)
   .component('OutlineButton', OutlineButton)
   .component('SolidButton', SolidButton)
+  .component('Prompt', Prompt)
   .mount('#app')
