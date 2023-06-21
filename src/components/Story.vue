@@ -10,8 +10,8 @@
         <span class='dot' v-for='(_, index) in data' :data-on='currentIndex == index'></span>
       </div>
 
-      <AccentButton class='icon like'>
-        <Icon icon='heart' />
+      <AccentButton class='icon like' @click='like' :data-has-liked='likes.indexOf(data[currentIndex].id) >= 0'>
+        <Icon icon='heart'/>
       </AccentButton>
     </div>
 
@@ -22,19 +22,24 @@
 <script setup>
 import { ref, toRefs, defineProps, onMounted } from 'vue'
 import { supabase, download } from '../supabase'
+import store from '../store'
 import Preview from './Preview.vue'
 import Avatar from './Avatar.vue'
 
 const props = defineProps(['data'])
 const { data } = toRefs(props)
 const currentIndex = ref(0)
-const url = ref('')
-
 const images = ref([])
+const likes = ref([])
 
 function preload () {
   data.value.forEach(async item => {
     images.value.push(await download('images', item.media_url))
+
+    const data = await getLikeStatus(item.id)
+    if (data) {
+      likes.value.push(data.story)
+    }
   })
 }
 
@@ -42,6 +47,59 @@ function cycle () {
   (currentIndex.value) < data.value.length - 1
     ? currentIndex.value++ 
     : currentIndex.value = 0
+}
+
+async function getLikeStatus (id) {
+  try {
+    const { data, error } = await supabase
+      .from('likes')
+      .select(`id, story, profile`)
+      .eq('story', id)
+      .eq('profile', store.profile.id)
+
+    if (error) throw error
+
+    return data[0]
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function like () {
+  const story = data.value[currentIndex.value]
+  const likeIndex = likes.value.indexOf(story.id)
+
+  try {
+    if (likeIndex >= 0) {
+      // Remove like
+      const { error } = await supabase
+        .from('likes')
+        .delete()
+        .eq('story', story.id)
+        .eq('profile', store.profile.id)
+
+      if (error) throw error
+
+      likes.value.splice(likeIndex, 1)
+
+    } else {
+      // Add like
+      const { data, error } = await supabase
+        .from('likes')
+        .insert({
+          story: story.id,
+          profile: store.profile.id
+        })
+        .select(`id, story, profile`)
+        .single()
+
+      if (error) throw error
+      
+      likes.value.push(story.id)
+    }
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 onMounted(preload)
@@ -96,6 +154,10 @@ onMounted(preload)
     button.like {
       margin: auto 0 auto auto;
 
+      &[data-has-liked='true'] .feather {
+        fill: $color-bg-1-invert;
+      }
+      
       .feather {
         color: $color-text-1;
       }
