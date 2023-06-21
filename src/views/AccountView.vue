@@ -11,7 +11,7 @@
           <Icon icon='users'/>
           <span>37</span>
         </AccentButton>
-        <OutlineButton class='logout'>Logout</OutlineButton>
+        <OutlineButton class='logout' @click='supabase.auth.signOut()'>Logout</OutlineButton>
       </div>
 
       <div class='gallery'>
