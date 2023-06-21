@@ -49,7 +49,10 @@ async function OTPLogin() {
 
 async function GoogleLogin () {
   const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: 'google'
+    provider: 'google',
+    options: {
+      shouldCreateUser: false
+    }
   })
 }
 </script>
@@ -57,7 +60,7 @@ async function GoogleLogin () {
 <style scoped lang='scss'>
 form {
   display: grid;
-  gap: 20px;
+  gap: 10px;
   width: 400px;
   margin: auto;
 

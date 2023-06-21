@@ -20,7 +20,7 @@ async function getProfile() {
   try {
     const { data, error, status } = await supabase
       .from('profiles')
-      .select(`id, username`)
+      .select(`id, username, full_name`)
       .eq('id', store.session.user.id)
       .single()
 

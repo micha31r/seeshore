@@ -39,7 +39,7 @@ onMounted(() => {
   width: 400px;
   height: 560px;
   background: $color-bg-2;
-  border-radius: 10px;
+  border-radius: 15px;
 
   .wrapper {
     position: relative;
@@ -52,7 +52,7 @@ onMounted(() => {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    border-radius: 10px;
+    border-radius: 15px;
     filter: blur(30px);
     opacity: 0.7;
   }
@@ -64,7 +64,7 @@ onMounted(() => {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    border-radius: 10px;
+    border-radius: 15px;
   }
 }
 </style>

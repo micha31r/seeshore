@@ -61,17 +61,19 @@ const recipients = ref({})
 const keyword = ref('')
 
 async function getFollowers () {
-  const { data, error } = await supabase.from('followers')
+  const { data, error } = await supabase
+    .from('followers')
     .select(`
-      profile ( id ),
+      profile,
       follower ( id, username, full_name, avatar_url )
     `)
-    .eq('profile.id', store.profile.id)
+    .eq('profile', store.profile.id)
 
   if (error) {
     console.error(error)
   }
 
+  console.log(data)
   followers.value = data
 }
 
