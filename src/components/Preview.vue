@@ -9,9 +9,26 @@
 </template>
 
 <script setup>
-import { toRefs, defineProps } from 'vue'
+import { ref, toRefs, defineProps, onMounted, watch } from 'vue'
+import { download } from '../supabase'
+import { isValidURL } from '../utils'
 
-defineProps(['type', 'url', 'blur'])
+const props = defineProps(['type', 'media', 'blur'])
+const { type, media } = toRefs(props)
+const url = ref('')
+
+async function updateURL () {
+  if (type.value == 'image') {
+    url.value = isValidURL(media.value)
+      ? media.value
+      : await download('images', media.value)
+  }
+}
+
+onMounted(() => {
+  updateURL()
+  watch(media, updateURL)
+})
 </script>
 
 <style scoped lang='scss'>

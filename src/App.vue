@@ -4,7 +4,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;900&family=Urbanist:wght@500;600&display=swap" rel="stylesheet">
 
-    <RouterView />
+    <RouterView v-if='store.session && store.profile' />
+    <Auth v-else />
   </div>
 </template>
 
@@ -13,14 +14,13 @@ import { RouterView } from 'vue-router'
 import { onMounted } from 'vue'
 import { supabase } from './supabase'
 import store from './store'
+import Auth from './components/Auth.vue'
 
 async function getProfile() {
-  if (!store.session) return 
-    
   try {
     const { data, error, status } = await supabase
       .from('profiles')
-      .select(Object.keys(store.profile).join()) // select fields based on store
+      .select(`id, username`)
       .eq('id', store.session.user.id)
       .single()
 
@@ -30,18 +30,17 @@ async function getProfile() {
 
     return data
   } catch (error) {
-    if (error instanceof Error) {
-      alert(error.message)
-    }
+    console.error(error)
   }
 }
 
-onMounted(() => {
-  supabase.auth.getSession().then(async ({ data }) => {
-    store.session = data.session
+onMounted(async () => {
+  const { data } = await supabase.auth.getSession()
+  store.session = data.session
+
+  if (store.session) {
     store.profile = await getProfile()
-    store.isLoaded = true
-  })
+  }
 
   supabase.auth.onAuthStateChange((_, _session) => {
     store.session = _session

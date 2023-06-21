@@ -1,9 +1,7 @@
 <template>
-  <Protect>
-    <div class='feed'>
-      <Story v-for='data in stacks' :data='data' />
-    </div>
-  </Protect>
+  <div class='feed'>
+    <Story v-for='data in stacks' :data='data' />
+  </div>
 </template>
 
 <script setup>

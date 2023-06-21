@@ -1,10 +1,8 @@
 <template>
-  <Protect>
-    <div class='grid'>
-      <Navbar pageName='Stories' />
-      <Feed />
-    </div>
-  </Protect>
+  <div class='grid'>
+    <Navbar pageName='Stories' />
+    <Feed />
+  </div>
 </template>
 
 <script setup>

@@ -15,7 +15,7 @@
       </AccentButton>
     </div>
 
-    <Preview :type='"image"' :url='url' blur='true' @click='cycle' />
+    <Preview type='image' :media='data[currentIndex].media_url' blur='true' @click='cycle' :key='currentIndex'/>
   </div>
 </template>
 
@@ -29,36 +29,11 @@ const { data } = toRefs(props)
 const currentIndex = ref(0)
 const url = ref('')
 
-async function download (path) {
-  try {
-    const { data, error } = await supabase
-      .storage
-      .from('images')
-      .download(path)
-
-    if (error) throw error
-
-    return URL.createObjectURL(data)
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-async function updatePreview () {
-  url.value = await download(data.value[currentIndex.value].media_url)
-}
-
 function cycle () {
   (currentIndex.value) < data.value.length - 1
     ? currentIndex.value++ 
     : currentIndex.value = 0
-
-  updatePreview()
 }
-
-onMounted(() => {
-  updatePreview()
-})
 </script>
 
 <style scoped lang='scss'>

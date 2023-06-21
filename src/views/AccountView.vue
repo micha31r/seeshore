@@ -1,55 +1,58 @@
 <template>
-  <Protect>
-    <div class='grid'>
-      <Navbar pageName='Profile' />
+  <div class='grid'>
+    <Navbar pageName='Profile' />
 
-      <div class='account'>
-        <div class='account-info'>
-          <div class='avatar'></div>
-          <p class='name'>Michael</p>
-          <AccentButton class='edit-profile'>Edit</AccentButton>
-          <AccentButton class='friends'>
-            <Icon icon='users'/>
-            <span>37</span>
-          </AccentButton>
-          <OutlineButton class='logout'>Logout</OutlineButton>
-        </div>
+    <div class='account'>
+      <div class='account-info'>
+        <div class='avatar'></div>
+        <p class='name'>Michael</p>
+        <AccentButton class='edit-profile'>Edit</AccentButton>
+        <AccentButton class='friends'>
+          <Icon icon='users'/>
+          <span>37</span>
+        </AccentButton>
+        <OutlineButton class='logout'>Logout</OutlineButton>
+      </div>
 
-        <div class='gallery'>
-          <div class='item' v-for='_ in story.chapters'></div>
-        </div>
+      <div class='gallery'>
+        <Preview type='image' :media='story.media_url' v-for='story in stories' />
       </div>
     </div>
-  </Protect>
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-// import store from '../store'
+import { ref, onMounted } from 'vue'
+import { supabase } from '../supabase'
+import store from '../store'
 import Navbar from '../components/Navbar.vue'
+import Preview from '../components/Preview.vue'
 
-const story = ref({
-    name: 'Michael',
-    chapters: [{}, {}, {}, {}]
+const stories = ref([])
+
+async function getOwnStories() {
+  try {
+    const { data, error } = await supabase
+      .from('stories')
+      .select(`
+        id,
+        profile (id, username, avatar_url, full_name),
+        media_url
+      `)
+      .eq('profile', store.profile.id)
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+
+    return data;
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+onMounted(async () => {
+  stories.value = await getOwnStories()
 })
-
-  // // Get own stories
-  // try {
-  //   const { data, error } = await supabase
-  //     .from('stories')
-  //     .select(`
-  //       id,
-  //       profile (id, username, avatar_url, full_name),
-  //       media_url
-  //     `)
-  //     .eq('profile', store.profile.id)
-
-  //   if (error) throw error
-
-  //   stories = data;
-  // } catch (error) {
-  //   console.error(error)
-  // }
 </script>
 
 <style scoped lang='scss'>

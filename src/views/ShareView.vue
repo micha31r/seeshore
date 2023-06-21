@@ -1,45 +1,43 @@
 <template>
-  <Protect>
-    <div class='grid'>
-      <Navbar pageName='Share' />
+  <div class='grid'>
+    <Navbar pageName='Share' />
 
-      <div class='share'>
-        <Preview :type='store.editor.type' :url='store.editor.previewURL'>
-          <AccentButton class='back icon' @click="$router.push('/create')">
-            <Icon icon='arrow-left'/>
-          </AccentButton>
-        </Preview>
+    <div class='share'>
+      <Preview :type='store.editor.type' :media='store.editor.previewURL'>
+        <AccentButton class='back icon' @click="$router.push('/create')">
+          <Icon icon='arrow-left'/>
+        </AccentButton>
+      </Preview>
 
-        <div class='contacts'>
-          <IconInput icon='search' placeholder='Search' v-model='keyword'/>
+      <div class='contacts'>
+        <IconInput icon='search' placeholder='Search' v-model='keyword'/>
 
-          <div class='recipients'>
-            <div class='tag' v-for='profile in recipients'>
-              <div class='avatar'></div>
-              <p class='name'>{{ profile.full_name }}</p>
-              <AccentButton class='remove icon' @click='toggle(profile)'>
-                <Icon icon='x' />
-              </AccentButton>
-            </div>
-          </div>
-
-          <div class='followers'>
-            <p class='category'>Followers</p>
-
-            <template v-for='({ follower }, index) in followers'>
-              <div class='item' :id='follower.username' v-show='filter(follower)' @click='toggle(follower)'>
-                <div class='avatar' :style='`background-image: url(${ follower.avatar_url })`'></div>
-                <p class='name'>{{ follower.full_name }}</p>
-                <RadioInput />
-              </div>
-            </template>
+        <div class='recipients'>
+          <div class='tag' v-for='profile in recipients'>
+            <div class='avatar'></div>
+            <p class='name'>{{ profile.full_name }}</p>
+            <AccentButton class='remove icon' @click='toggle(profile)'>
+              <Icon icon='x' />
+            </AccentButton>
           </div>
         </div>
 
-        <SolidButton class='share' @click='createStory'>Share</SolidButton>
+        <div class='followers'>
+          <p class='category'>Followers</p>
+
+          <template v-for='({ follower }, index) in followers'>
+            <div class='item' :id='follower.username' v-show='filter(follower)' @click='toggle(follower)'>
+              <div class='avatar' :style='`background-image: url(${ follower.avatar_url })`'></div>
+              <p class='name'>{{ follower.full_name }}</p>
+              <RadioInput />
+            </div>
+          </template>
+        </div>
       </div>
+
+      <SolidButton class='share' @click='createStory'>Share</SolidButton>
     </div>
-  </Protect>
+  </div>
 </template>
 
 <script setup>
