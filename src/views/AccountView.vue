@@ -4,13 +4,16 @@
 
     <div class='account'>
       <div class='account-info'>
-        <div class='avatar'></div>
+        <Avatar :media='store.profile.avatar_url'/>
         <p class='name'>{{ store.profile.full_name }}</p>
+
         <AccentButton class='edit-profile' @click='toggleAccountEditor'>Edit</AccentButton>
+
         <AccentButton class='friends'>
           <Icon icon='users'/>
           <span>37</span>
         </AccentButton>
+
         <OutlineButton class='logout' @click='supabase.auth.signOut()'>Logout</OutlineButton>
       </div>
 
@@ -43,6 +46,7 @@ import { supabase } from '../supabase'
 import store from '../store'
 import Navbar from '../components/Navbar.vue'
 import Preview from '../components/Preview.vue'
+import Avatar from '../components/Avatar.vue'
 import AccountEditor from '../components/AccountEditor.vue'
 import DeleteAccount from '../components/DeleteAccount.vue'
 
@@ -115,14 +119,6 @@ $element-height: calc(1.1em + 15px);
   width: max-content;
   padding: 0 15px 15px;
   margin: 0 auto;
-
-  .avatar {
-    display: block;
-    width: $element-height;
-    height: $element-height;
-    background: $color-bg-2;
-    border-radius: 100%;
-  }
 
   .name {
     margin: auto 0;

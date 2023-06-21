@@ -4,7 +4,7 @@
       <h2 class='heading'>Edit Profile</h2>
 
       <!-- Image selector -->
-      <div class='avatar'></div>
+      <Avatar width='150' height='150' :media='store.profile.avatar_url'/>
 
       <!-- Form fields -->
       <div>
@@ -31,6 +31,7 @@
 import { ref, onMounted } from 'vue'
 import store from '../store'
 import { supabase } from '../supabase'
+import Avatar from './Avatar.vue'
 
 const email = ref('')
 const name = ref('')
@@ -59,7 +60,7 @@ async function updateProfile () {
           full_name: name.value
         })
         .eq('id', store.profile.id)
-        .select(`id, username, full_name`)
+        .select(`id, username, full_name, avatar_url`)
         .single()
 
       if (error) throw error
@@ -109,12 +110,7 @@ async function updateProfile () {
     }
 
     .avatar {
-      display: block;
-      width: 150px;
-      height: 150px;
-      border-radius: 100%;
-      background: $color-bg-2;
-      margin: 10px auto;
+      margin: 0 auto;
       cursor: pointer;
     }
 

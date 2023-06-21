@@ -2,7 +2,7 @@
   <div class='story'>
     <div class='meta'>
       <div class='profile'>
-        <div class='avatar'></div>
+        <Avatar :media='data[0].profile.avatar_url' />
         <p class='name'>{{ data[0].profile.full_name }}</p>
       </div>
 
@@ -23,6 +23,7 @@
 import { ref, toRefs, defineProps, onMounted } from 'vue'
 import { supabase, download } from '../supabase'
 import Preview from './Preview.vue'
+import Avatar from './Avatar.vue'
 
 const props = defineProps(['data'])
 const { data } = toRefs(props)
@@ -68,15 +69,6 @@ onMounted(preload)
     .profile {
       display: flex;
       gap: 10px;
-
-      .avatar {
-        display: block;
-        width: 40px;
-        height: 40px;
-        border: 1px solid $color-border-1;
-        border-radius: 100%;
-        background: $color-bg-2;
-      }
 
       .name {
         margin: auto 0;

@@ -14,8 +14,9 @@
 
         <div class='recipients'>
           <div class='tag' v-for='profile in recipients'>
-            <div class='avatar'></div>
+            <Avatar width='20' height='20' :media='profile.avatar_url'/>
             <p class='name'>{{ profile.full_name }}</p>
+
             <AccentButton class='remove icon' @click='toggle(profile)'>
               <Icon icon='x' />
             </AccentButton>
@@ -27,7 +28,7 @@
 
           <template v-for='({ follower }, index) in followers'>
             <div class='item' :id='follower.username' v-show='filter(follower)' @click='toggle(follower)'>
-              <div class='avatar' :style='`background-image: url(${ follower.avatar_url })`'></div>
+              <Avatar  width='35' height='35' :media='follower.avatar_url'/>
               <p class='name'>{{ follower.full_name }}</p>
               <RadioInput />
             </div>
@@ -50,6 +51,7 @@ import { uploadImage } from '../upload'
 import store from '../store'
 import Navbar from '../components/Navbar.vue'
 import Preview from '../components/Preview.vue'
+import Avatar from '../components/Avatar.vue'
 
 const router = useRouter()
 const type = store.editor.type
@@ -213,12 +215,6 @@ onMounted(() => {
     margin: 0 auto;
 
     .avatar {
-      display: block;
-      width: 40px;
-      height: 40px;
-      border: 1px solid $color-border-1;
-      border-radius: 100%;
-      background: $color-bg-2;
       margin: auto 0;
     }
 
@@ -232,17 +228,13 @@ onMounted(() => {
       .tag {
         display: flex;
         width: max-content;
-        gap: 10px;
+        gap: 7px;
         border-radius: 10px;
         background: $color-bg-2;
         padding: 7px;
 
-        .avatar {
-          width: 25px;
-          height: 25px;
-        }
-
         .name {
+          font-size: 0.8em;
           color: $color-text-2;
           margin: auto 0;
         }
@@ -254,6 +246,11 @@ onMounted(() => {
           border-radius: 100%;
           background: transparent;
           margin: auto 0;
+
+          .feather {
+            width: 1em;
+            height: 1em;
+          }
         }
       }
     }

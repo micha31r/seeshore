@@ -12,12 +12,14 @@
     <SolidButton class='solid add-story' @click="$router.push('/create')">Add Story</SolidButton>
 
     <!-- Profile -->
-    <div class='avatar' @click="$router.push('/account')"></div>
+    <Avatar @click="$router.push('/account')" :media='store.profile.avatar_url'/>
   </nav>
 </template>
 
 <script setup>
 import { ref, defineProps, onMounted } from 'vue'
+import store from '../store'
+import Avatar from './Avatar.vue'
 
 const props = defineProps(['pageName'])
 </script>
@@ -54,11 +56,7 @@ nav {
   }
 
   .avatar {
-    display: block;
-    width: $element-height;
-    height: $element-height;
-    background: $color-bg-2;
-    border-radius: 100%;
+    cursor: pointer;
   }
 }
 </style>
