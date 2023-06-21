@@ -32,7 +32,7 @@ const storyIndex = ref(0)
 const images = ref([])
 
 // Current data
-const likes = ref([])
+const likes = ref([]) // array of story ids
 const likeIndex = ref(-1)
 const story = ref()
 const image = ref()

@@ -170,6 +170,7 @@ async function updateProfile () {
     gap: 10px;
     width: 400px;
     background: $color-bg-1;
+    border: 1px solid $color-border-1;
     border-radius: 15px;
     padding: 15px;
     margin: auto;

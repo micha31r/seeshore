@@ -18,20 +18,29 @@
       </div>
 
       <div class='stories'>
-        <Preview type='image' :media='story.media_url' v-for='story in stories' @mouseleave='menuState = -1'>
-          <div class='options'>
-            <AccentButton class='icon menu-toggle' @click='menuState = menuState >= 0 ? -1 : story.id'>
-              <Icon icon='more-horizontal'/>
-            </AccentButton>
+        <div class='preview-wrapper' v-for='story in stories'>
+          <div class='meta'>
+            <AccentButton class='likes'>
+              <Icon icon='heart' />
+              <span v-if='likeData[story.id]'>{{ likeData[story.id].length }}</span>
+            </AccentButton>  
 
-            <div class='menu' v-show='menuState == story.id'>
-              <AccentButton class='delete' @click='deleteStory(story.id)'>
-                <Icon icon='trash-2'/>
-                <span>Delete</span>
+            <div class='options'>
+              <AccentButton class='icon menu-toggle' @click='menuState = menuState == story.id ? -1 : story.id'>
+                <Icon icon='more-horizontal'/>
               </AccentButton>
+
+              <div class='menu' v-show='menuState == story.id'>
+                <AccentButton class='delete' @click='deleteStory(story.id)'>
+                  <Icon icon='trash-2'/>
+                  <span>Delete</span>
+                </AccentButton>
+              </div>
             </div>
           </div>
-        </Preview>
+
+          <Preview type='image' :media='story.media_url' blur='true' />
+        </div>
       </div>
 
       <AccountEditor ref='accountEditor' @deleteAccount='toggleDeleteAccount'/>
@@ -51,6 +60,7 @@ import AccountEditor from '../components/AccountEditor.vue'
 import DeleteAccount from '../components/DeleteAccount.vue'
 
 const stories = ref([])
+const likeData = ref({})
 const menuState = ref(-1)
 const accountEditor = ref(null)
 const deleteAccount = ref(null)
@@ -77,10 +87,33 @@ async function getOwnStories() {
 
     if (error) throw error
 
-    stories.value = data;
+    return data;
   } catch (error) {
     console.error(error)
   }
+}
+
+async function getLikeData () {
+  const results = {}
+
+  for (let i = 0; i < stories.value.length; i++) {
+    const item = stories.value[i]
+
+    try {
+      const { data, error } = await supabase
+        .from('likes')
+        .select(`story, profile`)
+        .eq('story', item.id)
+
+      if (error) throw error
+
+      results[item.id] = data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  return results
 }
 
 async function deleteStory (id) {
@@ -98,7 +131,10 @@ async function deleteStory (id) {
   }
 }
 
-onMounted(getOwnStories)
+onMounted(async () => {
+  stories.value = await getOwnStories()
+  likeData.value = await getLikeData()
+})
 </script>
 
 <style scoped lang='scss'>
@@ -158,44 +194,69 @@ $element-height: calc(1.1em + 15px);
   padding: 15px;
   margin: 0 auto;
 
-  .preview {
-    position: relative;
-    cursor: pointer;
-    
-    &:hover {
-      .options {
-        visibility: visible;
+  .preview-wrapper {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 15px;
+    background: $color-bg-2;
+    border-radius: 15px;
+    padding: 15px;
+    overflow: hidden;
+  }
+
+  .meta {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+
+    .likes {
+      display: flex;
+      gap: 7px;
+      width: max-content;
+      height: $element-height;
+      padding-top: 0;
+      padding-bottom: 0;
+
+      & > * {
+        margin: auto 0;
+      }
+
+      .feather {
+        stroke: $color-text-2;
+        fill: $color-text-2;
       }
     }
 
     .options {
       display: grid;
       gap: 10px;
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      visibility: hidden;
+      position: relative;
 
       .menu-toggle {
         border-radius: 100px;
         margin: 0 0 0 auto;
       }
-    }
 
-    .menu {
-      border-radius: 10px;
-      background: $color-bg-2;
-      padding: 5px;
-      margin: 0 0 0 auto;
-
-      button {
-        display: flex;
-        gap: 5px;
-        border-radius: 5px;
+      .menu {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        border-radius: 10px;
+        border: 1px solid $color-border-1;
+        background: $color-bg-2;
         padding: 5px;
+        margin: 0 0 0 auto;
+        z-index: 1;
 
-        span, .feather {
-          margin: auto 0;
+        button {
+          display: flex;
+          gap: 5px;
+          border-radius: 5px;
+          padding: 5px;
+
+          span, .feather {
+            margin: auto 0;
+          }
         }
       }
     }

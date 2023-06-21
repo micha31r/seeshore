@@ -16,5 +16,6 @@
   height: 100vh;
   background: rgba($color-bg-1, $shade-5);
   backdrop-filter: blur(30px);
+  z-index: 10;
 }
 </style>
