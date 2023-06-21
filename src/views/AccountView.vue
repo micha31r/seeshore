@@ -20,7 +20,7 @@
       <div class='stories'>
         <div class='preview-wrapper' v-for='story in stories'>
           <div class='meta'>
-            <AccentButton class='likes'>
+            <AccentButton class='likes' @click='likeState = story.id'>
               <Icon icon='heart' />
               <span v-if='likeData[story.id]'>{{ likeData[story.id].length }}</span>
             </AccentButton>  
@@ -45,6 +45,14 @@
 
       <AccountEditor ref='accountEditor' @deleteAccount='toggleDeleteAccount'/>
       <DeleteAccount ref='deleteAccount' />
+
+      <Prompt v-if='likeState >= 0'>
+        <div class='like-profiles'>
+          <h3 class='heading'>Liked By</h3>
+          <ProfileList :data='likeData[likeState]' fallback='This story does not have any likes.'/>
+          <AccentButton @click='likeState = -1'>Close</AccentButton>
+        </div>
+      </Prompt>
     </div>
   </div>
 </template>
@@ -58,10 +66,12 @@ import Preview from '../components/Preview.vue'
 import Avatar from '../components/Avatar.vue'
 import AccountEditor from '../components/AccountEditor.vue'
 import DeleteAccount from '../components/DeleteAccount.vue'
+import ProfileList from '../components/ProfileList.vue'
 
 const stories = ref([])
-const likeData = ref({})
 const menuState = ref(-1)
+const likeData = ref({})
+const likeState = ref(-1)
 const accountEditor = ref(null)
 const deleteAccount = ref(null)
 
@@ -102,12 +112,19 @@ async function getLikeData () {
     try {
       const { data, error } = await supabase
         .from('likes')
-        .select(`story, profile`)
+        .select(`
+          profile (
+            id,
+            full_name,
+            avatar_url
+          )
+        `)
         .eq('story', item.id)
 
       if (error) throw error
 
-      results[item.id] = data
+      // Set values to an array of profiles
+      results[item.id] = data.map(item => item.profile)
     } catch (error) {
       console.error(error)
     }
@@ -260,6 +277,28 @@ $element-height: calc(1.1em + 15px);
         }
       }
     }
+  }
+}
+
+.like-profiles {
+  display: grid;
+  gap: 15px;
+  grid-template-rows: auto 1fr auto;
+  width: 400px;
+  height: max-content;
+  border: 1px solid $color-border-1;
+  border-radius: 15px;
+  background: $color-bg-1;
+  padding: 15px;
+  margin: auto;
+
+  .heading {
+    margin: 0;
+  }
+
+  .profile-list {
+    height: 200px;
+    overflow: auto;
   }
 }
 </style>
