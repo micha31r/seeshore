@@ -14,7 +14,7 @@
 
         <div class='recipients'>
           <div class='tag' v-for='profile in recipients'>
-            <Avatar width='20' height='20' :media='profile.avatar_url'/>
+            <Avatar width='20' height='20' :profile='profile'/>
             <p class='name'>{{ profile.full_name }}</p>
 
             <AccentButton class='remove icon' @click='toggle(profile)'>
@@ -28,7 +28,7 @@
 
           <template v-for='({ follower }, index) in followers'>
             <div class='item' :id='follower.username' v-show='filter(follower)' @click='toggle(follower)'>
-              <Avatar  width='35' height='35' :media='follower.avatar_url'/>
+              <Avatar  width='35' height='35' :profile='follower'/>
               <p class='name'>{{ follower.full_name }}</p>
               <RadioInput />
             </div>

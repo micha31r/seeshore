@@ -12,7 +12,7 @@
     <SolidButton class='solid add-story' @click="$router.push('/create')">Add Story</SolidButton>
 
     <!-- Profile -->
-    <Avatar @click="$router.push('/account')" :media='store.profile.avatar_url'/>
+    <Avatar @click="$router.push('/account')" :profile='store.profile' />
   </nav>
 </template>
 

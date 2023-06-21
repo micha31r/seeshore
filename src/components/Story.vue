@@ -2,7 +2,7 @@
   <div class='story'>
     <div class='meta'>
       <div class='profile'>
-        <Avatar :media='data[0].profile.avatar_url' />
+        <Avatar :profile='data[0].profile' />
         <p class='name'>{{ data[0].profile.full_name }}</p>
       </div>
 

@@ -4,7 +4,7 @@
 
     <div class='account'>
       <div class='account-info'>
-        <Avatar :media='store.profile.avatar_url'/>
+        <Avatar :profile='store.profile'/>
         <p class='name'>{{ store.profile.full_name }}</p>
 
         <AccentButton class='edit-profile' @click='toggleAccountEditor'>Edit</AccentButton>

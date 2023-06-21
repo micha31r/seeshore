@@ -4,7 +4,7 @@
       <h2 class='heading'>Edit Profile</h2>
 
       <!-- Image selector -->
-      <Avatar width='150' height='150' :media='store.profile.avatar_url'/>
+      <Avatar width='150' height='150' :profile='store.profile' />
 
       <!-- Form fields -->
       <div>

@@ -1,23 +1,37 @@
 <!-- For the Sully family 💙 -->
 
 <template>
-  <div class='avatar' :style='`width: ${width}px; height: ${height}px; background-image: url(${url})`'></div>
+  <div class='avatar' :style='`width: ${width}px; height: ${height}px;`' ref='avatar'></div>
 </template>
 
 <script setup>
 import { ref, toRefs, defineProps, onMounted, watch } from 'vue'
+import { minidenticon } from 'minidenticons'
 import store from '../store'
 import { download } from '../supabase'
 import { isValidURL } from '../utils'
 
-const props = defineProps(['width', 'height', 'media'])
-const { media } = toRefs(props)
-const url = ref('')
+const props = defineProps(['width', 'height', 'media', 'profile'])
+const { media, profile } = toRefs(props)
+const avatar = ref(null)
 
 async function updateURL () {
-  url.value = isValidURL(media.value)
-    ? media.value
-    : await download('images', media.value)
+  let source = media.value
+
+  if (profile) {
+    source = profile.value.avatar_url
+
+    // Generate image based on profile id
+    if (!source) {
+      source = 'data:image/svg+xml;utf8,' + encodeURIComponent(minidenticon(profile.value.id, 0, 100))
+    }
+  }
+
+  source = isValidURL(source)
+    ? source
+    : await download('images', source)
+
+  avatar.value.style.backgroundImage = `url("${source}")`
 }
 
 onMounted(() => {
