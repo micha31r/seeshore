@@ -67,9 +67,9 @@ async function changeAvatar (event) {
   const { file, type } = await selectFile()
 
   if (type == 'image') {
-    updateAvatarPreview(await toBase64(file)) // Generate preview
     newAvatar.value = file
     hasAvatarChanged.value = true
+    updateAvatarPreview(await toBase64(file)) // Generate preview
   }
 }
 
