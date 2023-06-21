@@ -15,13 +15,13 @@
       </AccentButton>
     </div>
 
-    <Preview type='image' :media='data[currentIndex].media_url' blur='true' @click='cycle' :key='currentIndex'/>
+    <Preview type='image' v-if='images[currentIndex]' :media='images[currentIndex]' blur='true' @click='cycle' :key='currentIndex'/>
   </div>
 </template>
 
 <script setup>
 import { ref, toRefs, defineProps, onMounted } from 'vue'
-import { supabase } from '../supabase'
+import { supabase, download } from '../supabase'
 import Preview from './Preview.vue'
 
 const props = defineProps(['data'])
@@ -29,11 +29,21 @@ const { data } = toRefs(props)
 const currentIndex = ref(0)
 const url = ref('')
 
+const images = ref([])
+
+function preload () {
+  data.value.forEach(async item => {
+    images.value.push(await download('images', item.media_url))
+  })
+}
+
 function cycle () {
   (currentIndex.value) < data.value.length - 1
     ? currentIndex.value++ 
     : currentIndex.value = 0
 }
+
+onMounted(preload)
 </script>
 
 <style scoped lang='scss'>
