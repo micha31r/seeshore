@@ -13,7 +13,6 @@
 <script setup>
 import store from '../store'
 import { toBase64 } from '../utils'
-import { uploadImage } from '../upload'
 import { onHold, onTap } from '../touch'
 import Navbar from '../components/Navbar.vue'
 import Preview from '../components/Preview.vue'

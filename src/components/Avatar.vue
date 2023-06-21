@@ -1,7 +1,9 @@
 <!-- For the Sully family 💙 -->
 
 <template>
-  <div class='avatar' :style='`width: ${width}px; height: ${height}px;`' ref='avatar'></div>
+  <div class='avatar' :style='`width: ${width}px; height: ${height}px;`' ref='avatar'>
+    <slot></slot>
+  </div>
 </template>
 
 <script setup>
@@ -29,7 +31,7 @@ async function updateURL () {
 
   source = isValidURL(source)
     ? source
-    : await download('images', source)
+    : await download('avatars', source)
 
   avatar.value.style.backgroundImage = `url("${source}")`
 }
@@ -37,6 +39,7 @@ async function updateURL () {
 onMounted(() => {
   updateURL()
   watch(media, updateURL)
+  watch(profile, updateURL)
 })
 </script>
 

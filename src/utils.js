@@ -24,3 +24,24 @@ export function isValidURL (string) {
   element.value = string
   return element.checkValidity()
 } 
+
+export async function selectFile () {
+  const [fileHandle] = await window.showOpenFilePicker({
+    types: [
+      {
+        description: 'images',
+        accept: {
+          'image/jpeg': '.jpg',
+          'image/jpeg': '.jpeg',
+          'image/webp': '.webp',
+          'image/png': '.png'
+        },
+      },
+    ],
+    excludeAcceptAllOption: true
+  })
+
+  const file = await fileHandle.getFile()
+  const type = file.type.split('/')[0]
+  return { file, type }
+}

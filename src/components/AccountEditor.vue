@@ -4,7 +4,22 @@
       <h2 class='heading'>Edit Profile</h2>
 
       <!-- Image selector -->
-      <Avatar width='150' height='150' :profile='store.profile' />
+      <div>
+        <label>Avatar</label>
+        <Avatar width='150' height='150' :profile='store.profile' id='editor-avatar'>
+            <div class='options'>
+             <OutlineButton @click='changeAvatar'>
+                <Icon icon='edit-3'/>
+                <span>Edit</span>
+              </OutlineButton>
+
+              <OutlineButton @click='preDeleteAvatar'>
+                <Icon icon='trash-2'/>
+                <span>Remove</span>
+              </OutlineButton>
+            </div>
+        </Avatar>
+      </div>
 
       <!-- Form fields -->
       <div>
@@ -29,13 +44,40 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { uuid } from 'vue-uuid'
 import store from '../store'
 import { supabase } from '../supabase'
 import Avatar from './Avatar.vue'
+import { isValidURL, toBase64, selectFile, joinPaths } from '../utils'
+import { uploadImage } from '../upload'
 
 const email = ref('')
 const name = ref('')
 const show = ref(false)
+const newAvatar = ref(null)
+const hasAvatarChanged = ref(false)
+const avatarPreview = ref('')
+
+function updateAvatarPreview (url) {
+  const avatar = document.querySelector('#editor-avatar')
+  avatar.style.backgroundImage = `url('${url}')`
+}
+
+async function changeAvatar (event) {
+  const { file, type } = await selectFile()
+
+  if (type == 'image') {
+    updateAvatarPreview(await toBase64(file)) // Generate preview
+    newAvatar.value = file
+    hasAvatarChanged.value = true
+  }
+}
+
+function preDeleteAvatar () {
+  updateAvatarPreview('none')
+  newAvatar.value = null
+  hasAvatarChanged.value = true
+}
 
 function toggle () {
   show.value = show.value ? false : true
@@ -51,39 +93,66 @@ function setInitialValues () {
 onMounted(setInitialValues)
 
 async function updateProfile () {
-  // Update profile
-  if (name.value != store.profile.full_name) {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .update({
-          full_name: name.value
-        })
-        .eq('id', store.profile.id)
-        .select(`id, username, full_name, avatar_url`)
-        .single()
+  let newAvatarURL = null
 
-      if (error) throw error
+  if (hasAvatarChanged.value) {
+    // Delete old avatar file
+    if (!isValidURL(store.profile.avatar_url)) {
+      try {
+        const { error } = await supabase
+          .storage
+          .from('avatars')
+          .remove([store.profile.avatar_url])
 
-      store.profile = data
-    } catch (error) {
-      console.error(error)
+        if (error) throw error
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    // Upload new avatar
+    if (newAvatar.value) {
+      const path = joinPaths([store.profile.id, uuid.v4()]) // without extension
+      newAvatarURL = (await uploadImage('avatars', path + '.jpg', newAvatar.value)).path
     }
   }
 
-  // Update user
-  if (email.value != store.session.user.email) {
-    try {
-      const { error } = await supabase
-        .auth
-        .updateUser({
-          email: email.value
-        })
-
-      if (error) throw error
-    } catch (error) {
-      console.error(error)
+  // Update profile
+  try {
+    const newData = {
+      full_name: name.value
     }
+
+    if (hasAvatarChanged.value) {
+      newData.avatar_url = newAvatarURL
+    }
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .update(newData)
+      .eq('id', store.profile.id)
+      .select(`id, username, full_name, avatar_url`)
+      .single()
+
+    if (error) throw error
+
+    store.profile = data
+  } catch (error) {
+    console.error(error)
+  }
+
+  // Update user
+  // Supabase will automatically send a verification email
+  try {
+    const { error } = await supabase
+      .auth
+      .updateUser({
+        email: email.value
+      })
+
+    if (error) throw error
+  } catch (error) {
+    console.error(error)
   }
 
   setInitialValues()
@@ -110,8 +179,29 @@ async function updateProfile () {
     }
 
     .avatar {
-      margin: 0 auto;
+      position: relative;
+      margin: 8px auto 0;
       cursor: pointer;
+
+      .options {
+        position: absolute;
+        left: 50%;
+        bottom: 10px;
+        transform: translate(-50%, 0);
+        display: flex;
+        gap: 5px;
+      }
+
+      button {
+        font-size: 0.8em;
+        display: flex;
+        gap: 7px;
+        padding: 7px;
+
+        & > * {
+          margin: auto 0;
+        }
+      }
     }
 
     .icon-input {
