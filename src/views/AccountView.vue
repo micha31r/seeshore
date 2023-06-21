@@ -15,7 +15,20 @@
       </div>
 
       <div class='gallery'>
-        <Preview type='image' :media='story.media_url' v-for='story in stories' />
+        <Preview type='image' :media='story.media_url' v-for='story in stories' @mouseleave='menuState = -1'>
+          <div class='options'>
+            <AccentButton class='icon menu-toggle' @click='menuState = story.id'>
+              <Icon icon='more-horizontal'/>
+            </AccentButton>
+
+            <div class='menu' v-show='menuState == story.id'>
+              <AccentButton class='delete' @click='deleteStory(story.id)'>
+                <Icon icon='trash-2'/>
+                <span>Delete</span>
+              </AccentButton>
+            </div>
+          </div>
+        </Preview>
       </div>
     </div>
   </div>
@@ -29,6 +42,7 @@ import Navbar from '../components/Navbar.vue'
 import Preview from '../components/Preview.vue'
 
 const stories = ref([])
+const menuState = ref(-1)
 
 async function getOwnStories() {
   try {
@@ -44,15 +58,28 @@ async function getOwnStories() {
 
     if (error) throw error
 
-    return data;
+    stories.value = data;
   } catch (error) {
     console.error(error)
   }
 }
 
-onMounted(async () => {
-  stories.value = await getOwnStories()
-})
+async function deleteStory (id) {
+  try {
+    const { error } = await supabase
+      .from('stories')
+      .delete()
+      .eq('id', id)
+
+    if (error) throw error
+
+    getOwnStories()
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+onMounted(getOwnStories)
 </script>
 
 <style scoped lang='scss'>
@@ -120,13 +147,47 @@ $element-height: calc(1.1em + 15px);
   padding: 15px;
   margin: 0 auto;
 
-  .item {
-    display: block;
-    width: 400px;
-    height: 560px;
-    border-radius: 15px;
-    background: $color-bg-2;
+  .preview {
+    position: relative;
+    cursor: pointer;
+    
+    &:hover {
+      .options {
+        visibility: visible;
+      }
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      visibility: hidden;
+
+      .menu-toggle {
+        border-radius: 100px;
+        margin: 0 0 0 auto;
+      }
+    }
+
+    .menu {
+      border-radius: 10px;
+      background: $color-bg-2;
+      padding: 5px;
+      margin: 0 0 0 auto;
+
+      button {
+        display: flex;
+        gap: 5px;
+        border-radius: 5px;
+        padding: 5px;
+
+        span, .feather {
+          margin: auto 0;
+        }
+      }
+    }
   }
 }
-
 </style>
