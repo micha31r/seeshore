@@ -1,21 +1,21 @@
 <template>
-  <div class='story'>
+  <div class='story' v-if='story'>
     <div class='meta'>
       <div class='profile'>
-        <Avatar :profile='data[0].profile' />
-        <p class='name'>{{ data[0].profile.full_name }}</p>
+        <Avatar :profile='story.profile' />
+        <p class='name'>{{ story.profile.full_name }}</p>
       </div>
 
       <div class='progress'>
-        <span class='dot' v-for='(_, index) in data' :data-on='currentIndex == index'></span>
+        <span class='dot' v-for='(_, index) in data' :data-on='storyIndex == index'></span>
       </div>
 
-      <AccentButton class='icon like' @click='like' :data-has-liked='likes.indexOf(data[currentIndex].id) >= 0'>
+      <AccentButton class='icon like' @click='toggleLike' :data-has-liked='likeIndex >= 0'>
         <Icon icon='heart'/>
       </AccentButton>
     </div>
 
-    <Preview type='image' v-if='images[currentIndex]' :media='images[currentIndex]' blur='true' @click='cycle' :key='currentIndex'/>
+    <Preview type='image' v-if='image' :media='image' blur='true' @click='cycle' :key='storyIndex'/>
   </div>
 </template>
 
@@ -27,26 +27,44 @@ import Preview from './Preview.vue'
 import Avatar from './Avatar.vue'
 
 const props = defineProps(['data'])
-const { data } = toRefs(props)
-const currentIndex = ref(0)
+const stories = toRefs(props).data
+const storyIndex = ref(0)
 const images = ref([])
-const likes = ref([])
 
-function preload () {
-  data.value.forEach(async item => {
+// Current data
+const likes = ref([])
+const likeIndex = ref(-1)
+const story = ref()
+const image = ref()
+
+// Get story data at current index
+function getCurrentData () {
+  story.value = stories.value[storyIndex.value]
+  image.value = images.value[storyIndex.value]
+  likeIndex.value = likes.value.indexOf(story.value.id)
+}
+
+// Preload images and like data
+async function preload () {
+  for (let i = 0; i < stories.value.length; i++) {
+    const item = stories.value[i]
     images.value.push(await download('images', item.media_url))
 
     const data = await getLikeStatus(item.id)
     if (data) {
       likes.value.push(data.story)
     }
-  })
+  }
+
+  getCurrentData()
 }
 
 function cycle () {
-  (currentIndex.value) < data.value.length - 1
-    ? currentIndex.value++ 
-    : currentIndex.value = 0
+  (storyIndex.value) < stories.value.length - 1
+    ? storyIndex.value++ 
+    : storyIndex.value = 0
+
+  getCurrentData()
 }
 
 async function getLikeStatus (id) {
@@ -65,29 +83,26 @@ async function getLikeStatus (id) {
   }
 }
 
-async function like () {
-  const story = data.value[currentIndex.value]
-  const likeIndex = likes.value.indexOf(story.id)
-
+async function toggleLike () {
   try {
-    if (likeIndex >= 0) {
+    if (likeIndex.value >= 0) {
       // Remove like
       const { error } = await supabase
         .from('likes')
         .delete()
-        .eq('story', story.id)
+        .eq('story', story.value.id)
         .eq('profile', store.profile.id)
 
       if (error) throw error
 
-      likes.value.splice(likeIndex, 1)
+      likes.value.splice(likeIndex.value, 1)
 
     } else {
       // Add like
       const { data, error } = await supabase
         .from('likes')
         .insert({
-          story: story.id,
+          story: story.value.id,
           profile: store.profile.id
         })
         .select(`id, story, profile`)
@@ -95,8 +110,11 @@ async function like () {
 
       if (error) throw error
       
-      likes.value.push(story.id)
+      likes.value.push(story.value.id)
     }
+
+    // Refresh story
+    getCurrentData()
   } catch (error) {
     console.error(error)
   }
@@ -169,10 +187,5 @@ onMounted(preload)
     height: 100%;
     cursor: pointer;
   }
-
-  // .blur {
-  //   // position: absolute;
-  //   filter: blur(20px);
-  // }
 }
 </style>
