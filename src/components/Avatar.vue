@@ -25,7 +25,7 @@ async function updateURL () {
 
     // Generate image based on profile id
     if (!source) {
-      source = 'data:image/svg+xml;utf8,' + encodeURIComponent(minidenticon(profile.value.id, 0, 100))
+      source = 'data:image/svg+xml;utf8,' + encodeURIComponent(minidenticon(profile.value.id))
     }
   }
 
