@@ -6,7 +6,7 @@
       <!-- Image selector -->
       <div>
         <label>Avatar</label>
-        <Avatar width='150' height='150' :profile='store.profile' id='editor-avatar'>
+        <Avatar width='150' height='150' :profile='store.profile' ref='avatar'>
             <div class='options'>
              <OutlineButton @click='changeAvatar'>
                 <Icon icon='edit-3'/>
@@ -54,13 +54,13 @@ import { uploadImage } from '../upload'
 const email = ref('')
 const name = ref('')
 const show = ref(false)
+const avatar = ref(null)
 const newAvatar = ref(null)
 const hasAvatarChanged = ref(false)
 const avatarPreview = ref('')
 
 function updateAvatarPreview (url) {
-  const avatar = document.querySelector('#editor-avatar')
-  avatar.style.backgroundImage = `url('${url}')`
+  avatar.value.element.style.backgroundImage = `url('${url}')`
 }
 
 async function changeAvatar (event) {

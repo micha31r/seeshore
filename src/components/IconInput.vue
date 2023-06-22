@@ -1,13 +1,16 @@
 <template>
-  <div class='icon-input'>
+  <div class='icon-input' ref='element'>
     <Icon class='secondary' :icon='$props.icon'/>
     <input :='$attrs' :value='modelValue' @input="$emit('update:modelValue', $event.target.value)">
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits, onMounted } from 'vue'
+import { ref, defineProps, defineEmits, onMounted } from 'vue'
 
+const element = ref(null)
+
+defineExpose({ element })
 defineEmits(['update:modelValue'])
 defineProps(['icon', 'modelValue'])
 </script>

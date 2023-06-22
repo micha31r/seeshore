@@ -1,12 +1,15 @@
 <template>
-  <i :='$attrs' :data-feather='$props.icon'></i>
+  <i :='$attrs' :data-feather='$props.icon' ref='element'></i>
 </template>
 
 <script setup>
-import { defineProps, onMounted } from 'vue'
+import { ref, defineProps, onMounted } from 'vue'
 import feather from 'feather-icons'
 
 const props = defineProps(['icon'])
+const element = ref(null)
+
+defineExpose({ element })
 
 onMounted(feather.replace)
 </script>

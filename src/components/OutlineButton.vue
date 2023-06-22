@@ -1,8 +1,15 @@
 <template>
-  <button class='button-outline'>
+  <button class='button-outline' ref='element'>
     <slot></slot>
   </button>
 </template>
+
+<script setup>
+import { ref } from 'vue'
+
+const element = ref(null)
+defineExpose({ element })
+</script>
 
 <style scoped lang='scss'>
 @import '../assets/themes';

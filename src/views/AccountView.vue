@@ -7,14 +7,23 @@
         <Avatar :profile='store.profile'/>
         <p class='name'>{{ store.profile.full_name }}</p>
 
-        <AccentButton class='edit-profile' @click='toggleAccountEditor'>Edit</AccentButton>
+        <Menu align='right'>
+          <template #buttonContent>
+            <Icon icon='more-horizontal'/>
+          </template>
 
-        <AccentButton class='friends' @click='$router.push({ name: "user" })'>
-          <Icon icon='users'/>
-          <span>37</span>
-        </AccentButton>
+          <template #listContent>
+            <AccentButton class='delete' @click='toggleAccountEditor'>
+              <Icon icon='edit-2'/>
+              <span>Edit</span>
+            </AccentButton>
 
-        <OutlineButton class='logout' @click='supabase.auth.signOut()'>Logout</OutlineButton>
+            <AccentButton class='delete' @click='supabase.auth.signOut()'>
+              <Icon icon='log-out'/>
+              <span>Logout</span>
+            </AccentButton>
+          </template>
+        </Menu>
       </div>
 
       <div class='stories'>
@@ -25,18 +34,18 @@
               <span v-if='likeData[story.id]'>{{ likeData[story.id].length }}</span>
             </AccentButton>  
 
-            <div class='options'>
-              <AccentButton class='icon menu-toggle' @click='menuState = menuState == story.id ? -1 : story.id'>
+            <Menu align='right'>
+              <template #buttonContent>
                 <Icon icon='more-horizontal'/>
-              </AccentButton>
+              </template>
 
-              <div class='menu' v-show='menuState == story.id'>
+              <template #listContent>
                 <AccentButton class='delete' @click='deleteStory(story.id)'>
                   <Icon icon='trash-2'/>
                   <span>Delete</span>
                 </AccentButton>
-              </div>
-            </div>
+              </template>
+            </Menu>
           </div>
 
           <Preview type='image' :media='story.media_url' blur='true' />
@@ -69,7 +78,7 @@ import DeleteAccount from '../components/DeleteAccount.vue'
 import ProfileList from '../components/ProfileList.vue'
 
 const stories = ref([])
-const menuState = ref(-1)
+const showAccountMenu = ref(false)
 const likeData = ref({})
 const likeState = ref(-1)
 const accountEditor = ref(null)
@@ -142,7 +151,7 @@ async function deleteStory (id) {
 
     if (error) throw error
 
-    getOwnStories()
+    stories.value = await getOwnStories()
   } catch (error) {
     console.error(error)
   }
@@ -241,40 +250,6 @@ $element-height: calc(1.1em + 15px);
       .feather {
         stroke: $color-text-2;
         fill: $color-text-2;
-      }
-    }
-
-    .options {
-      display: grid;
-      gap: 10px;
-      position: relative;
-
-      .menu-toggle {
-        border-radius: 100px;
-        margin: 0 0 0 auto;
-      }
-
-      .menu {
-        position: absolute;
-        top: calc(100% + 10px);
-        right: 0;
-        border-radius: 10px;
-        border: 1px solid $color-border-1;
-        background: $color-bg-2;
-        padding: 5px;
-        margin: 0 0 0 auto;
-        z-index: 1;
-
-        button {
-          display: flex;
-          gap: 5px;
-          border-radius: 5px;
-          padding: 5px;
-
-          span, .feather {
-            margin: auto 0;
-          }
-        }
       }
     }
   }

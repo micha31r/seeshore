@@ -1,5 +1,5 @@
 <template>
-  <div class='profile-list'>
+  <div class='profile-list' ref='element'>
     <div class='profile' v-for='(profile, index) in data'>
       <Avatar width='35' height='35' :profile='profile'/>
       <p class='name'>{{ profile.full_name }}</p>
@@ -10,9 +10,12 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
+import { ref, defineProps } from 'vue'
 import Avatar from './Avatar.vue'
 
+const element = ref(null)
+
+defineExpose({ element })
 defineProps(['data', 'fallback'])
 </script>
 

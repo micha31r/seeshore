@@ -17,6 +17,8 @@ const props = defineProps(['width', 'height', 'media', 'profile'])
 const { media, profile } = toRefs(props)
 const avatar = ref(null)
 
+defineExpose({ element: avatar })
+
 async function updateURL () {
   let source = media.value
 

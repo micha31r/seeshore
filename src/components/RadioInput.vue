@@ -1,5 +1,5 @@
 <template>
-  <div class='radio-input' @click='toggle' :data-checked='data'></div>
+  <div class='radio-input' @click='toggle' :data-checked='data' ref='element'></div>
 </template>
 
 <script setup>
@@ -9,6 +9,9 @@ import feather from 'feather-icons'
 const props = defineProps(['checked'])
 const { checked } = toRefs(props)
 const data = ref(checked.value || false)
+const element = ref(null)
+
+defineExpose({ element })
 
 function toggle(event) {
   event.stopPropagation()
