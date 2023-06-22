@@ -9,7 +9,7 @@
 
         <AccentButton class='edit-profile' @click='toggleAccountEditor'>Edit</AccentButton>
 
-        <AccentButton class='friends'>
+        <AccentButton class='friends' @click='$router.push({ name: "user" })'>
           <Icon icon='users'/>
           <span>37</span>
         </AccentButton>

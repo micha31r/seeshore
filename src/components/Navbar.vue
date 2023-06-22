@@ -5,6 +5,10 @@
       <Icon class='secondary' icon='home' />
     </AccentButton>
 
+    <AccentButton class='icon users' @click="$router.push({ name: 'user' })">
+      <Icon class='secondary' icon='users' />
+    </AccentButton>
+
     <!-- Page name -->
     <h3 class='page-name'>{{ pageName }}</h3>
 
@@ -31,8 +35,8 @@ $element-height: calc(1.1em + 15px);
 nav {
   display: grid;
   position: sticky;
-  grid-template-columns: auto 1fr auto auto;
-  gap: 15px;
+  grid-template-columns: auto auto 1fr auto auto;
+  gap: 10px;
   height: max-content;
   top: 0;
   background: rgba($color-theme-2-shade-15, $shade-2);

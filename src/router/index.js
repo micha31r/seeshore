@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import AccountView from '../views/AccountView.vue'
 import CreateView from '../views/CreateView.vue'
 import ShareView from '../views/ShareView.vue'
+import UserView from '../views/UserView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/share',
       name: 'share',
       component: ShareView
+    },
+    {
+      path: '/user',
+      name: 'user',
+      component: UserView
     }
   ]
 })
