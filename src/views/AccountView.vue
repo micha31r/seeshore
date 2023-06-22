@@ -7,7 +7,7 @@
         <Avatar :profile='store.profile'/>
         <p class='name'>{{ store.profile.full_name }}</p>
 
-        <AccentButton class='edit' @click='toggleAccountEditor'>Edit</AccentButton>
+        <AccentButton class='edit' @click='toggleAccountEditor'>Edit Profile</AccentButton>
 
         <AccentButton class='friends' @click='$router.push({ name: "user" })'>
           <Icon icon='users'/>
