@@ -4,6 +4,7 @@ import AccountView from '../views/AccountView.vue'
 import CreateView from '../views/CreateView.vue'
 import ShareView from '../views/ShareView.vue'
 import UserView from '../views/UserView.vue'
+import QRView from '../views/QRView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
       path: '/user',
       name: 'user',
       component: UserView
+    },
+    {
+      path: '/qr',
+      name: 'qr',
+      component: QRView
     }
   ]
 })

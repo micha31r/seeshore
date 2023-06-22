@@ -5,10 +5,6 @@
       <Icon class='secondary' icon='home' />
     </AccentButton>
 
-    <!-- <AccentButton class='icon users' @click="$router.push({ name: 'user' })">
-      <Icon class='secondary' icon='users' />
-    </AccentButton> -->
-
     <!-- Page name -->
     <h3 class='page-name'>{{ pageName }}</h3>
 
@@ -16,19 +12,23 @@
     <SolidButton class='solid add-story' @click="$router.push('/create')">Add Story</SolidButton>
 
     <!-- Profile -->
-    <!-- <Avatar @click="$router.push('/account')" :profile='store.profile' /> -->
     <Menu align='right'>
       <template #buttonContent>
         <Avatar :profile='store.profile' />
       </template>
 
       <template #listContent>
-        <AccentButton @click='$router.push({ name: "account" })'>
+        <AccentButton class='icon-text' @click='$router.push({ name: "account" })'>
           <Icon icon='user'/>
           <span>Profile</span>
         </AccentButton>
 
-        <AccentButton @click='toggle'>
+        <AccentButton class='icon-text' @click='$router.push({ name: "qr" })'>
+          <Icon icon='square'/>
+          <span>Share QR Code</span>
+        </AccentButton>
+
+        <AccentButton class='icon-text' @click='toggle'>
           <Icon icon='log-out'/>
           <span>Log out</span>
         </AccentButton>
@@ -62,6 +62,7 @@ const showLogoutPrompt = ref(false)
 
 <style scoped lang='scss'>
 @import '../assets/themes';
+
 $element-height: calc(1.1em + 15px);
 
 nav {

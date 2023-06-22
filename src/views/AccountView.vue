@@ -29,7 +29,7 @@
               </template>
 
               <template #listContent>
-                <AccentButton class='delete' @click='deleteStory(story.id)'>
+                <AccentButton class='icon-text' @click='deleteStory(story.id)'>
                   <Icon icon='trash-2'/>
                   <span>Delete</span>
                 </AccentButton>

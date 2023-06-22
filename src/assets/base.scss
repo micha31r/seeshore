@@ -30,12 +30,20 @@ p {
 
 button.icon {
   display: flex;
-  justify-content: center;
   width: calc(1.1em + 15px);
   height: calc(1.1em + 15px);
   padding: 0 !important;
   
   svg {
     margin: auto;
+  }
+}
+
+button.icon-text {
+  display: flex;
+  gap: 10px;
+  
+  & > * {
+    margin: auto 0;
   }
 }

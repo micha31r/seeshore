@@ -53,16 +53,10 @@ onMounted(() => addEventListener('click', toggle))
     margin: 0 0 0 auto;
     z-index: 1;
 
-    button {
-      display: flex;
-      gap: 10px;
+
+    & > * {
       width: 100%;
       border-radius: 5px;
-      padding: 10px;
-
-      span, .feather {
-        margin: auto 0;
-      }
     }
   }
 }
