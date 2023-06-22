@@ -17,7 +17,7 @@
 
     <!-- Profile -->
     <!-- <Avatar @click="$router.push('/account')" :profile='store.profile' /> -->
-    <Menu align='right' class='menu'>
+    <Menu align='right'>
       <template #buttonContent>
         <Avatar :profile='store.profile' />
       </template>
@@ -93,6 +93,14 @@ nav {
 
   .avatar {
     cursor: pointer;
+  }
+}
+
+nav::v-deep {
+  .menu {
+    .list {
+      width: 200px;
+    }
   }
 }
 
