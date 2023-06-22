@@ -7,23 +7,12 @@
         <Avatar :profile='store.profile'/>
         <p class='name'>{{ store.profile.full_name }}</p>
 
-        <Menu align='right'>
-          <template #buttonContent>
-            <Icon icon='more-horizontal'/>
-          </template>
+        <AccentButton class='edit' @click='toggleAccountEditor'>Edit</AccentButton>
 
-          <template #listContent>
-            <AccentButton class='delete' @click='toggleAccountEditor'>
-              <Icon icon='edit-2'/>
-              <span>Edit</span>
-            </AccentButton>
-
-            <AccentButton class='delete' @click='supabase.auth.signOut()'>
-              <Icon icon='log-out'/>
-              <span>Logout</span>
-            </AccentButton>
-          </template>
-        </Menu>
+        <AccentButton class='friends' @click='$router.push({ name: "user" })'>
+          <Icon icon='users'/>
+          <span>37</span>
+        </AccentButton>
       </div>
 
       <div class='stories'>
@@ -186,10 +175,9 @@ $element-height: calc(1.1em + 15px);
     margin: auto 0;
   }
 
-  .edit-profile {
+  .edit {
     height: $element-height;
     padding: 0 15px;
-    border-radius: 100px;
   }
 
   .friends {

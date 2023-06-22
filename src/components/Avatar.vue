@@ -54,7 +54,7 @@ $height: calc(1.1em + 15px);
 .avatar {
   display: block;
   width: $width;
-  width: $height;
+  height: $height;
   border-radius: 100%;
   background-color: $color-bg-2;
   background-position: center;

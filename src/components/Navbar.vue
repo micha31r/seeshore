@@ -5,9 +5,9 @@
       <Icon class='secondary' icon='home' />
     </AccentButton>
 
-    <AccentButton class='icon users' @click="$router.push({ name: 'user' })">
+    <!-- <AccentButton class='icon users' @click="$router.push({ name: 'user' })">
       <Icon class='secondary' icon='users' />
-    </AccentButton>
+    </AccentButton> -->
 
     <!-- Page name -->
     <h3 class='page-name'>{{ pageName }}</h3>
@@ -16,16 +16,48 @@
     <SolidButton class='solid add-story' @click="$router.push('/create')">Add Story</SolidButton>
 
     <!-- Profile -->
-    <Avatar @click="$router.push('/account')" :profile='store.profile' />
+    <!-- <Avatar @click="$router.push('/account')" :profile='store.profile' /> -->
+    <Menu align='right' class='menu'>
+      <template #buttonContent>
+        <Avatar :profile='store.profile' />
+      </template>
+
+      <template #listContent>
+        <AccentButton @click='$router.push({ name: "account" })'>
+          <Icon icon='user'/>
+          <span>Profile</span>
+        </AccentButton>
+
+        <AccentButton @click='toggle'>
+          <Icon icon='log-out'/>
+          <span>Log out</span>
+        </AccentButton>
+      </template>
+    </Menu>
+
+    <Prompt v-show='showLogoutPrompt' class='logout-prompt'>
+      <div>
+        <h2 class='heading'>Log out of Seeshore?</h2>
+        <p class='info'>You can sign in again at any time.</p>
+        <SolidButton @click='supabase.auth.signOut()'>Log out</SolidButton>
+        <AccentButton @click='toggle'>Cancel</AccentButton>
+      </div>
+    </Prompt>
   </nav>
 </template>
 
 <script setup>
 import { ref, defineProps, onMounted } from 'vue'
+import { supabase } from '../supabase'
 import store from '../store'
 import Avatar from './Avatar.vue'
 
-const props = defineProps(['pageName'])
+function toggle () {
+  showLogoutPrompt.value = showLogoutPrompt.value ? false : true
+}
+
+defineProps(['pageName'])
+const showLogoutPrompt = ref(false)
 </script>
 
 <style scoped lang='scss'>
@@ -35,7 +67,7 @@ $element-height: calc(1.1em + 15px);
 nav {
   display: grid;
   position: sticky;
-  grid-template-columns: auto auto 1fr auto auto;
+  grid-template-columns: auto 1fr auto auto;
   gap: 10px;
   height: max-content;
   top: 0;
@@ -62,5 +94,9 @@ nav {
   .avatar {
     cursor: pointer;
   }
+}
+
+.logout-prompt {
+  background: $color-bg-1 !important;
 }
 </style>

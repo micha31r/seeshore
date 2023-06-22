@@ -163,62 +163,48 @@ async function updateProfile () {
 <style scoped lang='scss'>
 @import '../assets/themes';
 
-.account-editor {
-  form {
+.heading {
+  margin: 0;
+}
+
+.avatar {
+  position: relative;
+  margin: 8px auto 0;
+  cursor: pointer;
+
+  .options {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    transform: translate(-50%, 0);
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 400px;
-    background: $color-bg-1;
-    border: 1px solid $color-border-1;
-    border-radius: 15px;
-    padding: 15px;
-    margin: auto;
+    gap: 5px;
+  }
 
-    .heading {
-      margin: 0;
-    }
+  button {
+    font-size: 0.8em;
+    display: flex;
+    gap: 7px;
+    padding: 7px;
 
-    .avatar {
-      position: relative;
-      margin: 8px auto 0;
-      cursor: pointer;
-
-      .options {
-        position: absolute;
-        left: 50%;
-        bottom: 10px;
-        transform: translate(-50%, 0);
-        display: flex;
-        gap: 5px;
-      }
-
-      button {
-        font-size: 0.8em;
-        display: flex;
-        gap: 7px;
-        padding: 7px;
-
-        & > * {
-          margin: auto 0;
-        }
-      }
-    }
-
-    .icon-input {
-      margin: 8px 0 0;
-    }
-
-    .delete {
-      font-size: 0.8em;
-      display: block;
-      width: max-content;
-      color: $color-text-2;
-      margin: 10px auto 0;
-      text-align: center;
-      cursor: pointer;
+    & > * {
+      margin: auto 0;
     }
   }
+}
+
+.icon-input {
+  margin: 8px 0 0;
+}
+
+.delete {
+  font-size: 0.8em;
+  display: block;
+  width: max-content;
+  color: $color-text-2;
+  margin: 10px auto 0;
+  text-align: center;
+  cursor: pointer;
 }
 </style>
 

@@ -37,7 +37,7 @@ onMounted(() => addEventListener('click', toggle))
 .menu {
   position: relative;
 
-  .menu-toggle {
+  .toggle {
     border-radius: 100px;
     margin: 0 0 0 auto;
   }
@@ -45,6 +45,7 @@ onMounted(() => addEventListener('click', toggle))
   .list::v-deep {
     position: absolute;
     top: calc(100% + 10px);
+    width: max-content;
     border-radius: 10px;
     border: 1px solid $color-border-1;
     background: $color-bg-2;
@@ -54,10 +55,10 @@ onMounted(() => addEventListener('click', toggle))
 
     button {
       display: flex;
-      gap: 5px;
+      gap: 10px;
       width: 100%;
       border-radius: 5px;
-      padding: 5px;
+      padding: 10px;
 
       span, .feather {
         margin: auto 0;
