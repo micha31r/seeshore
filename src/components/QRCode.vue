@@ -8,17 +8,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, toRefs, defineProps, onMounted } from 'vue'
 import { encodeData, rendererFuncA } from 'beautify-qrcode';
 import store from '../store'
 import Navbar from '../components/Navbar.vue'
 import Avatar from '../components/Avatar.vue'
 
+const props = defineProps(['data'])
+const { data } = toRefs(props)
 const url = ref('')
 
 onMounted(() => {
   const qrcode = encodeData({
-      text: store.profile.username,
+      text: data.value,
       correctLevel: 0
   })
 

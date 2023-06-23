@@ -3,7 +3,7 @@
     <Navbar pageName='QR Code' />
     <div class='qr'>
       <div class='contact-card'>
-        <QRCode />
+        <QRCode :data='store.profile.username'/>
 
         <div class='profile'>
           <ProfileList :data='[store.profile]' fallback='This story does not have any likes.'/>
