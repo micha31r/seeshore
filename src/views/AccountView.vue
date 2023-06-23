@@ -4,15 +4,16 @@
 
     <div class='account'>
       <div class='account-info'>
-        <Avatar :profile='store.profile'/>
-        <p class='name'>{{ store.profile.full_name }}</p>
+        <div class='row'>
+          <Avatar :profile='store.profile'/>
+          <p class='name'>{{ store.profile.full_name }}</p>
+          <AccentButton class='edit' @click='toggleAccountEditor'>Edit Profile</AccentButton>
 
-        <AccentButton class='edit' @click='toggleAccountEditor'>Edit Profile</AccentButton>
-
-        <AccentButton class='friends' @click='$router.push({ name: "user" })'>
-          <Icon icon='users'/>
-          <span>37</span>
-        </AccentButton>
+          <AccentButton class='friends' @click='$router.push({ name: "people" })'>
+            <Icon icon='users'/>
+            <span>14.5k / 204</span>
+          </AccentButton>
+        </div>
       </div>
 
       <div class='stories'>
@@ -164,12 +165,21 @@ $element-height: calc(1.1em + 15px);
 }
 
 .account-info {
-  display: grid;
-  grid-template-columns: auto auto auto 1fr auto;
-  gap: 15px;
-  width: max-content;
-  padding: 0 15px 15px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  // grid-template-columns: auto auto auto 1fr auto;
+  // gap: 15px;
+  // width: max-content;
+  // padding: 0 15px 15px;
+  // margin: 0 auto;
+
+  .row {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 0 15px 15px;
+    margin: 0 auto;
+  }
 
   .name {
     margin: auto 0;

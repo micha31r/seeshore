@@ -3,7 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import AccountView from '../views/AccountView.vue'
 import CreateView from '../views/CreateView.vue'
 import ShareView from '../views/ShareView.vue'
-import UserView from '../views/UserView.vue'
+import PeopleView from '../views/PeopleView.vue'
 import QRView from '../views/QRView.vue'
 
 const router = createRouter({
@@ -30,9 +30,9 @@ const router = createRouter({
       component: ShareView
     },
     {
-      path: '/user',
-      name: 'user',
-      component: UserView
+      path: '/people',
+      name: 'people',
+      component: PeopleView
     },
     {
       path: '/qr',

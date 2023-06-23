@@ -3,6 +3,7 @@
     <div class='profile' v-for='(profile, index) in data'>
       <Avatar width='35' height='35' :profile='profile'/>
       <p class='name'>{{ profile.full_name }}</p>
+      <slot :profile='profile'></slot>
     </div>
 
     <p class='fallback' v-if='!data.length && fallback'>{{ fallback }}</p>
