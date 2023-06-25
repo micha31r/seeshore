@@ -3,6 +3,7 @@
     <Navbar pageName='Share' />
 
     <div class='share'>
+      <!-- Story preview -->
       <Preview :type='store.editor.type' :media='store.editor.previewURL'>
         <AccentButton class='back icon' @click="$router.push('/create')">
           <Icon icon='arrow-left'/>
@@ -10,27 +11,34 @@
       </Preview>
 
       <div class='contacts'>
+        <!-- Search box -->
         <IconInput icon='search' placeholder='Search' v-model='keyword'/>
 
+        <!-- Selected users -->
         <div class='recipients'>
-          <div class='tag' v-for='profile in recipients'>
-            <Avatar width='20' height='20' :profile='profile'/>
-            <p class='name'>{{ profile.full_name }}</p>
+          <div class='tag' v-for='follower in recipients'>
+            <Avatar width='20' height='20' :profile='follower'/>
+            <p class='name'>{{ follower.full_name }}</p>
 
-            <AccentButton class='remove icon' @click='toggle(profile)'>
+            <AccentButton class='remove icon' @click='toggle(follower)'>
               <Icon icon='x' />
             </AccentButton>
           </div>
         </div>
 
+        <!-- All followers -->
         <div class='followers'>
           <p class='category'>Followers</p>
 
-          <template v-for='({ follower }, index) in followers'>
-            <div class='item' :id='follower.username' v-show='filter(follower)' @click='toggle(follower)'>
+          <template v-for='follower in followers'>
+            <div class='item' v-show='filter(follower)' @click='toggle(follower)'>
               <Avatar  width='35' height='35' :profile='follower'/>
               <p class='name'>{{ follower.full_name }}</p>
-              <RadioInput />
+
+              <RadioInput
+                :checked='recipients.findIndex(item => item.id == follower.id) > -1'
+                :key='recipients.length'
+              />
             </div>
           </template>
         </div>
@@ -59,24 +67,34 @@ const file = store.editor.file
 const path = joinPaths([store.profile.id, uuid.v4()]) // without extension
 
 const followers = ref([])
-const recipients = ref({})
+const recipients = ref([])
 const keyword = ref('')
 
-async function getFollowers () {
-  const { data, error } = await supabase
-    .from('followers')
-    .select(`
-      profile,
-      follower ( id, username, full_name, avatar_url )
-    `)
-    .eq('profile', store.profile.id)
+onMounted(async () => {
+  if (!file) router.push('/create')
+    
+  followers.value = await getFollowers()
+})
 
-  if (error) {
+async function getFollowers () {
+  try {
+    const { data, error } = await supabase
+      .from('followers')
+      .select(`
+        follower (
+          id,
+          full_name,
+          avatar_url
+        )
+      `)
+      .eq('profile', store.profile.id)
+
+    if (error) throw error
+
+    return data.map(item => item.follower)
+  } catch (error) {
     console.error(error)
   }
-
-  console.log(data)
-  followers.value = data
 }
 
 async function createStory () {
@@ -121,12 +139,12 @@ async function createStory () {
   }
 
   // Set recipient access
-  for (let username in recipients.value) {
+  recipients.value.forEach(async item => {
     try {
       const { error } = await supabase
         .from('sharing')
         .insert({
-          profile: recipients.value[username].id,
+          profile: item.id,
           story: storyId
         })
 
@@ -134,7 +152,7 @@ async function createStory () {
     } catch (error) {
       console.log(error)
     }
-  }
+  })
 
   // Clear store.editor
   store.editor = {
@@ -147,34 +165,21 @@ async function createStory () {
 }
 
 function toggle (profile) {
-  // Toggle radio input 
-  const username = profile.username
-  const radio = document.querySelector(`#${username} .radio-input`)
-  radio.click()
-
+  // console.log(profile)
   // Add/remove profile from recipients
-  if (radio.dataset.checked == 'true') {
-    delete recipients.value[username]
+  const index = recipients.value.findIndex(item => item.id == profile.id)
+  if (index > -1) {
+    recipients.value.splice(index, 1)
   } else {
-    recipients.value[username] = profile
+    recipients.value.push(profile)
   }
 }
 
 function filter (profile) {
-  const value = keyword.value
-  if (!value ||
-      profile.full_name.indexOf(value) > -1 ||
-      profile.username.indexOf(value) > -1
-    ) {
-    return true
-  }
-  return false
+  const key = keyword.value.toLowerCase()
+  const name = profile.full_name.toLowerCase()
+  return !key || name.indexOf(key) > -1
 }
-
-onMounted(() => {
-  if (!file) router.push('/create')
-  getFollowers()
-})
 </script>
 
 <style scoped lang='scss'>
@@ -235,7 +240,6 @@ onMounted(() => {
 
         .name {
           font-size: 0.8em;
-          color: $color-text-2;
           margin: auto 0;
         }
 
