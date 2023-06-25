@@ -9,7 +9,7 @@
 
 <script setup>
 import { ref, toRefs, defineProps, onMounted } from 'vue'
-import { encodeData, rendererFuncA } from 'beautify-qrcode';
+import { encodeData, rendererRound } from 'beautify-qrcode';
 import store from '../store'
 import Navbar from '../components/Navbar.vue'
 import Avatar from '../components/Avatar.vue'
@@ -25,7 +25,7 @@ onMounted(() => {
   })
 
   url.value = 'data:image/svg+xml;utf8,' + encodeURIComponent(
-    rendererFuncA(qrcode, {
+    rendererRound(qrcode, {
       opacity: 100
     })
   )
@@ -38,8 +38,8 @@ onMounted(() => {
 .wrapper {
   position: relative;
   display: flex;
-  width: 200px;
-  height: 200px;
+  width: 250px;
+  height: 250px;
   padding: 10px;
   border-radius: 100%;
   margin: auto;
@@ -53,8 +53,8 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   background-color: transparent;
-  filter: blur(30px);
-  opacity: 0.5;
+  filter: blur(40px);
+  opacity: 0.4;
 }
 
 .image {

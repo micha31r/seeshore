@@ -3,7 +3,7 @@
     <Navbar pageName='Create' />
 
     <div class='editor'>
-      <p class='help-text'>Tap to add media. Hold to add text.</p>
+      <p class='help-text'>Tap to add media.</p>
       <Preview @mousedown='addText' @mouseup='getFile' :type='store.editor.type' :media='store.editor.previewURL' />
       <SolidButton class='next' @click="$router.push('/share')" :disabled='!store.editor.file'>Next</SolidButton>
     </div>

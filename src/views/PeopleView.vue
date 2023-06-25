@@ -3,11 +3,52 @@
     <Navbar pageName='People' />
 
     <div class='people'>
+      <div class='requests' v-if='requests.length'>
+        <h3 class='heading'>Requests</h3>
+        <ProfileList :data='requests'>
+          <template #default='{profile}'>
+            <div class='actions'>
+              <SolidButton @click='approveFollowRequest(profile)'>Approve</SolidButton>
+              <Menu align='right'>
+                <template #buttonContent>
+                  <Icon icon='more-vertical' />
+                </template>
+
+                <template #listContent>
+                  <AccentButton class='icon-text' @click='deleteFollowRequest(profile)'>
+                    <Icon icon='trash-2' />
+                    <span>Reject</span>
+                  </AccentButton>
+                </template>
+              </Menu>
+            </div>
+          </template>
+        </ProfileList>
+      </div>
+
+      <div class='pending' v-if='pending.length'>
+        <h3 class='heading'>Pending</h3>
+        <ProfileList :data='pending'></ProfileList>
+      </div>
+
       <div class='followers'>
         <h3 class='heading'>Follower</h3>
         <ProfileList :data='followers' fallback="You don't have any followers.">
           <template #default='{profile}'>
-            <OutlineButton class='remove' @click='removeFollower(profile)'>Remove</OutlineButton>
+            <div class='actions'>
+              <Menu align='right'>
+                <template #buttonContent>
+                  <Icon icon='more-vertical' />
+                </template>
+
+                <template #listContent>
+                  <AccentButton class='icon-text' @click='removeFollower(profile)'>
+                    <Icon icon='trash-2' />
+                    <span>Remove</span>
+                  </AccentButton>
+                </template>
+              </Menu>
+            </div>
           </template>
         </ProfileList>
       </div>
@@ -16,8 +57,10 @@
         <h3 class='heading'>Following</h3>
         <ProfileList :data='following' fallback="You don't have any followers.">
           <template #default='{profile}'>
-            <OutlineButton v-if='profile.isUnfollowed' @click='follow(profile)'>Follow</OutlineButton>
-            <OutlineButton v-else @click='unfollow(profile)'>Unfollow</OutlineButton>
+            <div class='actions'>
+              <AccentButton v-if='profile.isUnfollowed' @click='follow(profile)'>Follow</AccentButton>
+              <AccentButton v-else @click='unfollow(profile)'>Unfollow</AccentButton>
+            </div>
           </template>
         </ProfileList>
       </div>
@@ -34,6 +77,89 @@ import ProfileList from '../components/ProfileList.vue'
 
 const followers = ref([])
 const following = ref([])
+const requests = ref([])
+const pending = ref([])
+
+
+function approveFollowRequest (profile) {
+  createFollower(profile)
+  deleteFollowRequest(profile)
+}
+
+async function createFollower (profile) {
+  try {
+    const { error } = await supabase
+      .from('followers')
+      .insert({
+        follower: profile.id,
+        profile: store.profile.id
+      })
+
+    if (error) throw error
+
+    followers.value = await getFollowers()
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function deleteFollowRequest (profile) {
+  try {
+    const { error } = await supabase
+      .from('follow_requests')
+      .delete()
+      .eq('following', store.profile.id)
+      .eq('profile', profile.id)
+
+    if (error) throw error
+
+    requests.value = await getFollowRequests()
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function getPendingFollowing () {
+  try {
+    const { data, error } = await supabase
+      .from('follow_requests')
+      .select(`
+        following (
+          id,
+          full_name,
+          avatar_url
+        )
+      `)
+      .eq('profile', store.profile.id)
+
+      if (error) throw error
+
+      return data.map(item => item.following)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function getFollowRequests () {
+  try {
+    const { data, error } = await supabase
+      .from('follow_requests')
+      .select(`
+        profile (
+          id,
+          full_name,
+          avatar_url
+        )
+      `)
+      .eq('following', store.profile.id)
+
+      if (error) throw error
+
+      return data.map(item => item.profile)
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 async function getFollowers () {
   try {
@@ -141,6 +267,8 @@ async function follow(target) {
 onMounted(async () => {
   followers.value = await getFollowers()
   following.value = await getFollowing()
+  requests.value = await getFollowRequests()
+  pending.value = await getPendingFollowing()
 })
 </script>
 
@@ -156,21 +284,58 @@ $element-height: calc(1.1em + 15px);
 }
 
 .people {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: 700px;
   padding: 15px;
   margin: 0 auto;
+  gap: 30px;
 
   .heading {
-    // margin: 0;
+    margin: 0 0 15px;
   }
 
-  .profile-list button {
-    width: 90px;
-    height: $element-height;
-    border-radius: 100px;
-    padding: 0;
-    margin-left: auto;
+  .profile-list {
+    .actions {
+      display: flex;
+      gap: 15px;
+      margin-left: auto;
+
+      & > * {
+        margin: auto 0;
+      }
+
+      & > button {
+        height: 100%;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+
+      .menu::v-deep .toggle {
+        background: transparent;
+      }
+    }
+  }
+}
+
+.pending::v-deep {
+  .profile-list {
+    flex-direction: row;
+    gap: 5px;
+
+    .profile {
+      width: max-content;
+      border-radius: 10px;
+      background: $color-bg-2;
+      padding: 7px;
+      gap: 7px;
+
+      .avatar {
+        width: 20px !important;
+        height: 20px !important;
+      }
+    }
   }
 }
 </style>

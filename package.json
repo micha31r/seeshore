@@ -17,6 +17,7 @@
     "feather-icons": "^4.29.0",
     "minidenticons": "^4.2.0",
     "normalize.css": "^8.0.1",
+    "qr-scanner": "^1.4.2",
     "sass": "^1.63.4",
     "vite-plugin-pwa": "^0.16.4",
     "vue": "^3.3.4",
@@ -26,6 +27,7 @@
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",
     "@vite-pwa/assets-generator": "^0.0.3",
+    "@vitejs/plugin-basic-ssl": "^1.0.1",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vue/eslint-config-prettier": "^7.1.0",
     "eslint": "^8.39.0",
