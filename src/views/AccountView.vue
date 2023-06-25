@@ -88,7 +88,7 @@ async function getOwnStories() {
       .from('stories')
       .select(`
         id,
-        profile (id, username, avatar_url, full_name),
+        profile (id, avatar_url, full_name),
         media_url
       `)
       .eq('profile', store.profile.id)

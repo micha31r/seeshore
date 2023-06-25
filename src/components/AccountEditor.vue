@@ -131,7 +131,7 @@ async function updateProfile () {
       .from('profiles')
       .update(newData)
       .eq('id', store.profile.id)
-      .select(`id, username, full_name, avatar_url`)
+      .select(`id, full_name, avatar_url`)
       .single()
 
     if (error) throw error
