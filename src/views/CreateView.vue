@@ -70,7 +70,8 @@ function addText(event) {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  width: max-content;
+  width: 100%;
+  max-width: 300px;
   padding: 15px;
   margin: auto;
 
@@ -85,8 +86,6 @@ function addText(event) {
   }
 
   .preview {
-    width: 400px;
-    height: 560px;
     margin: 0 auto;
     cursor: pointer;
   }

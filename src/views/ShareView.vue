@@ -15,7 +15,7 @@
         <IconInput icon='search' placeholder='Search' v-model='keyword'/>
 
         <!-- Selected users -->
-        <div class='recipients'>
+        <div class='recipients' v-if='recipients.length'>
           <div class='tag' v-for='follower in recipients'>
             <Avatar width='20' height='20' :profile='follower'/>
             <p class='name'>{{ follower.full_name }}</p>
@@ -203,7 +203,8 @@ function filter (profile) {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    width: 400px;
+    width: 100%;
+    max-width: 400px;
     margin: 0 auto;
 
     .avatar {
