@@ -19,6 +19,12 @@ const avatar = ref(null)
 
 defineExpose({ element: avatar })
 
+onMounted(() => {
+  updateURL()
+  watch(media, updateURL)
+  watch(profile, updateURL)
+})
+
 async function updateURL () {
   let source = media.value
 
@@ -37,12 +43,6 @@ async function updateURL () {
 
   avatar.value.style.backgroundImage = `url("${source}")`
 }
-
-onMounted(() => {
-  updateURL()
-  watch(media, updateURL)
-  watch(profile, updateURL)
-})
 </script>
 
 <style scoped lang='scss'>
