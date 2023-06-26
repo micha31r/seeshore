@@ -191,6 +191,7 @@ async function isFollowing (id) {
   display: grid;
   grid-template-rows: auto 1fr;
   flex: 1;
+  height: calc(100vh - var(--nav-height));
 }
 
 .qr {
