@@ -1,5 +1,5 @@
 <template>
-  <nav>
+  <nav ref='nav'>
     <!-- Home button -->
     <AccentButton class='icon home' @click="$router.push('/')">
       <Icon class='secondary' icon='home' />
@@ -66,7 +66,18 @@ import Avatar from './Avatar.vue'
 
 defineProps(['pageName'])
 
+const root = document.querySelector(':root')
+const nav = ref(null)
 const showLogoutPrompt = ref(false)
+
+onMounted(() => {
+  getNavHeight()
+  addEventListener('resize', getNavHeight)
+})
+
+function getNavHeight () {
+  root.style.setProperty('--nav-height', nav.value.clientHeight + 'px')
+}
 
 function toggle () {
   showLogoutPrompt.value = showLogoutPrompt.value ? false : true
@@ -80,8 +91,7 @@ function setTheme () {
 
 <style scoped lang='scss'>
 @import '../assets/themes';
-
-$element-height: calc(1.1em + 15px);
+@import '../assets/main';
 
 @include use-theme {
 nav {
@@ -105,13 +115,13 @@ nav {
   }
 
   button.home {
-    height: $element-height;
+    height: $nav-content-height;
   }
 
   button.add-story {
     padding: 0 15px;
     border-radius: 100px;
-    height: $element-height;
+    height: $nav-content-height;
   }
 
   .avatar {
@@ -129,7 +139,7 @@ nav::v-deep {
       width: 200px;
 
       @media (max-width: 500px) {
-        top: calc($element-height + 20px);
+        top: calc($nav-content-height + 20px);
         width: 100vw;
         border: 0;
         border-radius: 0;

@@ -47,15 +47,13 @@ async function updateURL () {
 
 <style scoped lang='scss'>
 @import '../assets/themes';
-
-$width: calc(1.1em + 15px);
-$height: calc(1.1em + 15px);
+@import '../assets/main';
 
 @include use-theme {
 .avatar {
   display: block;
-  width: $width;
-  height: $height;
+  width: $nav-content-height;
+  height: $nav-content-height;
   border-radius: 100%;
   background-color: theme('color-bg-2');
   background-position: center;

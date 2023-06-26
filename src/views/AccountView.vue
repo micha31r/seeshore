@@ -207,8 +207,8 @@ async function deleteStory (id) {
 
 <style scoped lang='scss'>
 @import '../assets/themes';
+@import '../assets/main';
 
-$element-height: calc(1.1em + 15px);
 
 @include use-theme {
 .grid {
@@ -266,7 +266,7 @@ $element-height: calc(1.1em + 15px);
   }
 
   .edit {
-    height: $element-height;
+    height: $nav-content-height;
     padding: 0 15px;
   }
 }
@@ -304,7 +304,7 @@ $element-height: calc(1.1em + 15px);
       display: flex;
       gap: 7px;
       width: max-content;
-      height: $element-height;
+      height: $nav-content-height;
       padding-top: 0;
       padding-bottom: 0;
 

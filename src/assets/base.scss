@@ -1,4 +1,5 @@
 @import 'themes';
+@import 'main';
 
 @include use-theme {
 html, body {
@@ -31,8 +32,8 @@ p {
 
 button.icon {
   display: flex;
-  width: calc(1.1em + 15px);
-  height: calc(1.1em + 15px);
+  width: $nav-content-height;
+  height: $nav-content-height;
   padding: 0 !important;
   
   svg {

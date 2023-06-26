@@ -7,8 +7,6 @@
 <style scoped lang='scss'>
 @import '../assets/themes';
 
-$element-height: calc(1.1em + 15px + 15px);
-
 @include use-theme {
 .prompt::v-deep {
   display: flex;
@@ -41,7 +39,9 @@ $element-height: calc(1.1em + 15px + 15px);
     @media (max-width: 500px) {
       width: 100% !important;
       border: 0 !important;
-      margin: $element-height 0 0 !important;
+      // border-radius: 15px 15px 0 0 !important;
+      // background: theme('color-bg-2') !important;
+      margin: var(--nav-height) 0 0 !important;
     }
   }
 

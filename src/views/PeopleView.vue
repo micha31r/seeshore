@@ -257,8 +257,6 @@ async function follow(target) {
 <style scoped lang='scss'>
 @import '../assets/themes';
 
-$element-height: calc(1.1em + 15px);
-
 @include use-theme {
 .grid {
   display: grid;
