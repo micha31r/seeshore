@@ -136,6 +136,12 @@ nav::v-deep {
       }
     }
   }
+
+  @media (max-width: 500px) {
+    .prompt > * {
+      margin: 0 !important;
+    }
+  }
 }
 
 .logout-prompt {
