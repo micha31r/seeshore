@@ -35,20 +35,20 @@ defineExpose({ getFrameData })
 
 onMounted(async () => {
   await preload()
-  resize()
-  addEventListener('resize', resize)
+  // resize()
+  // addEventListener('resize', resize)
 })
 
-router.beforeEach((to, from, next) => {
-  removeEventListener('resize', resize)
-  next()
-})
+// router.beforeEach((to, from, next) => {
+//   removeEventListener('resize', resize)
+//   next()
+// })
 
-function resize () {
-  const nav = document.querySelector('nav')
-  const height = window.innerHeight - nav.clientHeight - 15
-  element.value.style.height = height + 'px'
-}
+// function resize () {
+//   const nav = document.querySelector('nav')
+//   const height = window.innerHeight - nav.clientHeight - 15
+//   element.value.style.height = height + 'px'
+// }
 
 // Get story data at current index
 function getFrameData () {
@@ -81,9 +81,10 @@ function cycle () {
 @include use-theme {
 .story {
   display: grid;
-  width: 100%;
   grid-template-rows: auto 1fr;
   gap: 10px;
+  width: 100%;
+  height: max-content;
   background: theme('color-bg-2');
   border-radius: 15px;
   padding: 10px;
@@ -97,6 +98,7 @@ function cycle () {
 
   .preview {
     position: relative;
+    margin: 0 auto;
 
     .progress {
       position: absolute;

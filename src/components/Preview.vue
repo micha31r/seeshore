@@ -19,26 +19,39 @@ const props = defineProps(['type', 'media', 'blur'])
 const { type, media } = toRefs(props)
 const url = ref('')
 const element = ref(null)
-// const aspectRatio = 9 / 16
+const aspectRatio = 16 / 9
 
-defineExpose({ element, /*resize*/ })
+defineExpose({ element, resize })
 
 onMounted(() => {
   updateURL()
   watch(media, updateURL)
-  // resize()
-  // addEventListener('resize', resize)
+  resize()
+  addEventListener('resize', resize)
 })
 
-// router.beforeEach((to, from, next) => {
-//   removeEventListener('resize', resize)
-//   next()
-// })
+router.beforeEach((to, from, next) => {
+  removeEventListener('resize', resize)
+  next()
+})
 
-// function resize () {
-//   const width = aspectRatio * element.value.clientHeight
-//   element.value.style.maxWidth = width + 'px'
-// }
+function resize () {
+  const heightLimit = window.innerHeight * 0.8
+  let width = element.value.clientWidth
+  let height = width * aspectRatio
+
+  // If height is too big,
+  // resize width so the height fits within the limit
+  if (height > heightLimit) {
+    height = heightLimit
+    width = height / aspectRatio
+
+    // Set max width
+    element.value.style.maxWidth = width + 'px'
+  }
+
+  element.value.style.height = height + 'px'
+}
 
 async function updateURL () {
   if (type.value == 'image') {
