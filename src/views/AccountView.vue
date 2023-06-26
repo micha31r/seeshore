@@ -78,6 +78,11 @@ const likeState = ref(-1)
 const accountEditor = ref(null)
 const deleteAccount = ref(null)
 
+onMounted(async () => {
+  stories.value = await getOwnStories()
+  likeData.value = await getLikeData()
+})
+
 function toggleAccountEditor () {
   accountEditor.value.toggle()
 }
@@ -100,7 +105,7 @@ async function getOwnStories() {
 
     if (error) throw error
 
-    return data;
+    return data
   } catch (error) {
     console.error(error)
   }
@@ -150,11 +155,6 @@ async function deleteStory (id) {
     console.error(error)
   }
 }
-
-onMounted(async () => {
-  stories.value = await getOwnStories()
-  likeData.value = await getLikeData()
-})
 </script>
 
 <style scoped lang='scss'>
