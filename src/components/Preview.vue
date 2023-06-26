@@ -19,26 +19,26 @@ const props = defineProps(['type', 'media', 'blur'])
 const { type, media } = toRefs(props)
 const url = ref('')
 const element = ref(null)
-const aspectRatio = 9 / 16
+// const aspectRatio = 9 / 16
 
-defineExpose({ element, resize })
+defineExpose({ element, /*resize*/ })
 
 onMounted(() => {
   updateURL()
   watch(media, updateURL)
-  resize()
-  addEventListener('resize', resize)
+  // resize()
+  // addEventListener('resize', resize)
 })
 
-router.beforeEach((to, from, next) => {
-  removeEventListener('resize', resize)
-  next()
-})
+// router.beforeEach((to, from, next) => {
+//   removeEventListener('resize', resize)
+//   next()
+// })
 
-function resize () {
-  const width = aspectRatio * element.value.clientHeight
-  element.value.style.width = width + 'px'
-}
+// function resize () {
+//   const width = aspectRatio * element.value.clientHeight
+//   element.value.style.maxWidth = width + 'px'
+// }
 
 async function updateURL () {
   if (type.value == 'image') {
@@ -58,7 +58,7 @@ async function updateURL () {
   width: 100%;
   height: 100%;
   background: theme('color-bg-2');
-  border-radius: 15px;
+  border-radius: 10px;
 
   .wrapper {
     position: relative;
@@ -72,7 +72,7 @@ async function updateURL () {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    border-radius: 15px;
+    border-radius: 10px;
     filter: blur(30px);
     opacity: 0.7;
   }
@@ -84,7 +84,7 @@ async function updateURL () {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    border-radius: 15px;
+    border-radius: 10px;
   }
 }
 }

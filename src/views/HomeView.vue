@@ -144,8 +144,10 @@ $nav-height: calc(1.1em + 15px + 15px * 2);
 }
 
 .feed {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 15px;
+  width: 100%;
   padding: 0 15px 15px;
   margin: 0 auto;
 
@@ -170,6 +172,10 @@ $nav-height: calc(1.1em + 15px + 15px * 2);
         color: theme('color-text-1');
       }
     }
+  }
+
+  .story::v-deep .preview {
+    cursor: pointer;
   }
 }
 }

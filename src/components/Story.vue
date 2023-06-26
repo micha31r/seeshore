@@ -6,7 +6,7 @@
     </div>
 
     <!-- Media -->
-    <Preview type='image' v-if='image' :media='image' blur='true' @click='cycle' :key='storyIndex' ref='preview'>
+    <Preview type='image' v-if='image' :media='image' blur='true' @click='cycle' :key='storyIndex'>
       <div class='progress'>
         <span class='dot' v-for='(_, index) in data' :data-on='storyIndex == index'></span>
       </div>
@@ -26,7 +26,6 @@ const stories = toRefs(props).data
 const storyIndex = ref(0)
 const images = ref([])
 const element = ref(null)
-const preview = ref(null)
 
 // Current data
 const story = ref()
@@ -49,7 +48,6 @@ function resize () {
   const nav = document.querySelector('nav')
   const height = window.innerHeight - nav.clientHeight - 15
   element.value.style.height = height + 'px'
-  preview.value.resize()
 }
 
 // Get story data at current index
@@ -83,11 +81,12 @@ function cycle () {
 @include use-theme {
 .story {
   display: grid;
+  width: 100%;
   grid-template-rows: auto 1fr;
-  gap: 15px;
+  gap: 10px;
   background: theme('color-bg-2');
   border-radius: 15px;
-  padding: 15px;
+  padding: 10px;
   overflow: hidden;
 
   .meta {
@@ -98,7 +97,6 @@ function cycle () {
 
   .preview {
     position: relative;
-    cursor: pointer;
 
     .progress {
       position: absolute;

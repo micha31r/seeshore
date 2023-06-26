@@ -18,7 +18,7 @@
       </div>
 
       <!-- Stories -->
-      <div class='stories'>
+      <div class='feed'>
         <Story v-for='frame in stories' :data='[frame]' :key='frame'>
           <template #default='{ story, index }'>
             <AccentButton class='likes' @click='likeState = story.id'>
@@ -250,23 +250,13 @@ $element-height: calc(1.1em + 15px);
   }
 }
 
-.stories {
+.feed {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 15px;
-  width: max-content;
-  padding: 15px;
+  width: 100%;
+  padding: 0 15px 15px;
   margin: 0 auto;
-
-  .preview-wrapper {
-    display: grid;
-    grid-template-rows: auto 1fr;
-    gap: 15px;
-    background: theme('color-bg-2');
-    border-radius: 15px;
-    padding: 15px;
-    overflow: hidden;
-  }
 
   .meta {
     display: grid;
@@ -290,6 +280,10 @@ $element-height: calc(1.1em + 15px);
         fill: theme('color-text-2');
       }
     }
+  }
+
+  .story::v-deep .progress {
+    display: none;
   }
 }
 
