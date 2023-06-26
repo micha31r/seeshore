@@ -1,10 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import AccountView from '../views/AccountView.vue'
-import CreateView from '../views/CreateView.vue'
-import ShareView from '../views/ShareView.vue'
-import PeopleView from '../views/PeopleView.vue'
-import QRView from '../views/QRView.vue'
+
+// Lazy loading
+const HomeView = () => import('../views/HomeView.vue')
+const AccountView = () => import('../views/AccountView.vue')
+const CreateView = () => import('../views/CreateView.vue')
+const ShareView = () => import('../views/ShareView.vue')
+const PeopleView = () => import('../views/PeopleView.vue')
+const QRView = () => import('../views/QRView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
