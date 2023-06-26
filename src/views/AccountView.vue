@@ -346,6 +346,10 @@ async function deleteStory (id) {
   .profile-list {
     height: 200px;
     overflow: auto;
+
+    @media (max-width: 500px) {
+      height: calc(100vh - var(--nav-height) - $nav-content-height - 90px);
+    }
   }
 }
 }
