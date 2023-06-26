@@ -63,7 +63,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
-import store from '../store'
+import store, { storeCache } from '../store'
 import Navbar from '../components/Navbar.vue'
 import Preview from '../components/Preview.vue'
 import Avatar from '../components/Avatar.vue'
@@ -96,53 +96,59 @@ function toggleDeleteAccount () {
 }
 
 async function getFollowerCount() {
-  try {
-    const { count, error } = await supabase
-      .from('followers')
-      .select(`id`, { count: 'exact', head: true })
-      .eq('profile', store.profile.id)
+  return await storeCache (async () => {
+    try {
+      const { count, error } = await supabase
+        .from('followers')
+        .select(`id`, { count: 'exact', head: true })
+        .eq('profile', store.profile.id)
 
-    if (error) throw error
+      if (error) throw error
 
-    return count
-  } catch (error) {
-    console.error(error)
-  }
+      return count
+    } catch (error) {
+      console.error(error)
+    }
+  }, 'followerCount')
 }
 
 async function getFollowingCount() {
-  try {
-    const { count, error } = await supabase
-      .from('followers')
-      .select(`id`, { count: 'exact', head: true })
-      .eq('follower', store.profile.id)
+  return await storeCache (async () => {
+    try {
+      const { count, error } = await supabase
+        .from('followers')
+        .select(`id`, { count: 'exact', head: true })
+        .eq('follower', store.profile.id)
 
-    if (error) throw error
+      if (error) throw error
 
-    return count
-  } catch (error) {
-    console.error(error)
-  }
+      return count
+    } catch (error) {
+      console.error(error)
+    }
+  }, 'followingCount')
 }
 
 async function getOwnStories() {
-  try {
-    const { data, error } = await supabase
-      .from('stories')
-      .select(`
-        id,
-        profile (id, avatar_url, full_name),
-        media_url
-      `)
-      .eq('profile', store.profile.id)
-      .order('created_at', { ascending: false })
+  return await storeCache (async () => {
+    try {
+      const { data, error } = await supabase
+        .from('stories')
+        .select(`
+          id,
+          profile (id, avatar_url, full_name),
+          media_url
+        `)
+        .eq('profile', store.profile.id)
+        .order('created_at', { ascending: false })
 
-    if (error) throw error
+      if (error) throw error
 
-    return data
-  } catch (error) {
-    console.error(error)
-  }
+      return data
+    } catch (error) {
+      console.error(error)
+    }
+  }, 'ownStories')
 }
 
 async function getLikeData () {

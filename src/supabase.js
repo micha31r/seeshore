@@ -36,8 +36,6 @@ export async function download (bucket, path) {
       store.downloads[bucket][path] = blob
     }
 
-    console.log(blob)
-
     return blob
   } catch (error) {
     console.error(error)

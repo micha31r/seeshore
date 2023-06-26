@@ -11,7 +11,7 @@
 <script setup>
 import { supabase } from '../supabase'
 import { ref, onMounted } from 'vue'
-import store from '../store'
+import store, { storeCache } from '../store'
 import Navbar from '../components/Navbar.vue'
 import Story from '../components/Story.vue'
 
@@ -24,24 +24,26 @@ onMounted(async () => {
 })
 
 async function getStories () {
-  try {
-    const { data, error } = await supabase
-      .from('sharing')
-      .select(`
-        story (
-          id,
-          profile (id, avatar_url, full_name),
-          media_url
-        )
-      `)
-      .eq('profile', store.profile.id)
-    
-    if (error) throw error
+  return await storeCache (async () => {
+    try {
+      const { data, error } = await supabase
+        .from('sharing')
+        .select(`
+          story (
+            id,
+            profile (id, avatar_url, full_name),
+            media_url
+          )
+        `)
+        .eq('profile', store.profile.id)
+      
+      if (error) throw error
 
-    return data.map(item => item.story)
-  } catch (error) {
-    console.error(error)
-  }
+      return data.map(item => item.story)
+    } catch (error) {
+      console.error(error)
+    }
+  }, 'stories')
 }
 
 function groupStories(stories) {

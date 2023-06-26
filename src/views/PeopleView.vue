@@ -79,7 +79,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
-import store from '../store'
+import store, { storeCache, forceExpire } from '../store'
+import { getFollowers, getFollowing } from '../api'
 import Navbar from '../components/Navbar.vue'
 import ProfileList from '../components/ProfileList.vue'
 
@@ -98,12 +99,19 @@ onMounted(async () => {
 async function approveFollowRequest (profile) {
   await createFollower(profile)
   await deleteFollowRequest(profile)
+
+  forceExpire('followers')
+  forceExpire('followRequests')
+
   followers.value = await getFollowers()
   requests.value = await getFollowRequests()
 }
 
 async function rejectFollowRequest (profile) {
   await deleteFollowRequest(profile)
+
+  forceExpire('followRequests')
+
   requests.value = await getFollowRequests()
 }
 
@@ -137,87 +145,49 @@ async function deleteFollowRequest (profile) {
 }
 
 async function getPendingFollowing () {
-  try {
-    const { data, error } = await supabase
-      .from('follow_requests')
-      .select(`
-        following (
-          id,
-          full_name,
-          avatar_url
-        )
-      `)
-      .eq('profile', store.profile.id)
+  return await storeCache (async () => {
+    try {
+      const { data, error } = await supabase
+        .from('follow_requests')
+        .select(`
+          following (
+            id,
+            full_name,
+            avatar_url
+          )
+        `)
+        .eq('profile', store.profile.id)
 
-      if (error) throw error
+        if (error) throw error
 
-      return data.map(item => item.following)
-  } catch (error) {
-    console.error(error)
-  }
+        return data.map(item => item.following)
+    } catch (error) {
+      console.error(error)
+    }
+  }, 'pendingFollowing')
 }
 
 async function getFollowRequests () {
-  try {
-    const { data, error } = await supabase
-      .from('follow_requests')
-      .select(`
-        profile (
-          id,
-          full_name,
-          avatar_url
-        )
-      `)
-      .eq('following', store.profile.id)
+  return await storeCache (async () => {
+    try {
+      const { data, error } = await supabase
+        .from('follow_requests')
+        .select(`
+          profile (
+            id,
+            full_name,
+            avatar_url
+          )
+        `)
+        .eq('following', store.profile.id)
 
-      if (error) throw error
+        if (error) throw error
 
-      return data.map(item => item.profile)
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-async function getFollowers () {
-  try {
-    const { data, error } = await supabase
-      .from('followers')
-      .select(`
-        follower (
-          id,
-          full_name,
-          avatar_url
-        )
-      `)
-      .eq('profile', store.profile.id)
-
-    if (error) throw error
-
-    return data.map(item => item.follower)
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-async function getFollowing () {
-  try {
-    const { data, error } = await supabase
-      .from('followers')
-      .select(`
-        profile (
-          id,
-          full_name,
-          avatar_url
-        )
-      `)
-      .eq('follower', store.profile.id)
-
-    if (error) throw error
-
-    return data.map(item => item.profile)
-  } catch (error) {
-    console.error(error)
-  }
+        return data.map(item => item.profile)
+    } catch (error) {
+      console.error(error)
+    }
+  }, 'followRequests')
 }
 
 async function removeFollower(target) {
@@ -230,6 +200,8 @@ async function removeFollower(target) {
 
     if (error) throw error
 
+    forceExpire('follower')
+  
     followers.value = await getFollowers()
   } catch (error) {
     console.error(error)
