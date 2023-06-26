@@ -184,6 +184,7 @@ async function isFollowing (id) {
 
 <style scoped lang='scss'>
 @import '../assets/themes';
+@import '../assets/main';
 
 @include use-theme {
 .grid {
@@ -202,7 +203,7 @@ async function isFollowing (id) {
   flex-direction: column;
   width: max-content;
   gap: 15px;
-  border-radius: 15px;
+  border-radius: $border-radius-1;
   margin: auto;
 }
 

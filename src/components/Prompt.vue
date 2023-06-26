@@ -6,6 +6,7 @@
 
 <style scoped lang='scss'>
 @import '../assets/themes';
+@import '../assets/main';
 
 @include use-theme {
 .prompt::v-deep {
@@ -32,14 +33,14 @@
     width: 400px;
     background: theme('color-bg-1');
     border: 1px solid theme('color-border-1');
-    border-radius: 15px;
+    border-radius: $border-radius-1;
     padding: 15px;
     margin: auto;
 
     @media (max-width: 500px) {
       width: 100% !important;
       border: 0 !important;
-      // border-radius: 15px 15px 0 0 !important;
+      // border-radius: $border-radius-1 15px 0 0 !important;
       // background: theme('color-bg-2') !important;
       margin: var(--nav-height) 0 0 !important;
     }

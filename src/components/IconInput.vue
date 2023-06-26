@@ -17,6 +17,7 @@ defineProps(['icon', 'modelValue'])
 
 <style scoped lang='scss'>
 @import '../assets/themes';
+@import '../assets/main';
 
 @include use-theme {
 .icon-input {
@@ -24,7 +25,7 @@ defineProps(['icon', 'modelValue'])
   grid-template-columns: auto 1fr;
   gap: 10px;
   border: 1px solid theme('color-border-1');
-  border-radius: 10px;
+  border-radius: $border-radius-2;
   padding: 10px;
 
   &:focus-within {

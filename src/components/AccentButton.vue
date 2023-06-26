@@ -14,12 +14,13 @@ defineExpose({ element })
 
 <style scoped lang='scss'>
 @import '../assets/themes';
+@import '../assets/main';
 
 @include use-theme {
 button {
   font-family: inherit;
   border: 0;
-  border-radius: 10px;
+  border-radius: $border-radius-2;
   background: theme('color-button-accent-bg');
   color: theme('color-button-accent-text');
   padding: 10px;

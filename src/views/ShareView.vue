@@ -166,6 +166,7 @@ function filter (profile) {
 
 <style scoped lang='scss'>
 @import '../assets/themes';
+@import '../assets/main';
 
 @include use-theme {
 .grid {
@@ -222,7 +223,7 @@ function filter (profile) {
         display: flex;
         width: max-content;
         gap: 7px;
-        border-radius: 10px;
+        border-radius: $border-radius-2;
         background: theme('color-bg-2');
         padding: 7px;
 
@@ -262,7 +263,7 @@ function filter (profile) {
         display: grid;
         grid-template-columns: auto 1fr auto;
         gap: 10px;
-        border-radius: 10px;
+        border-radius: $border-radius-2;
         cursor: pointer;
 
         .name {
@@ -280,7 +281,7 @@ function filter (profile) {
         position: absolute;
         width: calc(100% + 20px);
         height: calc(100% + 20px);
-        border-radius: 15px;
+        border-radius: $border-radius-1;
         top: -10px;
         left: -10px;
         transition: background 0.2s;

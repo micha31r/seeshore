@@ -256,6 +256,7 @@ async function follow(target) {
 
 <style scoped lang='scss'>
 @import '../assets/themes';
+@import '../assets/main';
 
 @include use-theme {
 .grid {
@@ -311,7 +312,7 @@ async function follow(target) {
 
     .profile {
       width: max-content;
-      border-radius: 10px;
+      border-radius: $border-radius-2;
       background: theme('color-bg-2');
       padding: 7px;
       gap: 7px;

@@ -331,7 +331,7 @@ async function deleteStory (id) {
   width: 400px;
   height: max-content;
   border: 1px solid theme('color-border-1');
-  border-radius: 15px;
+  border-radius: $border-radius-1;
   background: theme('color-bg-1');
   padding: 15px;
   margin: auto;

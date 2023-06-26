@@ -41,6 +41,7 @@ function toggle (event) {
 
 <style scoped lang='scss'>
 @import '../assets/themes';
+@import '../assets/main';
 
 @include use-theme {
 .menu {
@@ -58,7 +59,7 @@ function toggle (event) {
     position: absolute;
     top: calc(100% + 10px);
     width: max-content;
-    border-radius: 10px;
+    border-radius: $border-radius-2;
     border: 1px solid theme('color-border-1');
     background: theme('color-bg-2');
     padding: 5px;
@@ -68,7 +69,7 @@ function toggle (event) {
 
     & > * {
       width: 100%;
-      border-radius: 5px;
+      border-radius: $border-radius-3;
     }
   }
 }

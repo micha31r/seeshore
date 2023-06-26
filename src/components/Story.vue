@@ -77,6 +77,7 @@ function cycle () {
 
 <style scoped lang='scss'>
 @import '../assets/themes';
+@import '../assets/main';
 
 @include use-theme {
 .story {
@@ -86,7 +87,7 @@ function cycle () {
   width: 100%;
   height: max-content;
   background: theme('color-bg-2');
-  border-radius: 15px;
+  border-radius: $border-radius-1;
   padding: 10px;
   overflow: hidden;
 

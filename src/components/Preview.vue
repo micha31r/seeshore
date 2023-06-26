@@ -64,6 +64,7 @@ async function updateURL () {
 
 <style scoped lang='scss'>
 @import '../assets/themes';
+@import '../assets/main';
 
 @include use-theme {
 .preview {
@@ -71,7 +72,7 @@ async function updateURL () {
   width: 100%;
   height: 100%;
   background: theme('color-bg-2');
-  border-radius: 10px;
+  border-radius: $border-radius-2;
 
   .wrapper {
     position: relative;
@@ -85,7 +86,7 @@ async function updateURL () {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    border-radius: 10px;
+    border-radius: $border-radius-2;
     filter: blur(30px);
     opacity: 0.7;
   }
@@ -97,7 +98,7 @@ async function updateURL () {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    border-radius: 10px;
+    border-radius: $border-radius-2;
   }
 }
 }
