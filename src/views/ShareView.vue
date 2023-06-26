@@ -56,6 +56,7 @@ import { uuid } from 'vue-uuid'
 import { supabase } from '../supabase'
 import { joinPaths } from '../utils'
 import { uploadImage } from '../upload'
+import { getFollowers } from '../api'
 import store from '../store'
 import Navbar from '../components/Navbar.vue'
 import Preview from '../components/Preview.vue'
@@ -75,27 +76,6 @@ onMounted(async () => {
     
   followers.value = await getFollowers()
 })
-
-async function getFollowers () {
-  try {
-    const { data, error } = await supabase
-      .from('followers')
-      .select(`
-        follower (
-          id,
-          full_name,
-          avatar_url
-        )
-      `)
-      .eq('profile', store.profile.id)
-
-    if (error) throw error
-
-    return data.map(item => item.follower)
-  } catch (error) {
-    console.error(error)
-  }
-}
 
 async function createStory () {
   let uploadResponse;
