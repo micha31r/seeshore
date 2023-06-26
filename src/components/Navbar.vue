@@ -28,6 +28,18 @@
           <span>Share QR Code</span>
         </AccentButton>
 
+        <AccentButton class='icon-text' @click='setTheme'>
+          <template v-if='store.theme == "dark"'>
+            <Icon icon='sun'/>
+            <span>Light Mode</span>
+          </template>
+          <template v-else>
+            <Icon icon='moon'/>
+            <span>Dark Mode</span>
+          </template>
+          
+        </AccentButton>
+
         <AccentButton class='icon-text' @click='toggle'>
           <Icon icon='log-out'/>
           <span>Log out</span>
@@ -52,12 +64,18 @@ import { supabase } from '../supabase'
 import store from '../store'
 import Avatar from './Avatar.vue'
 
+defineProps(['pageName'])
+
+const showLogoutPrompt = ref(false)
+
 function toggle () {
   showLogoutPrompt.value = showLogoutPrompt.value ? false : true
 }
 
-defineProps(['pageName'])
-const showLogoutPrompt = ref(false)
+function setTheme () {
+  store.theme = store.theme == 'light' ? 'dark' : 'light'
+  document.documentElement.dataset.theme = store.theme
+}
 </script>
 
 <style scoped lang='scss'>
