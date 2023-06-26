@@ -38,6 +38,7 @@ $element-height: calc(1.1em + 15px + 15px);
     margin: auto;
 
     @media (max-width: 500px) {
+      width: 100%;
       border: 0;
       margin: $element-height 0 0;
     }
