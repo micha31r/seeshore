@@ -212,6 +212,7 @@ $element-height: calc(1.1em + 15px);
 .account-info {
   display: flex;
   flex-direction: column;
+  padding-top: 5px; 
   
   .row {
     display: flex;

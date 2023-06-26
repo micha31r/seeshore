@@ -1,7 +1,7 @@
 <template>
   <Prompt class='account-editor' v-if='show'>
     <form @submit.prevent>
-      <h2 class='heading'>Edit Profile</h2>
+      <h3 class='heading'>Edit Profile</h3>
 
       <!-- Image selector -->
       <div>

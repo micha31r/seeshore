@@ -7,6 +7,8 @@
 <style scoped lang='scss'>
 @import '../assets/themes';
 
+$element-height: calc(1.1em + 15px + 15px);
+
 @include use-theme {
 .prompt::v-deep {
   display: flex;
@@ -20,6 +22,10 @@
   backdrop-filter: blur(30px);
   z-index: 10;
 
+  @media (max-width: 500px) {
+    background: theme('color-bg-1');
+  }
+
   & > * {
     display: flex;
     flex-direction: column;
@@ -30,6 +36,11 @@
     border-radius: 15px;
     padding: 15px;
     margin: auto;
+
+    @media (max-width: 500px) {
+      border: 0;
+      margin: $element-height 0 0;
+    }
   }
 
   .heading {

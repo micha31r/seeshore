@@ -37,7 +37,7 @@
 
     <Prompt v-show='showLogoutPrompt' class='logout-prompt'>
       <div>
-        <h2 class='heading'>Log out of Seeshore?</h2>
+        <h3 class='heading'>Log out of Seeshore?</h3>
         <p class='info'>You can sign in again at any time.</p>
         <SolidButton @click='supabase.auth.signOut()'>Log out</SolidButton>
         <AccentButton @click='toggle'>Cancel</AccentButton>
@@ -103,8 +103,19 @@ nav {
 
 nav::v-deep {
   .menu {
+    @media (max-width: 500px) {
+      position: static;
+    }
+
     .list {
       width: 200px;
+
+      @media (max-width: 500px) {
+        top: calc($element-height + 20px);
+        width: 100vw;
+        border: 0;
+        border-radius: 0;
+      }
     }
   }
 }

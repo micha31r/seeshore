@@ -1,7 +1,7 @@
 <template>
   <Prompt class='delete-account' v-if='show'>
     <form @submit.prevent>
-      <h2 class='heading'>Delete Account</h2>
+      <h3 class='heading'>Delete Account</h3>
       <p class='info'>All data associated with your account will be permanently deleted! Please confirm your email address if you wish to proceed.</p>
       
       <div>
