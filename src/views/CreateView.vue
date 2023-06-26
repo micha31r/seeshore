@@ -58,6 +58,7 @@ function addText(event) {
 
 <style scoped lang='scss'>
 @import '../assets/themes';
+@import '../assets/main';
 
 @include use-theme {
 .grid {
@@ -91,7 +92,7 @@ function addText(event) {
   }
 
   .next {
-    border-radius: 100px;
+    border-radius: $border-radius-round;
     padding: 10px 15px;
     margin: 0 auto;
   }

@@ -48,7 +48,7 @@ function toggle (event) {
   position: relative;
 
   .toggle {
-    border-radius: 100px;
+    border-radius: $border-radius-round;
     margin: 0 0 0 auto;
   }
 

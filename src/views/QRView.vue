@@ -209,7 +209,7 @@ async function isFollowing (id) {
 
 .profile-list::v-deep .profile {
   border: 1px solid theme('color-border-1');
-  border-radius: 100px;
+  border-radius: $border-radius-round;
   padding: 5px 10px 5px 5px;
   margin: 0 auto;
   gap: 10px;
@@ -217,7 +217,7 @@ async function isFollowing (id) {
 
 .open-camera {
   width: max-content;
-  border-radius: 100px;
+  border-radius: $border-radius-round;
   margin: auto;
 }
 
@@ -247,7 +247,7 @@ async function isFollowing (id) {
     bottom: 15px;
     left: 50%;
     transform: translate(-50%, 0);
-    border-radius: 100px;
+    border-radius: $border-radius-round;
   }
 }
 }

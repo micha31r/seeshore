@@ -196,7 +196,7 @@ function filter (profile) {
       position: absolute;
       top: 50%;
       transform: translate(calc(-100% - 15px), -50%);
-      border-radius: 100px;
+      border-radius: $border-radius-round;
     }
   }
 
@@ -295,7 +295,7 @@ function filter (profile) {
   }
 
   .share {
-    border-radius: 100px;
+    border-radius: $border-radius-round;
     padding: 10px 15px;
     margin: 0 auto;
   }

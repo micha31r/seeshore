@@ -120,7 +120,7 @@ nav {
 
   button.add-story {
     padding: 0 15px;
-    border-radius: 100px;
+    border-radius: $border-radius-round;
     height: $nav-content-height;
   }
 
