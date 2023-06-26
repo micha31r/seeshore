@@ -59,6 +59,13 @@ const newAvatar = ref(null)
 const hasAvatarChanged = ref(false)
 const avatarPreview = ref('')
 
+defineExpose({ toggle })
+onMounted(setInitialValues)
+
+function toggle () {
+  show.value = show.value ? false : true
+}
+
 function updateAvatarPreview (url) {
   avatar.value.element.style.backgroundImage = `url('${url}')`
 }
@@ -79,18 +86,10 @@ function preDeleteAvatar () {
   hasAvatarChanged.value = true
 }
 
-function toggle () {
-  show.value = show.value ? false : true
-}
-
-defineExpose({ toggle })
-
 function setInitialValues () {
   name.value = store.profile.full_name
   email.value = store.session.user.email
 }
-
-onMounted(setInitialValues)
 
 async function updateProfile () {
   let newAvatarURL = null
