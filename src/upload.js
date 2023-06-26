@@ -11,7 +11,7 @@ function compressAsync(file, options) {
 
 export async function uploadImage(bucket, path, file) {
   const result = await compressAsync(file, {
-    quality: 0.6,
+    quality: 0.4,
     // minWidth: 360,
     // minHeight: 640,
     // maxWidth: 1920,
