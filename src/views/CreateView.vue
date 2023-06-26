@@ -71,7 +71,12 @@ function addText(event) {
   flex-direction: column;
   gap: 15px;
   width: max-content;
+  padding: 15px;
   margin: auto;
+
+  @media (max-width: 500px) {
+    padding: 10px;
+  }
 
   .help-text {
     color: theme('color-text-2');

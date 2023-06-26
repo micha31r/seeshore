@@ -193,6 +193,7 @@ async function isFollowing (id) {
 }
 
 .qr {
+  padding: 10px;
   margin: auto;
 }
 

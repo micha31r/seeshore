@@ -181,6 +181,10 @@ function filter (profile) {
   gap: 20px;
   padding: 15px;
 
+  @media (max-width: 500px) {
+    padding: 10px;
+  }
+
   .preview {
     position: relative;
     width: 150px;

@@ -73,10 +73,13 @@ nav {
   gap: 10px;
   height: max-content;
   top: 0;
-  background: rgba(theme('color-bg-1'), $shade-2);
-  backdrop-filter: blur(20px);
+  background: theme('color-bg-1');
   padding: 15px;
   z-index: 100;
+
+  @media (max-width: 500px) {
+    padding: 10px;
+  }
 
   .page-name {
     font-weight: normal;

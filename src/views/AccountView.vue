@@ -270,6 +270,10 @@ $element-height: calc(1.1em + 15px);
     grid-template-columns: repeat(1, 1fr);
   }
 
+  @media (max-width: 500px) {
+    padding: 0 10px 10px;
+  }
+
   .meta {
     display: grid;
     grid-template-columns: 1fr auto;

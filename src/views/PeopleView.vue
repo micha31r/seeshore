@@ -275,6 +275,10 @@ $element-height: calc(1.1em + 15px);
   margin: 0 auto;
   gap: 30px;
 
+  @media (max-width: 500px) {
+    padding: 15px 10px 10px;
+  }
+
   .heading {
     margin: 0 0 15px;
   }

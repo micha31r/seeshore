@@ -163,6 +163,10 @@ $nav-height: calc(1.1em + 15px + 15px * 2);
     grid-template-columns: repeat(1, 1fr);
   }
 
+  @media (max-width: 500px) {
+    padding: 0 10px 10px;
+  }
+
   .meta {
     .profile {
       display: flex;
