@@ -226,6 +226,7 @@ async function isFollowing (id) {
   left: 0;
   width: 100vw;
   height: 100vh;
+  max-height: -webkit-fill-available;
   background: theme('color-bg-1');
   z-index: 101; // appear above navbar
 

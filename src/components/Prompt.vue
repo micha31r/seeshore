@@ -18,6 +18,7 @@ $element-height: calc(1.1em + 15px + 15px);
   width: 100vw;
   max-width: 1600px;
   height: 100vh;
+  max-height: -webkit-fill-available;
   background: rgba(theme('color-bg-1'), $shade-5);
   backdrop-filter: blur(30px);
   z-index: 10;
