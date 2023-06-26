@@ -28,6 +28,18 @@
           <span>Share QR Code</span>
         </AccentButton>
 
+        <AccentButton class='icon-text' @click='setTheme'>
+          <template v-if='store.theme == "dark"'>
+            <Icon icon='sun'/>
+            <span>Light Mode</span>
+          </template>
+          <template v-else>
+            <Icon icon='moon'/>
+            <span>Dark Mode</span>
+          </template>
+          
+        </AccentButton>
+
         <AccentButton class='icon-text' @click='toggle'>
           <Icon icon='log-out'/>
           <span>Log out</span>
@@ -37,7 +49,7 @@
 
     <Prompt v-show='showLogoutPrompt' class='logout-prompt'>
       <div>
-        <h2 class='heading'>Log out of Seeshore?</h2>
+        <h3 class='heading'>Log out of Seeshore?</h3>
         <p class='info'>You can sign in again at any time.</p>
         <SolidButton @click='supabase.auth.signOut()'>Log out</SolidButton>
         <AccentButton @click='toggle'>Cancel</AccentButton>
@@ -52,12 +64,18 @@ import { supabase } from '../supabase'
 import store from '../store'
 import Avatar from './Avatar.vue'
 
+defineProps(['pageName'])
+
+const showLogoutPrompt = ref(false)
+
 function toggle () {
   showLogoutPrompt.value = showLogoutPrompt.value ? false : true
 }
 
-defineProps(['pageName'])
-const showLogoutPrompt = ref(false)
+function setTheme () {
+  store.theme = store.theme == 'light' ? 'dark' : 'light'
+  document.documentElement.dataset.theme = store.theme
+}
 </script>
 
 <style scoped lang='scss'>
@@ -73,10 +91,13 @@ nav {
   gap: 10px;
   height: max-content;
   top: 0;
-  background: rgba(theme('color-bg-1'), $shade-2);
-  backdrop-filter: blur(20px);
+  background: theme('color-bg-1');
   padding: 15px;
   z-index: 100;
+
+  @media (max-width: 500px) {
+    padding: 10px;
+  }
 
   .page-name {
     font-weight: normal;
@@ -100,8 +121,26 @@ nav {
 
 nav::v-deep {
   .menu {
+    @media (max-width: 500px) {
+      position: static;
+    }
+
     .list {
       width: 200px;
+
+      @media (max-width: 500px) {
+        top: calc($element-height + 20px);
+        width: 100vw;
+        border: 0;
+        border-radius: 0;
+        z-index: -1;
+      }
+    }
+  }
+
+  @media (max-width: 500px) {
+    .prompt {
+      z-index: -1;
     }
   }
 }

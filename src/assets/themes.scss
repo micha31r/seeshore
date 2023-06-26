@@ -46,6 +46,7 @@ $themes: (
     'color-button-outline-text': #888,
     'color-button-outline-text-hover': #000
   ),
+
   dark: (
     // Background 
     'color-bg-1': #000,
@@ -84,6 +85,9 @@ $themes: (
   )
 );
 
+// Create darkmode in scss (Katie McTigue [medium], 2019) (Akshdeep Singh [stackoverflow], 2020)
+// https://medium.com/@katiemctigue/how-to-create-a-dark-mode-in-sass-609f131a3995
+// https://stackoverflow.com/questions/57017955/is-there-a-way-to-add-dark-mode-to-my-application-with-scss
 @mixin use-theme() {
   @each $theme, $map in $themes {
     [data-theme='#{$theme}'] {

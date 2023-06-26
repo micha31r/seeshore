@@ -52,6 +52,9 @@ function toggle (event) {
   }
 
   .list::v-deep {
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
     position: absolute;
     top: calc(100% + 10px);
     width: max-content;

@@ -7,20 +7,28 @@
       <div class='account-info'>
         <div class='row'>
           <Avatar :profile='store.profile'/>
-          <p class='name'>{{ store.profile.full_name }}</p>
-          <AccentButton class='edit' @click='toggleAccountEditor'>Edit Profile</AccentButton>
+        </div>
 
+        <div class='row'>
+          <h3 class='name'>{{ store.profile.full_name }}</h3>
+        </div>
+
+         <div class='row'>
           <AccentButton class='friends' @click='$router.push({ name: "people" })'>
-            <Icon icon='users'/>
-            <span>{{ followerCount }} / {{ followingCount }}</span>
+            <span>{{ followerCount }} Followers</span>
+            <span>{{ followingCount }} Following</span>
           </AccentButton>
+        </div>
+
+        <div class='row'>
+          <AccentButton class='edit' @click='toggleAccountEditor'>Edit Profile</AccentButton>
         </div>
       </div>
 
       <!-- Stories -->
-      <div class='stories'>
-        <div class='preview-wrapper' v-for='story in stories'>
-          <div class='meta'>
+      <div class='feed'>
+        <Story v-for='frame in stories' :data='[frame]' :key='frame'>
+          <template #default='{ story, index }'>
             <AccentButton class='likes' @click='likeState = story.id'>
               <Icon icon='heart' />
               <span v-if='likeData[story.id]'>{{ likeData[story.id].length }}</span>
@@ -38,10 +46,8 @@
                 </AccentButton>
               </template>
             </Menu>
-          </div>
-
-          <Preview type='image' :media='story.media_url' blur='true' />
-        </div>
+          </template>
+        </Story>
       </div>
 
       <!-- Account settings -->
@@ -63,9 +69,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
-import store, { storeCache } from '../store'
+import store, { storeCache, forceExpire } from '../store'
 import Navbar from '../components/Navbar.vue'
-import Preview from '../components/Preview.vue'
+import Story from '../components/Story.vue'
 import Avatar from '../components/Avatar.vue'
 import AccountEditor from '../components/AccountEditor.vue'
 import DeleteAccount from '../components/DeleteAccount.vue'
@@ -190,6 +196,8 @@ async function deleteStory (id) {
 
     if (error) throw error
 
+    forceExpire('ownStories')
+  
     stories.value = await getOwnStories()
   } catch (error) {
     console.error(error)
@@ -211,61 +219,80 @@ $element-height: calc(1.1em + 15px);
 
 .account-info {
   display: flex;
+  gap: 15px;
   flex-direction: column;
+  padding: 30px 15px;
+
+  @media (max-width: 500px) {
+    gap: 10px;
+    padding: 30px 10px;
+  }
   
   .row {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     gap: 15px;
-    padding: 0 15px 15px;
     margin: 0 auto;
+
+    & > * {
+      margin: auto;
+    }
+
+    @media (max-width: 500px) {
+      gap: 10px;
+    }
   }
 
-  .name {
-    margin: auto 0;
-  }
-
-  .edit {
-    height: $element-height;
-    padding: 0 15px;
+  .avatar {
+    width: 100px;
+    height: 100px;
   }
 
   .friends {
     display: flex;
-    gap: 5px;
+    gap: 15px;
     width: max-content;
-    height: $element-height; 
     background: transparent;
     padding: 0;
+
+    @media (max-width: 500px) {
+      gap: 10px;
+    }
 
     & > * {
       margin: auto 0;
     }
   }
 
-  .logout {
+  .edit {
     height: $element-height;
-    border-radius: 100px;
     padding: 0 15px;
   }
 }
 
-.stories {
+.feed {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 15px;
-  width: max-content;
+  width: 100%;
   padding: 15px;
   margin: 0 auto;
 
-  .preview-wrapper {
-    display: grid;
-    grid-template-rows: auto 1fr;
-    gap: 15px;
-    background: theme('color-bg-2');
-    border-radius: 15px;
-    padding: 15px;
-    overflow: hidden;
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  @media (max-width: 500px) {
+    padding: 10px;
   }
 
   .meta {
@@ -290,6 +317,10 @@ $element-height: calc(1.1em + 15px);
         fill: theme('color-text-2');
       }
     }
+  }
+
+  .story::v-deep .progress {
+    display: none;
   }
 }
 

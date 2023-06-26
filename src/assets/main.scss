@@ -2,7 +2,8 @@
   font-family: 'Urbanist', sans-serif;
   display: flex;
   width: 100vw;
-  min-height: 100vh;
+  height: 100vh;
+  max-height: -webkit-fill-available;
   max-width: 1600px;
   margin: 0 auto;
 }

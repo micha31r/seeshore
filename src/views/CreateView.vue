@@ -70,8 +70,14 @@ function addText(event) {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  width: max-content;
+  width: 100%;
+  max-width: 300px;
+  padding: 15px;
   margin: auto;
+
+  @media (max-width: 500px) {
+    padding: 10px;
+  }
 
   .help-text {
     color: theme('color-text-2');
