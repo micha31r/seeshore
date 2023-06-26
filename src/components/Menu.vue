@@ -14,9 +14,12 @@
 import { ref, defineProps, onMounted } from 'vue'
 
 defineProps(['align'])
+
 const menu = ref(null)
 const button = ref(null)
 const show = ref(false)
+
+onMounted(() => addEventListener('click', toggle))
 
 function toggle (event) {
   if (button.value.element.contains(event.target)) {
@@ -27,8 +30,6 @@ function toggle (event) {
     show.value = false
   }
 }
-
-onMounted(() => addEventListener('click', toggle))
 </script>
 
 <style scoped lang='scss'>
