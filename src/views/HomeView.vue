@@ -3,7 +3,7 @@
     <Navbar pageName='Stories' />
 
     <div class='feed'>
-      <Story v-for='data in groups' :data='data'>
+      <Story v-for='[key, data] in groups' :data='data'>
         <template #default='{ story, index }'>
           <!-- Profile -->
           <div class='profile'>
@@ -100,10 +100,12 @@ async function getStories () {
           story (
             id,
             profile (id, avatar_url, full_name),
-            media_url
+            media_url,
+            created_at
           )
         `)
         .eq('profile', store.profile.id)
+        .order('story', { ascending: false })
       
       if (error) throw error
 
@@ -127,7 +129,12 @@ function groupStories(stories) {
     groups[key].push(item)
   })
 
-  return groups
+  // Sort by the user with the most recent story
+  let sorted = Object.entries(groups).sort((a, b) => {
+    return a[1][0].created_at - b[1][0].created_at
+  })
+
+  return sorted
 }
 </script>
 
