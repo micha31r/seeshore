@@ -53,7 +53,9 @@ async function deleteAccount () {
 <style scoped lang='scss'>
 @import '../assets/themes';
 
+@include use-theme {
 .icon-input {
   margin: 8px 0 0;
+}
 }
 </style>

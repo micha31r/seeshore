@@ -35,6 +35,7 @@ onMounted(() => {
 <style scoped lang='scss'>
 @import '../assets/themes';
 
+@include use-theme {
 .wrapper {
   position: relative;
   display: flex;
@@ -63,5 +64,6 @@ onMounted(() => {
   background-position: center;
   background-repeat: no-repeat;
   filter: invert(1);
+}
 }
 </style>

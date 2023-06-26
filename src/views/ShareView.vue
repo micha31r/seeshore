@@ -165,6 +165,7 @@ function filter (profile) {
 <style scoped lang='scss'>
 @import '../assets/themes';
 
+@include use-theme {
 .grid {
   display: grid;
   grid-template-rows: auto 1fr;
@@ -215,7 +216,7 @@ function filter (profile) {
         width: max-content;
         gap: 7px;
         border-radius: 10px;
-        background: $color-bg-2;
+        background: theme('color-bg-2');
         padding: 7px;
 
         .name {
@@ -245,7 +246,7 @@ function filter (profile) {
       gap: 20px;
 
       .category {
-        color: $color-text-2;
+        color: theme('color-text-2');
         margin: 0;
       }
 
@@ -280,7 +281,7 @@ function filter (profile) {
       }
 
       .item:hover::before {
-        background: $color-bg-2;
+        background: theme('color-bg-2');
       }
     }
   }
@@ -290,5 +291,6 @@ function filter (profile) {
     padding: 10px 15px;
     margin: 0 auto;
   }
+}
 }
 </style>

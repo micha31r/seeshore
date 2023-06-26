@@ -18,19 +18,20 @@ defineProps(['icon', 'modelValue'])
 <style scoped lang='scss'>
 @import '../assets/themes';
 
+@include use-theme {
 .icon-input {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 10px;
-  border: 1px solid $color-border-1;
+  border: 1px solid theme('color-border-1');
   border-radius: 10px;
   padding: 10px;
 
   &:focus-within {
-    border-color: $color-text-1;
+    border-color: theme('color-text-1');
 
     .feather {
-      color: $color-text-1;
+      color: theme('color-text-1');
     }
   }
 
@@ -48,5 +49,6 @@ defineProps(['icon', 'modelValue'])
   .feather {
     margin: auto;
   }
+}
 }
 </style>

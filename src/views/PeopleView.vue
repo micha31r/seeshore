@@ -259,6 +259,7 @@ async function follow(target) {
 
 $element-height: calc(1.1em + 15px);
 
+@include use-theme {
 .grid {
   display: grid;
   grid-template-rows: auto 1fr;
@@ -309,7 +310,7 @@ $element-height: calc(1.1em + 15px);
     .profile {
       width: max-content;
       border-radius: 10px;
-      background: $color-bg-2;
+      background: theme('color-bg-2');
       padding: 7px;
       gap: 7px;
 
@@ -319,5 +320,6 @@ $element-height: calc(1.1em + 15px);
       }
     }
   }
+}
 }
 </style>

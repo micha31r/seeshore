@@ -202,6 +202,7 @@ async function deleteStory (id) {
 
 $element-height: calc(1.1em + 15px);
 
+@include use-theme {
 .grid {
   display: grid;
   grid-template-rows: auto 1fr;
@@ -261,7 +262,7 @@ $element-height: calc(1.1em + 15px);
     display: grid;
     grid-template-rows: auto 1fr;
     gap: 15px;
-    background: $color-bg-2;
+    background: theme('color-bg-2');
     border-radius: 15px;
     padding: 15px;
     overflow: hidden;
@@ -285,8 +286,8 @@ $element-height: calc(1.1em + 15px);
       }
 
       .feather {
-        stroke: $color-text-2;
-        fill: $color-text-2;
+        stroke: theme('color-text-2');
+        fill: theme('color-text-2');
       }
     }
   }
@@ -298,9 +299,9 @@ $element-height: calc(1.1em + 15px);
   grid-template-rows: auto 1fr auto;
   width: 400px;
   height: max-content;
-  border: 1px solid $color-border-1;
+  border: 1px solid theme('color-border-1');
   border-radius: 15px;
-  background: $color-bg-1;
+  background: theme('color-bg-1');
   padding: 15px;
   margin: auto;
 
@@ -312,5 +313,6 @@ $element-height: calc(1.1em + 15px);
     height: 200px;
     overflow: auto;
   }
+}
 }
 </style>

@@ -59,6 +59,7 @@ function addText(event) {
 <style scoped lang='scss'>
 @import '../assets/themes';
 
+@include use-theme {
 .grid {
   display: grid;
   grid-template-rows: auto 1fr;
@@ -73,7 +74,7 @@ function addText(event) {
   margin: auto;
 
   .help-text {
-    color: $color-text-2;
+    color: theme('color-text-2');
     margin: 0;
     text-align: center;
   }
@@ -88,5 +89,6 @@ function addText(event) {
     padding: 10px 15px;
     margin: 0 auto;
   }
+}
 }
 </style>
