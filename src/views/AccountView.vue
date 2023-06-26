@@ -7,13 +7,21 @@
       <div class='account-info'>
         <div class='row'>
           <Avatar :profile='store.profile'/>
-          <p class='name'>{{ store.profile.full_name }}</p>
-          <AccentButton class='edit' @click='toggleAccountEditor'>Edit Profile</AccentButton>
+        </div>
 
+        <div class='row'>
+          <h3 class='name'>{{ store.profile.full_name }}</h3>
+        </div>
+
+         <div class='row'>
           <AccentButton class='friends' @click='$router.push({ name: "people" })'>
-            <Icon icon='users'/>
-            <span>{{ followerCount }} / {{ followingCount }}</span>
+            <span>{{ followerCount }} Followers</span>
+            <span>{{ followingCount }} Following</span>
           </AccentButton>
+        </div>
+
+        <div class='row'>
+          <AccentButton class='edit' @click='toggleAccountEditor'>Edit Profile</AccentButton>
         </div>
       </div>
 
@@ -211,42 +219,54 @@ $element-height: calc(1.1em + 15px);
 
 .account-info {
   display: flex;
+  gap: 15px;
   flex-direction: column;
-  padding-top: 5px; 
+  padding: 30px 15px;
+
+  @media (max-width: 500px) {
+    gap: 10px;
+    padding: 30px 10px;
+  }
   
   .row {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     gap: 15px;
-    padding: 0 15px 15px;
     margin: 0 auto;
+
+    & > * {
+      margin: auto;
+    }
+
+    @media (max-width: 500px) {
+      gap: 10px;
+    }
   }
 
-  .name {
-    margin: auto 0;
-  }
-
-  .edit {
-    height: $element-height;
-    padding: 0 15px;
+  .avatar {
+    width: 100px;
+    height: 100px;
   }
 
   .friends {
     display: flex;
-    gap: 5px;
+    gap: 15px;
     width: max-content;
-    height: $element-height; 
     background: transparent;
     padding: 0;
+
+    @media (max-width: 500px) {
+      gap: 10px;
+    }
 
     & > * {
       margin: auto 0;
     }
   }
 
-  .logout {
+  .edit {
     height: $element-height;
-    border-radius: 100px;
     padding: 0 15px;
   }
 }
@@ -256,7 +276,7 @@ $element-height: calc(1.1em + 15px);
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
   width: 100%;
-  padding: 0 15px 15px;
+  padding: 15px;
   margin: 0 auto;
 
   @media (max-width: 1200px) {
@@ -272,7 +292,7 @@ $element-height: calc(1.1em + 15px);
   }
 
   @media (max-width: 500px) {
-    padding: 0 10px 10px;
+    padding: 10px;
   }
 
   .meta {
