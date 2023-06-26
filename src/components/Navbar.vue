@@ -133,13 +133,14 @@ nav::v-deep {
         width: 100vw;
         border: 0;
         border-radius: 0;
+        z-index: -1;
       }
     }
   }
 
   @media (max-width: 500px) {
-    .prompt > * {
-      margin: 0 !important;
+    .prompt {
+      z-index: -1;
     }
   }
 }
