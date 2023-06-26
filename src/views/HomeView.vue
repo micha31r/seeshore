@@ -76,15 +76,10 @@ $nav-height: calc(1.1em + 15px + 15px * 2);
 }
 
 .feed {
-  display: grid;
+  display: flex;
   gap: 15px;
   padding: 0 15px 15px;
   margin: 0 auto;
-
-  .story {
-    width: 500px;
-    height: 700px;
-  }
 }
 }
 </style>

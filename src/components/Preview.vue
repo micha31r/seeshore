@@ -1,5 +1,5 @@
 <template>
-  <div class='preview'>
+  <div class='preview' ref='element'>
     <div v-if="type == 'image'" class='wrapper'>
       <div v-if='blur' class='blur' :style='`background-image: url(${url})`'></div>
       <div class='image' :style='`background-image: url(${url})`'></div>
@@ -9,18 +9,36 @@
 </template>
 
 <script setup>
-import { ref, toRefs, defineProps, onMounted, watch } from 'vue'
+import { ref, toRefs, defineProps, defineExpose, onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { download } from '../supabase'
 import { isValidURL } from '../utils'
 
+const router = useRouter()
 const props = defineProps(['type', 'media', 'blur'])
 const { type, media } = toRefs(props)
 const url = ref('')
+const element = ref(null)
+const aspectRatio = 9 / 16
+
+defineExpose({ element, resize })
 
 onMounted(() => {
   updateURL()
   watch(media, updateURL)
+  resize()
+  addEventListener('resize', resize)
 })
+
+router.beforeEach((to, from, next) => {
+  removeEventListener('resize', resize)
+  next()
+})
+
+function resize () {
+  const width = aspectRatio * element.value.clientHeight
+  element.value.style.width = width + 'px'
+}
 
 async function updateURL () {
   if (type.value == 'image') {
@@ -37,8 +55,8 @@ async function updateURL () {
 @include use-theme {
 .preview {
   display: flex;
-  width: 400px;
-  height: 560px;
+  width: 100%;
+  height: 100%;
   background: theme('color-bg-2');
   border-radius: 15px;
 

@@ -1,15 +1,10 @@
 <template>
-  <div class='story' v-if='story'>
+  <div class='story' v-if='story' ref='element'>
     <div class='meta'>
       <!-- Profile -->
       <div class='profile'>
         <Avatar :profile='story.profile' />
         <p class='name'>{{ story.profile.full_name }}</p>
-      </div>
-
-      <!-- Pagination -->
-      <div class='progress'>
-        <span class='dot' v-for='(_, index) in data' :data-on='storyIndex == index'></span>
       </div>
 
       <!-- Like button -->
@@ -19,27 +14,53 @@
     </div>
 
     <!-- Media -->
-    <Preview type='image' v-if='image' :media='image' blur='true' @click='cycle' :key='storyIndex'/>
+    <Preview type='image' v-if='image' :media='image' blur='true' @click='cycle' :key='storyIndex' ref='preview'>
+      <div class='progress'>
+        <span class='dot' v-for='(_, index) in data' :data-on='storyIndex == index'></span>
+      </div>
+    </Preview>
   </div>
 </template>
 
 <script setup>
 import { ref, toRefs, defineProps, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { supabase, download } from '../supabase'
 import store from '../store'
 import Preview from './Preview.vue'
 import Avatar from './Avatar.vue'
 
+const router = useRouter()
 const props = defineProps(['data'])
 const stories = toRefs(props).data
 const storyIndex = ref(0)
 const images = ref([])
+const element = ref(null)
+const preview = ref(null)
 
 // Current data
 const likes = ref([]) // array of story ids
 const likeIndex = ref(-1)
 const story = ref()
 const image = ref()
+
+onMounted(async () => {
+  await preload()
+  resize()
+  addEventListener('resize', resize)
+})
+
+router.beforeEach((to, from, next) => {
+  removeEventListener('resize', resize)
+  next()
+})
+
+function resize () {
+  const nav = document.querySelector('nav')
+  const height = window.innerHeight - nav.clientHeight - 15
+  element.value.style.height = height + 'px'
+  preview.value.resize()
+}
 
 // Get story data at current index
 function getCurrentData () {
@@ -122,8 +143,6 @@ async function toggleLike () {
     console.error(error)
   }
 }
-
-onMounted(preload)
 </script>
 
 <style scoped lang='scss'>
@@ -134,8 +153,6 @@ onMounted(preload)
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 15px;
-  width: 100%;
-  height: 100%;
   background: theme('color-bg-2');
   border-radius: 15px;
   padding: 15px;
@@ -143,7 +160,7 @@ onMounted(preload)
 
   .meta {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: 1fr auto;
     gap: 10px;
 
     .profile {
@@ -152,24 +169,6 @@ onMounted(preload)
 
       .name {
         margin: auto 0;
-      }
-    }
-
-    .progress {
-      display: flex;
-      gap: 5px;
-      margin: auto;
-
-      .dot {
-        display: block;
-        width: 5px;
-        height: 5px;
-        border-radius: 100%;
-        background: rgba(theme('color-text-1'), $shade-3);
-
-        &[data-on='true'] {
-          background: theme('color-text-1');
-        }
       }
     }
 
@@ -187,9 +186,30 @@ onMounted(preload)
   }
 
   .preview {
-    width: 100%;
-    height: 100%;
+    position: relative;
     cursor: pointer;
+
+    .progress {
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      transform: translate(-50%, 0);
+      display: flex;
+      gap: 5px;
+      margin: auto;
+
+      .dot {
+        display: block;
+        width: 5px;
+        height: 5px;
+        border-radius: 100%;
+        background: rgba(theme('color-text-1'), $shade-3);
+
+        &[data-on='true'] {
+          background: theme('color-text-1');
+        }
+      }
+    }
   }
 }
 }
