@@ -8,8 +8,8 @@ $border-radius-round: 100px;
   font-family: 'Urbanist', sans-serif;
   display: flex;
   width: 100vw;
-  height: 100vh;
-  max-height: -webkit-fill-available;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
   max-width: 1600px;
   margin: 0 auto;
 }

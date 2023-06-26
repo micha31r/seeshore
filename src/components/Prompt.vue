@@ -16,8 +16,8 @@
   left: 0;
   width: 100vw;
   max-width: 1600px;
-  height: 100vh;
-  max-height: -webkit-fill-available;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
   background: rgba(theme('color-bg-1'), $shade-5);
   backdrop-filter: blur(30px);
   z-index: 10;
@@ -40,8 +40,6 @@
     @media (max-width: 500px) {
       width: 100% !important;
       border: 0 !important;
-      // border-radius: $border-radius-1 15px 0 0 !important;
-      // background: theme('color-bg-2') !important;
       margin: var(--nav-height) 0 0 !important;
     }
   }
