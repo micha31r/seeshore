@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import { ref, toRefs, defineProps, onMounted } from 'vue'
+import { ref, toRefs, defineProps, onMounted, watch } from 'vue'
 import { encodeData, rendererRound } from 'beautify-qrcode';
 import store from '../store'
 import Navbar from '../components/Navbar.vue'
@@ -19,6 +19,20 @@ const { data } = toRefs(props)
 const url = ref('')
 
 onMounted(() => {
+  generateQRCode()
+
+  // Regenerate on theme change
+  watch(
+    () => store.theme,
+    generateQRCode
+  )
+})
+
+function generateQRCode () {
+  const color = store.theme == 'light'
+    ? '#000000'
+    : '#FFFFFF'
+
   const qrcode = encodeData({
       text: data.value,
       correctLevel: 0
@@ -26,10 +40,12 @@ onMounted(() => {
 
   url.value = 'data:image/svg+xml;utf8,' + encodeURIComponent(
     rendererRound(qrcode, {
-      opacity: 100
+      opacity: 100,
+      otherColor: color,
+      posColor: color
     })
   )
-})
+}
 </script>
 
 <style scoped lang='scss'>
@@ -44,7 +60,7 @@ onMounted(() => {
   padding: 10px;
   border-radius: 100%;
   margin: auto;
-  // overflow: hidden;
+  overflow: hidden;
 }
 
 .avatar {
@@ -55,7 +71,7 @@ onMounted(() => {
   height: 100%;
   background-color: transparent;
   filter: blur(40px);
-  opacity: 0.4;
+  opacity: 0.3;
 }
 
 .image {
@@ -63,7 +79,6 @@ onMounted(() => {
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  filter: invert(1);
 }
 }
 </style>

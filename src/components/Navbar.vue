@@ -73,7 +73,7 @@ nav {
   gap: 10px;
   height: max-content;
   top: 0;
-  background: rgba(theme('color-theme-2-shade-15'), $shade-2);
+  background: rgba(theme('color-bg-1'), $shade-2);
   backdrop-filter: blur(20px);
   padding: 15px;
   z-index: 100;

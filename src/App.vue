@@ -10,22 +10,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { RouterView } from 'vue-router'
 import { supabase } from './supabase'
 import store from './store'
 import Auth from './components/Auth.vue'
 
-const theme = ref('dark')
-
 // Watch for theme changes (Mark Szabo, 2019) (mikemaccana, 2022)
 // https://stackoverflow.com/questions/56393880/how-do-i-detect-dark-mode-using-javascript
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-  changeTheme(event.matches ? 'dark' : 'light')
+  setTheme(event.matches ? 'dark' : 'light')
 })
 
 if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-  changeTheme('dark')
+  setTheme('dark')
+} else {
+  setTheme('light')
 }
 
 onMounted(async () => {
@@ -41,7 +41,8 @@ onMounted(async () => {
   })
 })
 
-function changeTheme (mode) {
+function setTheme (mode) {
+  store.theme = mode
   document.documentElement.dataset.theme = mode
 }
 

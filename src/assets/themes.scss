@@ -1,4 +1,4 @@
-// For color adjustments on events
+// For color adjustments
 $shade-1: 10%;
 $shade-2: 20%;
 $shade-3: 30%;
@@ -10,50 +10,76 @@ $shade-8: 80%;
 $shade-9: 90%;
 
 $themes: (
-  dark: (
-    'color-theme-2': #fff,
-    'color-theme-2-shade-1': #eee,
-    'color-theme-2-shade-2': #ddd,
-    'color-theme-2-shade-3': #ccc,
-    'color-theme-2-shade-4': #bbb,
-    'color-theme-2-shade-5': #aaa,
-    'color-theme-2-shade-6': #999,
-    'color-theme-2-shade-7': #888,
-    'color-theme-2-shade-8': #777,
-    'color-theme-2-shade-9': #666,
-    'color-theme-2-shade-10': #555,
-    'color-theme-2-shade-11': #444,
-    'color-theme-2-shade-12': #333,
-    'color-theme-2-shade-13': #222,
-    'color-theme-2-shade-14': #111,
-    'color-theme-2-shade-15': #000,
+  light: (
+    // Background
+    'color-bg-1': #FFF,
+    'color-bg-1-invert': #000,
+    'color-bg-2': #EEE,
 
+    // Border
+    'color-border-1': #CCC,
+
+    // Text
+    'color-text-1': #000,
+    'color-text-2': #888,
+
+    // Default button
+    'color-button-bg': #FFF,
+    'color-button-bg-hover': darken(#FFF, $shade-1),
+    'color-button-border': #CCC,
+    'color-button-text': #000,
+
+    // Solid button
+    'color-button-solid-bg': #000,
+    'color-button-solid-bg-hover': lighten(#000, $shade-1),
+    'color-button-solid-text': #FFF,
+
+    // Accent button
+    'color-button-accent-bg': #EEE,
+    'color-button-accent-bg-hover': darken(#EEE, $shade-1),
+    'color-button-accent-text': #888,
+    'color-button-accent-text-hover': darken(#888, $shade-1),
+
+    // Outline button
+    'color-button-outline-bg': #FFF,
+    'color-button-outline-border-hover': #000,
+    'color-button-outline-text': #888,
+    'color-button-outline-text-hover': #000
+  ),
+  dark: (
+    // Background 
     'color-bg-1': #000,
     'color-bg-1-invert': #FFF,
     'color-bg-2': #222,
 
+    // Border
     'color-border-1': #333,
 
+    // Text
     'color-text-1': #FFF,
     'color-text-2': #777,
 
+    // Default button
     'color-button-bg': #000,
     'color-button-bg-hover': lighten(#000, $shade-1),
     'color-button-border': #333,
     'color-button-text': #FFF,
 
+    // Solid button
     'color-button-solid-bg': #FFF,
     'color-button-solid-bg-hover': darken(#FFF, $shade-1),
     'color-button-solid-text': #000,
 
+    // Accent button
     'color-button-accent-bg': #222,
     'color-button-accent-bg-hover': lighten(#222, $shade-1),
-    'color-button-accent-text': #FFF,
-    'color-button-accent-text-hover': lighten(#FFF, $shade-1),
+    'color-button-accent-text': #777,
+    'color-button-accent-text-hover': lighten(#777, $shade-1),
 
+    // Outline button
     'color-button-outline-bg': #000,
     'color-button-outline-border-hover': #FFF,
-    'color-button-outline-text': #FFF,
+    'color-button-outline-text': #777,
     'color-button-outline-text-hover': #FFF
   )
 );

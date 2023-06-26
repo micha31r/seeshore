@@ -165,10 +165,10 @@ onMounted(preload)
         width: 5px;
         height: 5px;
         border-radius: 100%;
-        background: rgba(theme('color-theme-2'), $shade-3);
+        background: rgba(theme('color-text-1'), $shade-3);
 
         &[data-on='true'] {
-          background: theme('color-theme-2');
+          background: theme('color-text-1');
         }
       }
     }

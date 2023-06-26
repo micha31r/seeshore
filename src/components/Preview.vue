@@ -49,6 +49,7 @@ async function updateURL () {
   }
 
   .blur {
+    display: none;
     flex: 1;
     background-size: cover;
     background-position: center;
@@ -68,5 +69,13 @@ async function updateURL () {
     border-radius: 15px;
   }
 }
+}
+
+[data-theme='dark'] {
+  .preview {
+    .blur {
+      display: block;
+    }
+  }
 }
 </style>
