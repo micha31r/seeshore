@@ -12,7 +12,7 @@
 
           <AccentButton class='friends' @click='$router.push({ name: "people" })'>
             <Icon icon='users'/>
-            <span>14.5k / 204</span>
+            <span>{{ followerCount }} / {{ followingCount }}</span>
           </AccentButton>
         </div>
       </div>
@@ -77,10 +77,14 @@ const likeData = ref({})
 const likeState = ref(-1)
 const accountEditor = ref(null)
 const deleteAccount = ref(null)
+const followerCount = ref(0)
+const followingCount = ref(0)
 
 onMounted(async () => {
   stories.value = await getOwnStories()
   likeData.value = await getLikeData()
+  followerCount.value = await getFollowerCount()
+  followingCount.value = await getFollowingCount()
 })
 
 function toggleAccountEditor () {
@@ -89,6 +93,36 @@ function toggleAccountEditor () {
 
 function toggleDeleteAccount () {
   deleteAccount.value.toggle()
+}
+
+async function getFollowerCount() {
+  try {
+    const { count, error } = await supabase
+      .from('followers')
+      .select(`id`, { count: 'exact', head: true })
+      .eq('profile', store.profile.id)
+
+    if (error) throw error
+
+    return count
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function getFollowingCount() {
+  try {
+    const { count, error } = await supabase
+      .from('followers')
+      .select(`id`, { count: 'exact', head: true })
+      .eq('follower', store.profile.id)
+
+    if (error) throw error
+
+    return count
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 async function getOwnStories() {
