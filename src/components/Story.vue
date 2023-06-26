@@ -53,12 +53,9 @@ async function preload () {
   for (let i = 0; i < stories.value.length; i++) {
     const item = stories.value[i]
     images.value.push(await download('images', item.media_url))
-
-    const data = await getLikeStatus(item.id)
-    if (data) {
-      likes.value.push(data.story)
-    }
   }
+
+  likes.value = await getLikes()
 
   getCurrentData()
 }
@@ -71,17 +68,19 @@ function cycle () {
   getCurrentData()
 }
 
-async function getLikeStatus (id) {
+async function getLikes () {
+  const storyIds = stories.value.map(item => item.id)
+
   try {
     const { data, error } = await supabase
       .from('likes')
-      .select(`id, story, profile`)
-      .eq('story', id)
+      .select(`story`)
       .eq('profile', store.profile.id)
+      .in('story', storyIds)
 
     if (error) throw error
 
-    return data[0]
+    return data.map(item => item.story)
   } catch (error) {
     console.error(error)
   }

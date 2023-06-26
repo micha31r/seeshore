@@ -7,5 +7,6 @@ export default reactive({
     file: null,
     type: '',
     previewURL: '',
-  }
+  },
+  downloads: {}
 })
