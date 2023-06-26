@@ -28,7 +28,6 @@ async function getStories () {
     const { data, error } = await supabase
       .from('sharing')
       .select(`
-        profile,
         story (
           id,
           profile (id, avatar_url, full_name),
