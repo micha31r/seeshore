@@ -80,6 +80,8 @@ function addText(event) {
   }
 
   .preview {
+    width: 400px;
+    height: 560px;
     margin: 0 auto;
     cursor: pointer;
   }
