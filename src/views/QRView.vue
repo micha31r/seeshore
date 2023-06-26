@@ -37,7 +37,7 @@ import ProfileList from '../components/ProfileList.vue'
 
 const router = useRouter()
 const URLPrefix = 'http://localhost:5173/scan/'
-const lifespan = 1000 * 60 * 60 * 24 // 24 hours
+const lifespan = 86400000 // 24 hours
 const code = ref('')
 const showScanner = ref(false)
 const video = ref(null)
