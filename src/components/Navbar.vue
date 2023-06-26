@@ -65,6 +65,7 @@ const showLogoutPrompt = ref(false)
 
 $element-height: calc(1.1em + 15px);
 
+@include use-theme {
 nav {
   display: grid;
   position: sticky;
@@ -72,7 +73,7 @@ nav {
   gap: 10px;
   height: max-content;
   top: 0;
-  background: rgba($color-theme-2-shade-15, $shade-2);
+  background: rgba(theme('color-bg-1'), $shade-2);
   backdrop-filter: blur(20px);
   padding: 15px;
   z-index: 100;
@@ -106,6 +107,7 @@ nav::v-deep {
 }
 
 .logout-prompt {
-  background: $color-bg-1 !important;
+  background: theme('color-bg-1') !important;
+}
 }
 </style>

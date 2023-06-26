@@ -162,6 +162,7 @@ async function updateProfile () {
 <style scoped lang='scss'>
 @import '../assets/themes';
 
+@include use-theme {
 .heading {
   margin: 0;
 }
@@ -200,10 +201,11 @@ async function updateProfile () {
   font-size: 0.8em;
   display: block;
   width: max-content;
-  color: $color-text-2;
+  color: theme('color-text-2');
   margin: 10px auto 0;
   text-align: center;
   cursor: pointer;
+}
 }
 </style>
 

@@ -185,6 +185,7 @@ async function isFollowing (id) {
 <style scoped lang='scss'>
 @import '../assets/themes';
 
+@include use-theme {
 .grid {
   display: grid;
   grid-template-rows: auto 1fr;
@@ -205,7 +206,7 @@ async function isFollowing (id) {
 }
 
 .profile-list::v-deep .profile {
-  border: 1px solid $color-border-1;
+  border: 1px solid theme('color-border-1');
   border-radius: 100px;
   padding: 5px 10px 5px 5px;
   margin: 0 auto;
@@ -224,7 +225,7 @@ async function isFollowing (id) {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: $color-bg-1;
+  background: theme('color-bg-1');
   z-index: 101; // appear above navbar
 
   video {
@@ -245,5 +246,6 @@ async function isFollowing (id) {
     transform: translate(-50%, 0);
     border-radius: 100px;
   }
+}
 }
 </style>

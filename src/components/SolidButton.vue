@@ -15,6 +15,7 @@ defineExpose({ element })
 <style scoped lang='scss'>
 @import '../assets/themes';
 
+@include use-theme {
 button {
   font-family: inherit;
   border: 0;
@@ -22,11 +23,12 @@ button {
   padding: 10px;
   transition: color 0.2s, background 0.2s, border 0.2s;
   cursor: pointer;
-  background: $color-button-solid-bg;
-  color: $color-button-solid-text;
+  background: theme('color-button-solid-bg');
+  color: theme('color-button-solid-text');
 
   &:hover {
-    background: $color-button-solid-bg-hover;
+    background: theme('color-button-solid-bg-hove')r;
   }
+}
 }
 </style>

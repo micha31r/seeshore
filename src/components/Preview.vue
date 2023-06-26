@@ -34,11 +34,12 @@ async function updateURL () {
 <style scoped lang='scss'>
 @import '../assets/themes';
 
+@include use-theme {
 .preview {
   display: flex;
   width: 400px;
   height: 560px;
-  background: $color-bg-2;
+  background: theme('color-bg-2');
   border-radius: 15px;
 
   .wrapper {
@@ -48,6 +49,7 @@ async function updateURL () {
   }
 
   .blur {
+    display: none;
     flex: 1;
     background-size: cover;
     background-position: center;
@@ -65,6 +67,15 @@ async function updateURL () {
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 15px;
+  }
+}
+}
+
+[data-theme='dark'] {
+  .preview {
+    .blur {
+      display: block;
+    }
   }
 }
 </style>

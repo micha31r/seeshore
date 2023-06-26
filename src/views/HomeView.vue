@@ -64,8 +64,11 @@ function groupStories(stories) {
 </script>
 
 <style scoped lang='scss'>
+@import '../assets/themes';
+
 $nav-height: calc(1.1em + 15px + 15px * 2);
 
+@include use-theme {
 .grid {
   display: grid;
   grid-template-rows: auto 1fr;
@@ -82,5 +85,6 @@ $nav-height: calc(1.1em + 15px + 15px * 2);
     width: 500px;
     height: 700px;
   }
+}
 }
 </style>

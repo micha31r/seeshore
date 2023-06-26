@@ -23,6 +23,7 @@ defineProps(['data', 'fallback'])
 <style scoped lang='scss'>
 @import '../assets/themes';
 
+@include use-theme {
 .profile-list {
   display: flex;
   flex-direction: column;
@@ -38,8 +39,9 @@ defineProps(['data', 'fallback'])
   }
 
   .fallback {
-    color: $color-text-2;
+    color: theme('color-text-2');
     margin: auto;
   }
+}
 }
 </style>

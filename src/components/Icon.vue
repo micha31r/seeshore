@@ -17,17 +17,19 @@ onMounted(feather.replace)
 <style scoped lang='scss'>
 @import '../assets/themes.scss';
 
+@include use-theme {
 svg.feather {
   width: 1.1em;
   height: 1.1em;
 
   &.primary {
-    color: $color-text-1;
+    color: theme('color-text-1');
   }
 
   &.secondary {
-    color: $color-text-2;
+    color: theme('color-text-2');
   }
+}
 }
 </style>
 
