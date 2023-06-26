@@ -12,7 +12,7 @@
 import { ref, toRefs, defineProps, defineExpose, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { download } from '../supabase'
-import { isValidURL } from '../utils'
+import { isValidURL, isMobile } from '../utils'
 
 const router = useRouter()
 const props = defineProps(['type', 'media', 'blur'])
@@ -42,7 +42,7 @@ function resize () {
 
   // If height is too big,
   // resize width so the height fits within the limit
-  if (window.innerWidth > 500 && height > heightLimit) {
+  if (!isMobile() && height > heightLimit) {
     height = heightLimit
     width = height / aspectRatio
 
