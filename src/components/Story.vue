@@ -1,20 +1,24 @@
 <template>
   <div class='story' v-if='story'>
     <div class='meta'>
+      <!-- Profile -->
       <div class='profile'>
         <Avatar :profile='story.profile' />
         <p class='name'>{{ story.profile.full_name }}</p>
       </div>
 
+      <!-- Pagination -->
       <div class='progress'>
         <span class='dot' v-for='(_, index) in data' :data-on='storyIndex == index'></span>
       </div>
 
+      <!-- Like button -->
       <AccentButton class='icon like' @click='toggleLike' :data-has-liked='likeIndex >= 0'>
         <Icon icon='heart'/>
       </AccentButton>
     </div>
 
+    <!-- Media -->
     <Preview type='image' v-if='image' :media='image' blur='true' @click='cycle' :key='storyIndex'/>
   </div>
 </template>

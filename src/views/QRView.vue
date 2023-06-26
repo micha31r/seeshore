@@ -1,15 +1,20 @@
 <template>
   <div class='grid'>
     <Navbar pageName='QR Code' />
+
     <div class='qr'>
       <div class='contact-card'>
+        <!-- Profile information -->
         <ProfileList :data='[store.profile]' fallback='This story does not have any likes.'/>
 
+        <!-- QR code -->
         <QRCode v-if='code' :data='code'/>
 
+        <!-- Camera button -->
         <SolidButton class='open-camera' @click='toggleScanner'>Open Camera</SolidButton>
       </div>
 
+      <!-- Scanner -->
       <div class='scanner' v-show='showScanner'>
         <video ref='video'></video>
         <SolidButton class='cancel' @click='toggleScanner'>Cancel</SolidButton>
@@ -133,7 +138,6 @@ async function getProfileFromCode (code) {
     console.error(error)
   }
 }
-
 
 async function createFollowRequest (id) {
   if (id == store.profile.id) return

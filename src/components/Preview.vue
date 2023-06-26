@@ -17,6 +17,11 @@ const props = defineProps(['type', 'media', 'blur'])
 const { type, media } = toRefs(props)
 const url = ref('')
 
+onMounted(() => {
+  updateURL()
+  watch(media, updateURL)
+})
+
 async function updateURL () {
   if (type.value == 'image') {
     url.value = isValidURL(media.value)
@@ -24,11 +29,6 @@ async function updateURL () {
       : await download('images', media.value)
   }
 }
-
-onMounted(() => {
-  updateURL()
-  watch(media, updateURL)
-})
 </script>
 
 <style scoped lang='scss'>

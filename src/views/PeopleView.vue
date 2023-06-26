@@ -3,19 +3,22 @@
     <Navbar pageName='People' />
 
     <div class='people'>
+      <!-- Follow requests -->
       <div class='requests' v-if='requests.length'>
         <h3 class='heading'>Requests</h3>
+
         <ProfileList :data='requests'>
           <template #default='{profile}'>
             <div class='actions'>
               <SolidButton @click='approveFollowRequest(profile)'>Approve</SolidButton>
+
               <Menu align='right'>
                 <template #buttonContent>
                   <Icon icon='more-vertical' />
                 </template>
 
                 <template #listContent>
-                  <AccentButton class='icon-text' @click='deleteFollowRequest(profile)'>
+                  <AccentButton class='icon-text' @click='rejectFollowRequest(profile)'>
                     <Icon icon='trash-2' />
                     <span>Reject</span>
                   </AccentButton>
@@ -26,13 +29,16 @@
         </ProfileList>
       </div>
 
+      <!-- Pending following -->
       <div class='pending' v-if='pending.length'>
         <h3 class='heading'>Pending</h3>
         <ProfileList :data='pending'></ProfileList>
       </div>
 
+      <!-- Followers -->
       <div class='followers'>
         <h3 class='heading'>Follower</h3>
+
         <ProfileList :data='followers' fallback="You don't have any followers.">
           <template #default='{profile}'>
             <div class='actions'>
@@ -53,8 +59,10 @@
         </ProfileList>
       </div>
 
+      <!-- Following -->
       <div class='following'>
         <h3 class='heading'>Following</h3>
+        
         <ProfileList :data='following' fallback="You don't have any followers.">
           <template #default='{profile}'>
             <div class='actions'>
@@ -80,10 +88,23 @@ const following = ref([])
 const requests = ref([])
 const pending = ref([])
 
+onMounted(async () => {
+  followers.value = await getFollowers()
+  following.value = await getFollowing()
+  requests.value = await getFollowRequests()
+  pending.value = await getPendingFollowing()
+})
 
-function approveFollowRequest (profile) {
-  createFollower(profile)
-  deleteFollowRequest(profile)
+async function approveFollowRequest (profile) {
+  await createFollower(profile)
+  await deleteFollowRequest(profile)
+  followers.value = await getFollowers()
+  requests.value = await getFollowRequests()
+}
+
+async function rejectFollowRequest (profile) {
+  await deleteFollowRequest(profile)
+  requests.value = await getFollowRequests()
 }
 
 async function createFollower (profile) {
@@ -96,8 +117,6 @@ async function createFollower (profile) {
       })
 
     if (error) throw error
-
-    followers.value = await getFollowers()
   } catch (error) {
     console.error(error)
   }
@@ -112,8 +131,6 @@ async function deleteFollowRequest (profile) {
       .eq('profile', profile.id)
 
     if (error) throw error
-
-    requests.value = await getFollowRequests()
   } catch (error) {
     console.error(error)
   }
@@ -263,13 +280,6 @@ async function follow(target) {
     console.error(error)
   }
 }
-
-onMounted(async () => {
-  followers.value = await getFollowers()
-  following.value = await getFollowing()
-  requests.value = await getFollowRequests()
-  pending.value = await getPendingFollowing()
-})
 </script>
 
 <style scoped lang='scss'>

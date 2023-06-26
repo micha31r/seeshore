@@ -12,13 +12,12 @@ const data = ref(checked.value || false)
 const element = ref(null)
 
 defineExpose({ element })
+onMounted(feather.replace)
 
 function toggle(event) {
   event.stopPropagation()
   data.value = data.value ? false : true
 }
-
-onMounted(feather.replace)
 </script>
 
 <style scoped lang='scss'>

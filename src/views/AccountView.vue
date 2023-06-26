@@ -3,6 +3,7 @@
     <Navbar pageName='Profile' />
 
     <div class='account'>
+      <!-- Account information -->
       <div class='account-info'>
         <div class='row'>
           <Avatar :profile='store.profile'/>
@@ -16,6 +17,7 @@
         </div>
       </div>
 
+      <!-- Stories -->
       <div class='stories'>
         <div class='preview-wrapper' v-for='story in stories'>
           <div class='meta'>
@@ -42,9 +44,11 @@
         </div>
       </div>
 
+      <!-- Account settings -->
       <AccountEditor ref='accountEditor' @deleteAccount='toggleDeleteAccount'/>
       <DeleteAccount ref='deleteAccount' />
 
+      <!-- Like prompt -->
       <Prompt v-if='likeState >= 0'>
         <div class='like-profiles'>
           <h3 class='heading'>Liked By</h3>
@@ -74,6 +78,11 @@ const likeState = ref(-1)
 const accountEditor = ref(null)
 const deleteAccount = ref(null)
 
+onMounted(async () => {
+  stories.value = await getOwnStories()
+  likeData.value = await getLikeData()
+})
+
 function toggleAccountEditor () {
   accountEditor.value.toggle()
 }
@@ -88,7 +97,7 @@ async function getOwnStories() {
       .from('stories')
       .select(`
         id,
-        profile (id, username, avatar_url, full_name),
+        profile (id, avatar_url, full_name),
         media_url
       `)
       .eq('profile', store.profile.id)
@@ -96,7 +105,7 @@ async function getOwnStories() {
 
     if (error) throw error
 
-    return data;
+    return data
   } catch (error) {
     console.error(error)
   }
@@ -146,11 +155,6 @@ async function deleteStory (id) {
     console.error(error)
   }
 }
-
-onMounted(async () => {
-  stories.value = await getOwnStories()
-  likeData.value = await getLikeData()
-})
 </script>
 
 <style scoped lang='scss'>
@@ -167,12 +171,7 @@ $element-height: calc(1.1em + 15px);
 .account-info {
   display: flex;
   flex-direction: column;
-  // grid-template-columns: auto auto auto 1fr auto;
-  // gap: 15px;
-  // width: max-content;
-  // padding: 0 15px 15px;
-  // margin: 0 auto;
-
+  
   .row {
     display: flex;
     justify-content: center;

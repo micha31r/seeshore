@@ -12,11 +12,21 @@
 
 <script setup>
 import { ref, defineProps, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 defineProps(['align'])
+
+const router = useRouter()
 const menu = ref(null)
 const button = ref(null)
 const show = ref(false)
+
+onMounted(() => addEventListener('click', toggle))
+
+router.beforeEach((to, from, next) => {
+  removeEventListener('click', toggle)
+  next()
+})
 
 function toggle (event) {
   if (button.value.element.contains(event.target)) {
@@ -27,8 +37,6 @@ function toggle (event) {
     show.value = false
   }
 }
-
-onMounted(() => addEventListener('click', toggle))
 </script>
 
 <style scoped lang='scss'>
