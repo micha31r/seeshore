@@ -1,11 +1,12 @@
 @import 'themes';
 
+@include use-theme {
 html, body {
   overscroll-behavior-x: none;
 } 
 
 body {
-  background: $color-bg-1;
+  background: theme('color-bg-1');
 }
 
 * {
@@ -13,11 +14,11 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6, p, li, a, button, input, b {
-  color: $color-text-1;
+  color: theme('color-text-1');
 }
 
-label {
-  color: $color-text-2;
+label, input::placeholder {
+  color: theme('color-text-2');
 }
 
 a {
@@ -46,4 +47,5 @@ button.icon-text {
   & > * {
     margin: auto 0;
   }
+}
 }

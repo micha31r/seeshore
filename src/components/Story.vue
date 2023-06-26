@@ -129,13 +129,14 @@ onMounted(preload)
 <style scoped lang='scss'>
 @import '../assets/themes';
 
+@include use-theme {
 .story {
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 15px;
   width: 100%;
   height: 100%;
-  background: $color-bg-2;
+  background: theme('color-bg-2');
   border-radius: 15px;
   padding: 15px;
   overflow: hidden;
@@ -164,10 +165,10 @@ onMounted(preload)
         width: 5px;
         height: 5px;
         border-radius: 100%;
-        background: rgba($color-theme-2, $shade-3);
+        background: rgba(theme('color-text-1'), $shade-3);
 
         &[data-on='true'] {
-          background: $color-theme-2;
+          background: theme('color-text-1');
         }
       }
     }
@@ -176,11 +177,11 @@ onMounted(preload)
       margin: auto 0 auto auto;
 
       &[data-has-liked='true'] .feather {
-        fill: $color-bg-1-invert;
+        fill: theme('color-bg-1-invert');
       }
       
       .feather {
-        color: $color-text-1;
+        color: theme('color-text-1');
       }
     }
   }
@@ -190,5 +191,6 @@ onMounted(preload)
     height: 100%;
     cursor: pointer;
   }
+}
 }
 </style>

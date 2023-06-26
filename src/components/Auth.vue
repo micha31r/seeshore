@@ -58,6 +58,9 @@ async function GoogleLogin () {
 </script>
 
 <style scoped lang='scss'>
+@import '../assets/themes';
+
+@include use-theme {
 form {
   display: grid;
   gap: 10px;
@@ -71,5 +74,6 @@ form {
   .icon-input {
     margin: 8px 0 0;
   }
+}
 }
 </style>

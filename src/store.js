@@ -3,6 +3,7 @@ import { reactive } from 'vue'
 const store = reactive({
   session: null,
   profile: null,
+  theme: 'light',
 
   // For creating new stories
   editor: {

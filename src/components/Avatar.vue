@@ -51,14 +51,16 @@ async function updateURL () {
 $width: calc(1.1em + 15px);
 $height: calc(1.1em + 15px);
 
+@include use-theme {
 .avatar {
   display: block;
   width: $width;
   height: $height;
   border-radius: 100%;
-  background-color: $color-bg-2;
+  background-color: theme('color-bg-2');
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+}
 }
 </style>

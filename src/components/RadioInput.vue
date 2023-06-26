@@ -23,16 +23,17 @@ function toggle(event) {
 <style scoped lang='scss'>
 @import '../assets/themes';
 
+@include use-theme {
 .radio-input {
   position: relative;
   display: block;
   width: 20px;
   height: 20px;
-  border: 2px solid $color-border-1;
+  border: 2px solid theme('color-border-1');
   border-radius: 100%;
 
   &[data-checked='true']::after {
-    background: $color-bg-1-invert;
+    background: theme('color-bg-1-invert');
   }
 }
 
@@ -45,5 +46,6 @@ function toggle(event) {
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 100%;
+}
 }
 </style>

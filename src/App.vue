@@ -1,8 +1,8 @@
 <template>
-  <div class="main">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;900&family=Urbanist:wght@500;600&display=swap" rel="stylesheet">
+  <div class='main'>
+    <link rel='preconnect' href='https://fonts.googleapis.com'>
+    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+    <link href='https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;900&family=Urbanist:wght@500;600&display=swap' rel='stylesheet'>
 
     <RouterView v-if='store.session && store.profile' />
     <Auth v-else />
@@ -10,11 +10,41 @@
 </template>
 
 <script setup>
-import { RouterView } from 'vue-router'
 import { onMounted } from 'vue'
+import { RouterView } from 'vue-router'
 import { supabase } from './supabase'
 import store from './store'
 import Auth from './components/Auth.vue'
+
+// Watch for theme changes (Mark Szabo, 2019) (mikemaccana, 2022)
+// https://stackoverflow.com/questions/56393880/how-do-i-detect-dark-mode-using-javascript
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+  setTheme(event.matches ? 'dark' : 'light')
+})
+
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  setTheme('dark')
+} else {
+  setTheme('light')
+}
+
+onMounted(async () => {
+  const { data } = await supabase.auth.getSession()
+  store.session = data.session
+
+  if (store.session) {
+    store.profile = await getProfile()
+  }
+
+  supabase.auth.onAuthStateChange((_, _session) => {
+    store.session = _session
+  })
+})
+
+function setTheme (mode) {
+  store.theme = mode
+  document.documentElement.dataset.theme = mode
+}
 
 async function getProfile() {
   try {
@@ -33,19 +63,6 @@ async function getProfile() {
     console.error(error)
   }
 }
-
-onMounted(async () => {
-  const { data } = await supabase.auth.getSession()
-  store.session = data.session
-
-  if (store.session) {
-    store.profile = await getProfile()
-  }
-
-  supabase.auth.onAuthStateChange((_, _session) => {
-    store.session = _session
-  })
-})
 </script>
 
 <style lang='scss'>
