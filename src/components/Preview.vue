@@ -42,7 +42,7 @@ function resize () {
 
   // If height is too big,
   // resize width so the height fits within the limit
-  if (height > heightLimit) {
+  if (window.innerWidth > 500 && height > heightLimit) {
     height = heightLimit
     width = height / aspectRatio
 
