@@ -57,7 +57,7 @@ import { supabase } from '../supabase'
 import { joinPaths } from '../utils'
 import { uploadImage } from '../upload'
 import { getFollowers } from '../api'
-import store from '../store'
+import store, { forceExpire } from '../store'
 import Navbar from '../components/Navbar.vue'
 import Preview from '../components/Preview.vue'
 import Avatar from '../components/Avatar.vue'
@@ -140,6 +140,8 @@ async function createStory () {
     type: '',
     previewURL: ''
   }
+
+  forceExpire('stories')
 
   router.push('/')
 }
