@@ -19,8 +19,8 @@
 
       <!-- Stories -->
       <div class='stories'>
-        <div class='preview-wrapper' v-for='story in stories'>
-          <div class='meta'>
+        <Story v-for='frame in stories' :data='[frame]' :key='frame'>
+          <template #default='{ story, index }'>
             <AccentButton class='likes' @click='likeState = story.id'>
               <Icon icon='heart' />
               <span v-if='likeData[story.id]'>{{ likeData[story.id].length }}</span>
@@ -38,10 +38,8 @@
                 </AccentButton>
               </template>
             </Menu>
-          </div>
-
-          <Preview type='image' :media='story.media_url' blur='true' />
-        </div>
+          </template>
+        </Story>
       </div>
 
       <!-- Account settings -->
@@ -63,9 +61,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
-import store, { storeCache } from '../store'
+import store, { storeCache, forceExpire } from '../store'
 import Navbar from '../components/Navbar.vue'
-import Preview from '../components/Preview.vue'
+import Story from '../components/Story.vue'
 import Avatar from '../components/Avatar.vue'
 import AccountEditor from '../components/AccountEditor.vue'
 import DeleteAccount from '../components/DeleteAccount.vue'
@@ -190,6 +188,8 @@ async function deleteStory (id) {
 
     if (error) throw error
 
+    forceExpire('ownStories')
+  
     stories.value = await getOwnStories()
   } catch (error) {
     console.error(error)

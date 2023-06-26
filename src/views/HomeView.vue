@@ -3,7 +3,7 @@
     <Navbar pageName='Stories' />
 
     <div class='feed'>
-      <Story v-for='data in groups' :data='data' ref='storyElements'>
+      <Story v-for='data in groups' :data='data'>
         <template #default='{ story, index }'>
           <!-- Profile -->
           <div class='profile'>
@@ -32,7 +32,6 @@ import Avatar from '../components/Avatar.vue'
 const stories = ref([])
 const groups = ref([])
 const likes = ref([]) // Array of liked story ids
-const storyElements = ref([])
 
 onMounted(async () => {
   stories.value = await getStories()

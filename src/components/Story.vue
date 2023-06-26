@@ -1,5 +1,6 @@
 <template>
   <div class='story' v-if='story' ref='element'>
+    <!-- Other information such as author -->
     <div class='meta'>
       <slot :story='story'></slot>
     </div>
