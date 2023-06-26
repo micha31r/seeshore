@@ -1,16 +1,7 @@
 <template>
   <div class='story' v-if='story' ref='element'>
     <div class='meta'>
-      <!-- Profile -->
-      <div class='profile'>
-        <Avatar :profile='story.profile' />
-        <p class='name'>{{ story.profile.full_name }}</p>
-      </div>
-
-      <!-- Like button -->
-      <AccentButton class='icon like' @click='toggleLike' :data-has-liked='likeIndex >= 0'>
-        <Icon icon='heart'/>
-      </AccentButton>
+      <slot :story='story'></slot>
     </div>
 
     <!-- Media -->
@@ -23,12 +14,10 @@
 </template>
 
 <script setup>
-import { ref, toRefs, defineProps, onMounted } from 'vue'
+import { ref, toRefs, defineProps, defineExpose, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { supabase, download } from '../supabase'
-import store from '../store'
+import { download } from '../supabase'
 import Preview from './Preview.vue'
-import Avatar from './Avatar.vue'
 
 const router = useRouter()
 const props = defineProps(['data'])
@@ -39,10 +28,10 @@ const element = ref(null)
 const preview = ref(null)
 
 // Current data
-const likes = ref([]) // array of story ids
-const likeIndex = ref(-1)
 const story = ref()
 const image = ref()
+
+defineExpose({ getFrameData })
 
 onMounted(async () => {
   await preload()
@@ -63,10 +52,9 @@ function resize () {
 }
 
 // Get story data at current index
-function getCurrentData () {
+function getFrameData () {
   story.value = stories.value[storyIndex.value]
   image.value = images.value[storyIndex.value]
-  likeIndex.value = likes.value.indexOf(story.value.id)
 }
 
 // Preload images and like data
@@ -76,9 +64,7 @@ async function preload () {
     images.value.push(await download('images', item.media_url))
   }
 
-  likes.value = await getLikes()
-
-  getCurrentData()
+  getFrameData()
 }
 
 function cycle () {
@@ -86,62 +72,7 @@ function cycle () {
     ? storyIndex.value++ 
     : storyIndex.value = 0
 
-  getCurrentData()
-}
-
-async function getLikes () {
-  const storyIds = stories.value.map(item => item.id)
-
-  try {
-    const { data, error } = await supabase
-      .from('likes')
-      .select(`story`)
-      .eq('profile', store.profile.id)
-      .in('story', storyIds)
-
-    if (error) throw error
-
-    return data.map(item => item.story)
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-async function toggleLike () {
-  try {
-    if (likeIndex.value >= 0) {
-      // Remove like
-      const { error } = await supabase
-        .from('likes')
-        .delete()
-        .eq('story', story.value.id)
-        .eq('profile', store.profile.id)
-
-      if (error) throw error
-
-      likes.value.splice(likeIndex.value, 1)
-
-    } else {
-      // Add like
-      const { data, error } = await supabase
-        .from('likes')
-        .insert({
-          story: story.value.id,
-          profile: store.profile.id
-        })
-        .select(`id, story, profile`)
-        .single()
-
-      if (error) throw error
-      
-      likes.value.push(story.value.id)
-    }
-
-    // Refresh story
-    getCurrentData()
-  } catch (error) {
-    console.error(error)
-  }
+  getFrameData()
 }
 </script>
 
@@ -162,27 +93,6 @@ async function toggleLike () {
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 10px;
-
-    .profile {
-      display: flex;
-      gap: 10px;
-
-      .name {
-        margin: auto 0;
-      }
-    }
-
-    button.like {
-      margin: auto 0 auto auto;
-
-      &[data-has-liked='true'] .feather {
-        fill: theme('color-bg-1-invert');
-      }
-      
-      .feather {
-        color: theme('color-text-1');
-      }
-    }
   }
 
   .preview {

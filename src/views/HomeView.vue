@@ -3,7 +3,20 @@
     <Navbar pageName='Stories' />
 
     <div class='feed'>
-      <Story v-for='data in groups' :data='data' />
+      <Story v-for='data in groups' :data='data' ref='storyElements'>
+        <template #default='{ story, index }'>
+          <!-- Profile -->
+          <div class='profile'>
+            <Avatar :profile='story.profile' />
+            <p class='name'>{{ story.profile.full_name }}</p>
+          </div>
+
+          <!-- Like button -->
+          <AccentButton class='icon like' @click='toggleLike(story)' :data-is-liked='likes.indexOf(story.id) > -1'>
+            <Icon icon='heart'/>
+          </AccentButton>
+        </template>
+      </Story>
     </div>
   </div>
 </template>
@@ -14,14 +27,70 @@ import { ref, onMounted } from 'vue'
 import store, { storeCache } from '../store'
 import Navbar from '../components/Navbar.vue'
 import Story from '../components/Story.vue'
+import Avatar from '../components/Avatar.vue'
 
 const stories = ref([])
 const groups = ref([])
+const likes = ref([]) // Array of liked story ids
+const storyElements = ref([])
 
 onMounted(async () => {
   stories.value = await getStories()
   groups.value = groupStories(stories)
+  likes.value = await getLikes()
 })
+
+async function getLikes () {
+  const storyIds = stories.value.map(item => item.id)
+
+  try {
+    const { data, error } = await supabase
+      .from('likes')
+      .select(`story`)
+      .eq('profile', store.profile.id)
+      .in('story', storyIds)
+
+    if (error) throw error
+
+    return data.map(item => item.story)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function toggleLike (story) {
+  const likeIndex = likes.value.indexOf(story.id)
+
+  try {
+    if (likeIndex > -1) {
+      // Remove like
+      const { error } = await supabase
+        .from('likes')
+        .delete()
+        .eq('story', story.id)
+        .eq('profile', store.profile.id)
+
+      if (error) throw error
+
+      likes.value.splice(likeIndex, 1)
+
+    } else {
+      // Add like
+      const { error } = await supabase
+        .from('likes')
+        .insert({
+          story: story.id,
+          profile: store.profile.id
+        })
+
+      if (error) throw error
+      
+      likes.value.push(story.id)
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 async function getStories () {
   return await storeCache (async () => {
@@ -80,6 +149,29 @@ $nav-height: calc(1.1em + 15px + 15px * 2);
   gap: 15px;
   padding: 0 15px 15px;
   margin: 0 auto;
+
+  .meta {
+    .profile {
+      display: flex;
+      gap: 10px;
+
+      .name {
+        margin: auto 0;
+      }
+    }
+
+    button.like {
+      margin: auto 0 auto auto;
+
+      &[data-is-liked='true'] .feather {
+        fill: theme('color-bg-1-invert');
+      }
+      
+      .feather {
+        color: theme('color-text-1');
+      }
+    }
+  }
 }
 }
 </style>
