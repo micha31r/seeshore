@@ -87,21 +87,22 @@ const accountEditor = ref(null)
 const deleteAccount = ref(null)
 const followerCount = ref(0)
 const followingCount = ref(0)
+const app = document.querySelector('#app')
 
 onMounted(async () => {
   stories.value = await getOwnStories()
   followerCount.value = await getFollowerCount()
   followingCount.value = await getFollowingCount()
 
-  addEventListener('scroll', loadOnScroll)
+  app.addEventListener('scroll', loadOnScroll)
 })
 
 onUnmounted(() => {
-  removeEventListener('scroll', loadOnScroll)
+  app.removeEventListener('scroll', loadOnScroll)
 })
 
 async function loadOnScroll () {
-  if (isScrolledBottom(document.documentElement)) {
+  if (isScrolledBottom(app)) {
     stories.value = stories.value.concat(await getOwnStories({
       append: true,
       nextPage: true
@@ -202,7 +203,6 @@ async function deleteStory (id) {
 <style scoped lang='scss'>
 @import '../assets/themes';
 @import '../assets/main';
-
 
 @include use-theme {
 .grid {

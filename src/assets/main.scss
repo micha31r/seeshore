@@ -10,6 +10,11 @@ $border-radius-round: 100px;
   --app-height: 100vh;
 }
 
+#app {
+  height: var(--app-height);
+  overflow: auto;
+}
+
 #app > .main {
   font-family: 'Urbanist', sans-serif;
   display: flex;

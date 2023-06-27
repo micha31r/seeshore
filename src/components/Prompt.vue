@@ -16,8 +16,7 @@
   left: 0;
   width: 100vw;
   max-width: 1600px;
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
+  min-height: var(--app-height);
   background: rgba(theme('color-bg-1'), $shade-5);
   backdrop-filter: blur(30px);
   z-index: 10;

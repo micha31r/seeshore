@@ -33,21 +33,22 @@ import Avatar from '../components/Avatar.vue'
 
 const groups = ref([])
 const likes = ref([])
+const app = document.querySelector('#app')
 
 onMounted(async () => {
   const following = await getFollowingByActivity()
   groups.value = await getStoryGroups(following)
   likes.value = await getLikes(groups.value)
 
-  addEventListener('scroll', loadOnScroll)
+  app.addEventListener('scroll', loadOnScroll)
 })
 
 onUnmounted(() => {
-  removeEventListener('scroll', loadOnScroll)
+  app.removeEventListener('scroll', loadOnScroll)
 })
 
 async function loadOnScroll () {
-  if (isScrolledBottom(document.documentElement)) {
+  if (isScrolledBottom(app)) {
     const following = await getFollowingByActivity({
       append: true,
       nextPage: true
@@ -165,8 +166,6 @@ async function getStoryGroups (following, options = {}) {
 
 <style scoped lang='scss'>
 @import '../assets/themes';
-
-$nav-height: calc(1.1em + 15px + 15px * 2);
 
 @include use-theme {
 .grid {
