@@ -342,7 +342,7 @@ async function deleteStory (id) {
     overflow: auto;
 
     @media (max-width: 500px) {
-      height: calc(100vh - var(--nav-height) - $nav-content-height - 90px);
+      height: 100%;
     }
   }
 }
