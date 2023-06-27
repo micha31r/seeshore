@@ -1,4 +1,5 @@
 import { reactive } from 'vue'
+import Paginator from './pagination'
 
 const store = reactive({
   session: null,
@@ -19,12 +20,21 @@ const store = reactive({
 
 export default store
 
+const cacheDefaultOptions = {
+  append: false,
+  nextPage: false,
+  duration: 3600000,
+  pageSize: 20
+}
+
 // Cache data for a period of time
 // Default cache duration is 1 hour
-export async function storeCache (get, key, append = false, duration = 3600000) {
+export async function storeCache (get, key, options) {
+  options = { ...cacheDefaultOptions, ...options }
+
   // Load cached data
-  if (!append && key in store.cache) {
-    const expireDateTime = new Date(Date.now() - duration)
+  if (!options.append && key in store.cache) {
+    const expireDateTime = new Date(Date.now() - options.duration)
     const timestamp = store.cache[key].timestamp
 
     if (timestamp >= expireDateTime) {
@@ -32,13 +42,27 @@ export async function storeCache (get, key, append = false, duration = 3600000) 
     }
   }
 
-  // Get data from remote
   try {
-    const data = await get()
-    const timestamp = new Date()
     const entry = store.cache[key]
 
-    if (append && entry && data instanceof Array) {
+    // Only appendable if entry already exists and option.append = true
+    const isAppendable = options.append && entry
+
+    // Get paginator
+    const paginator = isAppendable
+      ? entry.paginator
+      : new Paginator(options.pageSize)
+
+    if (isAppendable && options.nextPage) {
+      // Increase page number
+      paginator.next()
+    }
+
+    // Get data from remote
+    const data = await get(paginator)
+    const timestamp = new Date()
+
+    if (isAppendable && data instanceof Array) {
       // Append new data
       entry.data = entry.data.concat(data)
       entry.timestamp = timestamp
@@ -46,7 +70,8 @@ export async function storeCache (get, key, append = false, duration = 3600000) 
       // Set new data
       store.cache[key] = {
         data,
-        timestamp
+        timestamp,
+        paginator
       }
     }
 

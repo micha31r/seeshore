@@ -80,7 +80,6 @@ import AccountEditor from '../components/AccountEditor.vue'
 import DeleteAccount from '../components/DeleteAccount.vue'
 import ProfileList from '../components/ProfileList.vue'
 
-const paginator = new Paginator(12)
 const stories = ref([])
 const showAccountMenu = ref(false)
 const likes = ref([])
@@ -104,8 +103,10 @@ onUnmounted(() => {
 
 async function loadOnScroll () {
   if (isScrolledBottom(document.documentElement)) {
-    paginator.next()
-    stories.value = stories.value.concat(await getOwnStories(true))
+    stories.value = stories.value.concat(await getOwnStories({
+      append: true,
+      nextPage: true
+    }))
   }
 }
 
@@ -122,8 +123,8 @@ function toggleDeleteAccount () {
   deleteAccount.value.toggle()
 }
 
-async function getOwnStories(append) {
-  return await storeCache (async () => {
+async function getOwnStories(options = {}) {
+  return await storeCache (async (paginator) => {
     try {
       const { data, error } = await supabase
         .from('stories')
@@ -148,7 +149,10 @@ async function getOwnStories(append) {
     } catch (error) {
       console.error(error)
     }
-  }, 'ownStories', append)
+  }, 'ownStories', {
+    ...options,
+    pageSize: 12
+  })
 }
 
 async function getLikeData (story) {

@@ -32,7 +32,7 @@ import Navbar from '../components/Navbar.vue'
 import Story from '../components/Story.vue'
 import Avatar from '../components/Avatar.vue'
 
-const paginator = new Paginator(12)
+// const paginator = new Paginator(12)
 const groups = ref([])
 const likes = ref([])
 
@@ -50,9 +50,14 @@ onUnmounted(() => {
 
 async function loadOnScroll () {
   if (isScrolledBottom(document.documentElement)) {
-    paginator.next()
-    const following = await getFollowingByActivity(true)
-    groups.value = groups.value.concat(await getStoryGroups(following, true))
+    // paginator.next()
+    const following = await getFollowingByActivity({
+      append: true,
+      nextPage: true
+    })
+    groups.value = groups.value.concat(await getStoryGroups(following, {
+      append: true 
+    }))
     likes.value = await getLikes(groups.value)
   }
 }
@@ -113,8 +118,8 @@ async function toggleLike (story) {
   }
 }
 
-async function getFollowingByActivity (append) {
-  return await storeCache (async () => {
+async function getFollowingByActivity (options = {}) {
+  return await storeCache (async (paginator) => {
     try {
       const [ range_start, range_end ] = paginator.getRange()
       const { data, error } = await supabase
@@ -126,10 +131,13 @@ async function getFollowingByActivity (append) {
     } catch (error) {
       console.error(error)
     }
-  }, 'followingByActivity', append)
+  }, 'followingByActivity', {
+    ...options,
+    pageSize: 1
+  })
 }
 
-async function getStoryGroups (following, append) {
+async function getStoryGroups (following, options = {}) {
   return await storeCache (async () => {
     const stories = []
 
@@ -154,7 +162,7 @@ async function getStoryGroups (following, append) {
 
     // return stories
     return stories
-  }, 'stories', append)
+  }, 'stories', options)
 }
 </script>
 
