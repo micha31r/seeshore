@@ -25,14 +25,12 @@
 import { supabase } from '../supabase'
 import { ref, onMounted, onUnmounted } from 'vue'
 import store, { storeCache } from '../store'
-import Paginator from '../pagination'
 import { isScrolledBottom } from '../utils'
 import { getFollowing } from '../api'
 import Navbar from '../components/Navbar.vue'
 import Story from '../components/Story.vue'
 import Avatar from '../components/Avatar.vue'
 
-// const paginator = new Paginator(12)
 const groups = ref([])
 const likes = ref([])
 
@@ -50,7 +48,6 @@ onUnmounted(() => {
 
 async function loadOnScroll () {
   if (isScrolledBottom(document.documentElement)) {
-    // paginator.next()
     const following = await getFollowingByActivity({
       append: true,
       nextPage: true
@@ -133,7 +130,7 @@ async function getFollowingByActivity (options = {}) {
     }
   }, 'followingByActivity', {
     ...options,
-    pageSize: 1
+    pageSize: 12
   })
 }
 
