@@ -2,7 +2,6 @@ export default class Paginator {
   constructor (size = 20) {
     this.size = size
     this.page = 1
-    this
   }
 
   getRange (start = null, end = null) {

@@ -39,7 +39,7 @@
       <div class='followers'>
         <h3 class='heading'>Follower</h3>
 
-        <ProfileList :data='followers' fallback="You don't have any followers.">
+        <ProfileList :data='followers' fallback="You don't have any followers." ref='followerList'>
           <template #default='{profile}'>
             <div class='actions'>
               <Menu align='right'>
@@ -63,7 +63,7 @@
       <div class='following'>
         <h3 class='heading'>Following</h3>
         
-        <ProfileList :data='following' fallback="You don't have any followers.">
+        <ProfileList :data='following' fallback="You are not following anyone." ref='followingList'>
           <template #default='{profile}'>
             <div class='actions'>
               <AccentButton v-if='profile.isUnfollowed' @click='follow(profile)'>Follow</AccentButton>
@@ -77,13 +77,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { supabase } from '../supabase'
 import store, { storeCache, forceExpire } from '../store'
+import { isScrolledBottom } from '../utils'
 import { getFollowers, getFollowing } from '../api'
 import Navbar from '../components/Navbar.vue'
 import ProfileList from '../components/ProfileList.vue'
 
+const followerList = ref(null)
+const followingList = ref(null)
 const followers = ref([])
 const following = ref([])
 const requests = ref([])
@@ -94,7 +97,33 @@ onMounted(async () => {
   following.value = await getFollowing()
   requests.value = await getFollowRequests()
   pending.value = await getPendingFollowing()
+
+  followerList.value.element.addEventListener('scroll', loadFollowersOnScroll)
+  followingList.value.element.addEventListener('scroll', loadFollowingOnScroll)
 })
+
+onBeforeUnmount(() => {
+  followerList.value.element.removeEventListener('scroll', loadFollowersOnScroll)
+  followingList.value.element.removeEventListener('scroll', loadFollowingOnScroll)
+})
+
+async function loadFollowersOnScroll () {
+  if (isScrolledBottom(followerList.value.element)) {
+    followers.value = followers.value.concat(await getFollowers({
+      append: true,
+      nextPage: true
+    }))
+  }
+}
+
+async function loadFollowingOnScroll () {
+  if (isScrolledBottom(followingList.value.element)) {
+    following.value = following.value.concat(await getFollowing({
+      append: true,
+      nextPage: true
+    }))
+  }
+}
 
 async function approveFollowRequest (profile) {
   await createFollower(profile)
@@ -287,6 +316,9 @@ async function follow(target) {
   }
 
   .profile-list {
+    max-height: 500px;
+    overflow: auto;
+
     .actions {
       display: flex;
       gap: 15px;
