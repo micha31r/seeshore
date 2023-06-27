@@ -29,9 +29,9 @@
       <div class='feed'>
         <Story v-for='frame in stories' :data='[frame]' :key='frame'>
           <template #default='{ story, index }'>
-            <AccentButton class='likes' @click='likeState = story.id'>
+            <AccentButton class='likes' @click='toggleLikesList(story.likes)'>
               <Icon icon='heart' />
-              <span v-if='likeData[story.id]'>{{ likeData[story.id].length }}</span>
+              <span v-if='story.likes'>{{ story.likes.length }}</span>
             </AccentButton>  
 
             <Menu align='right'>
@@ -55,11 +55,11 @@
       <DeleteAccount ref='deleteAccount' />
 
       <!-- Like prompt -->
-      <Prompt v-if='likeState >= 0'>
+      <Prompt v-if='showLikes'>
         <div class='like-profiles'>
           <h3 class='heading'>Liked By</h3>
-          <ProfileList :data='likeData[likeState]' fallback='This story does not have any likes.'/>
-          <AccentButton @click='likeState = -1'>Close</AccentButton>
+          <ProfileList :data='likes' fallback='This story does not have any likes.'/>
+          <AccentButton @click='toggleLikesList()'>Close</AccentButton>
         </div>
       </Prompt>
     </div>
@@ -82,8 +82,8 @@ import ProfileList from '../components/ProfileList.vue'
 const paginator = new Paginator()
 const stories = ref([])
 const showAccountMenu = ref(false)
-const likeData = ref({})
-const likeState = ref(-1)
+const likes = ref([])
+const showLikes = ref(false)
 const accountEditor = ref(null)
 const deleteAccount = ref(null)
 const followerCount = ref(0)
@@ -106,6 +106,11 @@ async function loadOnScroll () {
     paginator.next()
     stories.value = stories.value.concat(await getOwnStories(true))
   }
+}
+
+function toggleLikesList (data = []) {
+  showLikes.value = showLikes.value ? false : true
+  likes.value = data
 }
 
 function toggleAccountEditor () {
@@ -166,9 +171,11 @@ async function getOwnStories(append) {
 
       if (error) throw error
 
-      data.forEach(async item => {
-        likeData.value[item.id] = await getLikeData(item)
-      })
+      // Load likes
+      for (let i = 0; i < data.length; i++) {
+        const item =  data[i]
+        item.likes = await getLikeData(item)
+      }
 
       return data
     } catch (error) {
@@ -208,11 +215,9 @@ async function deleteStory (id) {
 
     if (error) throw error
 
-    // Remove story data locally,
-    // do not fetch new data
+    // Remove story from local feed
     const index = stories.value.findIndex(item => item.id == id)
     stories.value.splice(index, 1)
-    delete likeData.value[id]
   } catch (error) {
     console.error(error)
   }
