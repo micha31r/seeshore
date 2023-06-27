@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { ref, toRefs, defineExpose, onMounted } from 'vue'
+import { ref, toRefs, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { download } from '../supabase'
 import Preview from './Preview.vue'
