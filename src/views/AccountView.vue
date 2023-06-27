@@ -67,9 +67,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { supabase } from '../supabase'
 import store, { storeCache, forceExpire } from '../store'
+import { isScrolledBottom } from '../utils'
+import Paginator from '../pagination'
 import Navbar from '../components/Navbar.vue'
 import Story from '../components/Story.vue'
 import Avatar from '../components/Avatar.vue'
@@ -77,6 +79,7 @@ import AccountEditor from '../components/AccountEditor.vue'
 import DeleteAccount from '../components/DeleteAccount.vue'
 import ProfileList from '../components/ProfileList.vue'
 
+const paginator = new Paginator()
 const stories = ref([])
 const showAccountMenu = ref(false)
 const likeData = ref({})
@@ -88,10 +91,22 @@ const followingCount = ref(0)
 
 onMounted(async () => {
   stories.value = await getOwnStories()
-  likeData.value = await getLikeData()
   followerCount.value = await getFollowerCount()
   followingCount.value = await getFollowingCount()
+
+  addEventListener('scroll', loadOnScroll)
 })
+
+onUnmounted(() => {
+  removeEventListener('scroll', loadOnScroll)
+})
+
+async function loadOnScroll () {
+  if (isScrolledBottom(document.documentElement)) {
+    paginator.next()
+    stories.value = stories.value.concat(await getOwnStories(true))
+  }
+}
 
 function toggleAccountEditor () {
   accountEditor.value.toggle()
@@ -135,7 +150,7 @@ async function getFollowingCount() {
   }, 'followingCount')
 }
 
-async function getOwnStories() {
+async function getOwnStories(append) {
   return await storeCache (async () => {
     try {
       const { data, error } = await supabase
@@ -147,44 +162,41 @@ async function getOwnStories() {
         `)
         .eq('profile', store.profile.id)
         .order('created_at', { ascending: false })
+        .range(...paginator.getRange())
 
       if (error) throw error
+
+      data.forEach(async item => {
+        likeData.value[item.id] = await getLikeData(item)
+      })
 
       return data
     } catch (error) {
       console.error(error)
     }
-  }, 'ownStories')
+  }, 'ownStories', append)
 }
 
-async function getLikeData () {
-  const results = {}
+async function getLikeData (story) {
+  try {
+    const { data, error } = await supabase
+      .from('likes')
+      .select(`
+        profile (
+          id,
+          full_name,
+          avatar_url
+        )
+      `)
+      .eq('story', story.id)
 
-  for (let i = 0; i < stories.value.length; i++) {
-    const item = stories.value[i]
+    if (error) throw error
 
-    try {
-      const { data, error } = await supabase
-        .from('likes')
-        .select(`
-          profile (
-            id,
-            full_name,
-            avatar_url
-          )
-        `)
-        .eq('story', item.id)
-
-      if (error) throw error
-
-      // Set values to an array of profiles
-      results[item.id] = data.map(item => item.profile)
-    } catch (error) {
-      console.error(error)
-    }
+    // Set values to an array of profiles
+    return data.map(item => item.profile)
+  } catch (error) {
+    console.error(error)
   }
-
-  return results
 }
 
 async function deleteStory (id) {
@@ -196,9 +208,11 @@ async function deleteStory (id) {
 
     if (error) throw error
 
-    forceExpire('ownStories')
-  
-    stories.value = await getOwnStories()
+    // Remove story data locally,
+    // do not fetch new data
+    const index = stories.value.findIndex(item => item.id == id)
+    stories.value.splice(index, 1)
+    delete likeData.value[id]
   } catch (error) {
     console.error(error)
   }

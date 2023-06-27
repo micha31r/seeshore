@@ -21,9 +21,9 @@ export default store
 
 // Cache data for a period of time
 // Default cache duration is 1 hour
-export async function storeCache (get, key, duration = 3600000) {
+export async function storeCache (get, key, append = false, duration = 3600000) {
   // Load cached data
-  if (key in store.cache) {
+  if (!append && key in store.cache) {
     const expireDateTime = new Date(Date.now() - duration)
     const timestamp = store.cache[key].timestamp
 
@@ -36,10 +36,18 @@ export async function storeCache (get, key, duration = 3600000) {
   try {
     const data = await get()
     const timestamp = new Date()
+    const entry = store.cache[key]
 
-    store.cache[key] = {
-      data,
-      timestamp
+    if (append && entry && data instanceof Array) {
+      // Append new data
+      entry.data = entry.data.concat(data)
+      entry.timestamp = timestamp
+    } else {
+      // Set new data
+      store.cache[key] = {
+        data,
+        timestamp
+      }
     }
 
     return data
