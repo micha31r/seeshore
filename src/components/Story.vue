@@ -35,20 +35,7 @@ defineExpose({ getFrameData })
 
 onMounted(async () => {
   await preload()
-  // resize()
-  // addEventListener('resize', resize)
 })
-
-// router.beforeEach((to, from, next) => {
-//   removeEventListener('resize', resize)
-//   next()
-// })
-
-// function resize () {
-//   const nav = document.querySelector('nav')
-//   const height = window.innerHeight - nav.clientHeight - 15
-//   element.value.style.height = height + 'px'
-// }
 
 // Get story data at current index
 function getFrameData () {

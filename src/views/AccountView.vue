@@ -80,7 +80,7 @@ import AccountEditor from '../components/AccountEditor.vue'
 import DeleteAccount from '../components/DeleteAccount.vue'
 import ProfileList from '../components/ProfileList.vue'
 
-const paginator = new Paginator()
+const paginator = new Paginator(12)
 const stories = ref([])
 const showAccountMenu = ref(false)
 const likes = ref([])
