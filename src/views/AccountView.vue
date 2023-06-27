@@ -189,6 +189,9 @@ async function deleteStory (id) {
     // Remove story from local feed
     const index = stories.value.findIndex(item => item.id == id)
     stories.value.splice(index, 1)
+
+    // Fetch new data on next component load
+    forceExpire('ownStories')
   } catch (error) {
     console.error(error)
   }
