@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { ref, defineEmits, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const element = ref(null)
 
