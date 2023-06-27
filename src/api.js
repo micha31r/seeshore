@@ -48,3 +48,37 @@ export async function getFollowing () {
     }
   }, 'following')
 }
+
+export async function getFollowerCount () {
+  return await storeCache (async () => {
+    try {
+      const { count, error } = await supabase
+        .from('followers')
+        .select(`id`, { count: 'exact', head: true })
+        .eq('profile', store.profile.id)
+
+      if (error) throw error
+
+      return count
+    } catch (error) {
+      console.error(error)
+    }
+  }, 'followerCount')
+}
+
+export async function getFollowingCount () {
+  return await storeCache (async () => {
+    try {
+      const { count, error } = await supabase
+        .from('followers')
+        .select(`id`, { count: 'exact', head: true })
+        .eq('follower', store.profile.id)
+
+      if (error) throw error
+
+      return count
+    } catch (error) {
+      console.error(error)
+    }
+  }, 'followingCount')
+}

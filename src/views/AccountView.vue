@@ -71,6 +71,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { supabase } from '../supabase'
 import store, { storeCache, forceExpire } from '../store'
 import { isScrolledBottom } from '../utils'
+import { getFollowerCount, getFollowingCount } from '../api'
 import Paginator from '../pagination'
 import Navbar from '../components/Navbar.vue'
 import Story from '../components/Story.vue'
@@ -119,40 +120,6 @@ function toggleAccountEditor () {
 
 function toggleDeleteAccount () {
   deleteAccount.value.toggle()
-}
-
-async function getFollowerCount() {
-  return await storeCache (async () => {
-    try {
-      const { count, error } = await supabase
-        .from('followers')
-        .select(`id`, { count: 'exact', head: true })
-        .eq('profile', store.profile.id)
-
-      if (error) throw error
-
-      return count
-    } catch (error) {
-      console.error(error)
-    }
-  }, 'followerCount')
-}
-
-async function getFollowingCount() {
-  return await storeCache (async () => {
-    try {
-      const { count, error } = await supabase
-        .from('followers')
-        .select(`id`, { count: 'exact', head: true })
-        .eq('follower', store.profile.id)
-
-      if (error) throw error
-
-      return count
-    } catch (error) {
-      console.error(error)
-    }
-  }, 'followingCount')
 }
 
 async function getOwnStories(append) {
