@@ -218,6 +218,8 @@ async function unfollow(target) {
 
     if (error) throw error
 
+    forceExpire('following')
+
     // Mark profile as unfollowed
     following.value.some(item => {
       if (item.id == target.id) {
