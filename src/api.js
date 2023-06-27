@@ -14,6 +14,7 @@ export async function getFollowers () {
           )
         `)
         .eq('profile', store.profile.id)
+        .order('id', { ascending: false })
 
       if (error) throw error
 
@@ -37,6 +38,7 @@ export async function getFollowing () {
           )
         `)
         .eq('follower', store.profile.id)
+        .order('id', { ascending: false })
 
       if (error) throw error
 

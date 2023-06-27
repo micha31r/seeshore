@@ -157,6 +157,7 @@ async function getPendingFollowing () {
           )
         `)
         .eq('profile', store.profile.id)
+        .order('created_at', { ascending: false })
 
         if (error) throw error
 
@@ -180,6 +181,7 @@ async function getFollowRequests () {
           )
         `)
         .eq('following', store.profile.id)
+        .order('created_at', { ascending: false })
 
         if (error) throw error
 
