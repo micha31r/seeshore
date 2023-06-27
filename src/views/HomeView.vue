@@ -120,9 +120,6 @@ function groupStories(stories) {
   let groups = {}
 
   stories.value.forEach(item => {
-    // Skip if user has sharing access, but is no longer a follower
-    if (item === null) return
-
     const key = item.profile.id
 
     if (!(key in groups)) {
