@@ -29,9 +29,9 @@
       <div class='feed'>
         <Story v-for='frame in stories' :data='[frame]' :key='frame'>
           <template #default='{ story, index }'>
-            <AccentButton class='likes' @click='likeState = story.id'>
+            <AccentButton class='likes' @click='toggleLikesList(story.likes)'>
               <Icon icon='heart' />
-              <span v-if='likeData[story.id]'>{{ likeData[story.id].length }}</span>
+              <span v-if='story.likes'>{{ story.likes.length }}</span>
             </AccentButton>  
 
             <Menu align='right'>
@@ -55,11 +55,11 @@
       <DeleteAccount ref='deleteAccount' />
 
       <!-- Like prompt -->
-      <Prompt v-if='likeState >= 0'>
+      <Prompt v-if='showLikes'>
         <div class='like-profiles'>
           <h3 class='heading'>Liked By</h3>
-          <ProfileList :data='likeData[likeState]' fallback='This story does not have any likes.'/>
-          <AccentButton @click='likeState = -1'>Close</AccentButton>
+          <ProfileList :data='likes' fallback='This story does not have any likes.'/>
+          <AccentButton @click='toggleLikesList()'>Close</AccentButton>
         </div>
       </Prompt>
     </div>
@@ -67,9 +67,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { supabase } from '../supabase'
 import store, { storeCache, forceExpire } from '../store'
+import { isScrolledBottom } from '../utils'
+import { getFollowerCount, getFollowingCount } from '../api'
 import Navbar from '../components/Navbar.vue'
 import Story from '../components/Story.vue'
 import Avatar from '../components/Avatar.vue'
@@ -79,8 +81,8 @@ import ProfileList from '../components/ProfileList.vue'
 
 const stories = ref([])
 const showAccountMenu = ref(false)
-const likeData = ref({})
-const likeState = ref(-1)
+const likes = ref([])
+const showLikes = ref(false)
 const accountEditor = ref(null)
 const deleteAccount = ref(null)
 const followerCount = ref(0)
@@ -88,10 +90,29 @@ const followingCount = ref(0)
 
 onMounted(async () => {
   stories.value = await getOwnStories()
-  likeData.value = await getLikeData()
   followerCount.value = await getFollowerCount()
   followingCount.value = await getFollowingCount()
+
+  addEventListener('scroll', loadOnScroll)
 })
+
+onUnmounted(() => {
+  removeEventListener('scroll', loadOnScroll)
+})
+
+async function loadOnScroll () {
+  if (isScrolledBottom(document.documentElement)) {
+    stories.value = stories.value.concat(await getOwnStories({
+      append: true,
+      nextPage: true
+    }))
+  }
+}
+
+function toggleLikesList (data = []) {
+  showLikes.value = showLikes.value ? false : true
+  likes.value = data
+}
 
 function toggleAccountEditor () {
   accountEditor.value.toggle()
@@ -101,42 +122,8 @@ function toggleDeleteAccount () {
   deleteAccount.value.toggle()
 }
 
-async function getFollowerCount() {
-  return await storeCache (async () => {
-    try {
-      const { count, error } = await supabase
-        .from('followers')
-        .select(`id`, { count: 'exact', head: true })
-        .eq('profile', store.profile.id)
-
-      if (error) throw error
-
-      return count
-    } catch (error) {
-      console.error(error)
-    }
-  }, 'followerCount')
-}
-
-async function getFollowingCount() {
-  return await storeCache (async () => {
-    try {
-      const { count, error } = await supabase
-        .from('followers')
-        .select(`id`, { count: 'exact', head: true })
-        .eq('follower', store.profile.id)
-
-      if (error) throw error
-
-      return count
-    } catch (error) {
-      console.error(error)
-    }
-  }, 'followingCount')
-}
-
-async function getOwnStories() {
-  return await storeCache (async () => {
+async function getOwnStories(options = {}) {
+  return await storeCache (async (paginator) => {
     try {
       const { data, error } = await supabase
         .from('stories')
@@ -147,44 +134,48 @@ async function getOwnStories() {
         `)
         .eq('profile', store.profile.id)
         .order('created_at', { ascending: false })
+        .range(...paginator.getRange())
 
       if (error) throw error
+
+      // Load likes
+      for (let i = 0; i < data.length; i++) {
+        const item =  data[i]
+        item.likes = await getLikeData(item)
+      }
 
       return data
     } catch (error) {
       console.error(error)
     }
-  }, 'ownStories')
+  }, 'ownStories', {
+    ...options,
+    pageSize: 12
+  })
 }
 
-async function getLikeData () {
-  const results = {}
+async function getLikeData (story) {
+  try {
+    const { data, error } = await supabase
+      .from('likes')
+      .select(`
+        profile (
+          id,
+          full_name,
+          avatar_url
+        )
+      `)
+      .eq('story', story.id)
+      .order('created_at', { ascending: false })
+      .limit(100)
 
-  for (let i = 0; i < stories.value.length; i++) {
-    const item = stories.value[i]
+    if (error) throw error
 
-    try {
-      const { data, error } = await supabase
-        .from('likes')
-        .select(`
-          profile (
-            id,
-            full_name,
-            avatar_url
-          )
-        `)
-        .eq('story', item.id)
-
-      if (error) throw error
-
-      // Set values to an array of profiles
-      results[item.id] = data.map(item => item.profile)
-    } catch (error) {
-      console.error(error)
-    }
+    // Set values to an array of profiles
+    return data.map(item => item.profile)
+  } catch (error) {
+    console.error(error)
   }
-
-  return results
 }
 
 async function deleteStory (id) {
@@ -196,9 +187,12 @@ async function deleteStory (id) {
 
     if (error) throw error
 
+    // Remove story from local feed
+    const index = stories.value.findIndex(item => item.id == id)
+    stories.value.splice(index, 1)
+
+    // Fetch new data on next component load
     forceExpire('ownStories')
-  
-    stories.value = await getOwnStories()
   } catch (error) {
     console.error(error)
   }

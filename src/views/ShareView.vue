@@ -134,6 +134,20 @@ async function createStory () {
     }
   })
 
+  // Update profile timestamp
+  try {
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        last_story_at: new Date()
+      })
+      .eq('id', store.profile.id)
+
+    if (error) throw error
+  } catch (error) {
+    console.log(error)
+  }
+
   // Clear store.editor
   store.editor = {
     file: null,

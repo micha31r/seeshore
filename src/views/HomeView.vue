@@ -3,7 +3,7 @@
     <Navbar pageName='Stories' />
 
     <div class='feed'>
-      <Story v-for='[key, data] in groups' :data='data'>
+      <Story v-for='data in groups' :data='data'>
         <template #default='{ story, index }'>
           <!-- Profile -->
           <div class='profile'>
@@ -23,31 +23,55 @@
 
 <script setup>
 import { supabase } from '../supabase'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import store, { storeCache } from '../store'
+import { isScrolledBottom } from '../utils'
+import { getFollowing } from '../api'
 import Navbar from '../components/Navbar.vue'
 import Story from '../components/Story.vue'
 import Avatar from '../components/Avatar.vue'
 
-const stories = ref([])
 const groups = ref([])
-const likes = ref([]) // Array of liked story ids
+const likes = ref([])
 
 onMounted(async () => {
-  stories.value = await getStories()
-  groups.value = groupStories(stories)
-  likes.value = await getLikes()
+  const following = await getFollowingByActivity()
+  groups.value = await getStoryGroups(following)
+  likes.value = await getLikes(groups.value)
+
+  addEventListener('scroll', loadOnScroll)
 })
 
-async function getLikes () {
-  const storyIds = stories.value.map(item => item.id)
+onUnmounted(() => {
+  removeEventListener('scroll', loadOnScroll)
+})
+
+async function loadOnScroll () {
+  if (isScrolledBottom(document.documentElement)) {
+    const following = await getFollowingByActivity({
+      append: true,
+      nextPage: true
+    })
+    groups.value = groups.value.concat(await getStoryGroups(following, {
+      append: true 
+    }))
+    likes.value = await getLikes(groups.value)
+  }
+}
+
+async function getLikes (stories) {
+  let ids = []
+
+  stories.forEach(group => {
+    ids = ids.concat(group.map(story => story.id))
+  })
 
   try {
     const { data, error } = await supabase
       .from('likes')
       .select(`story`)
       .eq('profile', store.profile.id)
-      .in('story', storyIds)
+      .in('story', ids)
 
     if (error) throw error
 
@@ -91,53 +115,51 @@ async function toggleLike (story) {
   }
 }
 
-async function getStories () {
-  return await storeCache (async () => {
+async function getFollowingByActivity (options = {}) {
+  return await storeCache (async (paginator) => {
     try {
+      const [ range_start, range_end ] = paginator.getRange()
       const { data, error } = await supabase
-        .from('sharing')
-        .select(`
-          story (
-            id,
-            profile (id, avatar_url, full_name),
-            media_url,
-            created_at
-          )
-        `)
-        .eq('profile', store.profile.id)
-        .order('story', { ascending: false })
-      
+        .rpc('get_profile_by_activity', { range_start, range_end })
+
       if (error) throw error
 
-      return data.map(item => item.story)
+      return data
     } catch (error) {
       console.error(error)
     }
-  }, 'stories')
+  }, 'followingByActivity', {
+    ...options,
+    pageSize: 12
+  })
 }
 
-function groupStories(stories) {
-  let groups = {}
+async function getStoryGroups (following, options = {}) {
+  return await storeCache (async () => {
+    const stories = []
 
-  stories.value.forEach(item => {
-    // Skip if user has sharing access, but is no longer a follower
-    if (item === null) return
+    for (let i = 0; i < following.length; i++) {
+      try {
+        const { data, error } = await supabase
+          .rpc('get_stories_from_following', { 
+            following_id: following[i].id
+          })
+          .select(`
+            *,
+            profile (id, avatar_url, full_name)
+          `)
 
-    const key = item.profile.id
+        if (error) throw error
 
-    if (!(key in groups)) {
-      groups[key] = []
+        stories.push(data)
+      } catch (error) {
+        console.error(error)
+      }
     }
 
-    groups[key].push(item)
-  })
-
-  // Sort by the user with the most recent story
-  let sorted = Object.entries(groups).sort((a, b) => {
-    return a[1][0].created_at - b[1][0].created_at
-  })
-
-  return sorted
+    // return stories
+    return stories
+  }, 'stories', options)
 }
 </script>
 

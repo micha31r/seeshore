@@ -1,8 +1,8 @@
 import { supabase } from './supabase'
 import store, { storeCache } from './store'
 
-export async function getFollowers () {
-  return await storeCache (async () => {
+export async function getFollowers (options = {}) {
+  return await storeCache (async (paginator) => {
     try {
       const { data, error } = await supabase
         .from('followers')
@@ -15,6 +15,7 @@ export async function getFollowers () {
         `)
         .eq('profile', store.profile.id)
         .order('id', { ascending: false })
+        .range(...paginator.getRange())
 
       if (error) throw error
 
@@ -22,11 +23,11 @@ export async function getFollowers () {
     } catch (error) {
       console.error(error)
     }
-  }, 'followers')
+  }, 'followers', options)
 }
 
-export async function getFollowing () {
-  return await storeCache (async () => {
+export async function getFollowing (options = {}) {
+  return await storeCache (async (paginator) => {
     try {
       const { data, error } = await supabase
         .from('followers')
@@ -39,6 +40,7 @@ export async function getFollowing () {
         `)
         .eq('follower', store.profile.id)
         .order('id', { ascending: false })
+        .range(...paginator.getRange())
 
       if (error) throw error
 
@@ -46,5 +48,39 @@ export async function getFollowing () {
     } catch (error) {
       console.error(error)
     }
-  }, 'following')
+  }, 'following', options)
+}
+
+export async function getFollowerCount () {
+  return await storeCache (async () => {
+    try {
+      const { count, error } = await supabase
+        .from('followers')
+        .select(`id`, { count: 'exact', head: true })
+        .eq('profile', store.profile.id)
+
+      if (error) throw error
+
+      return count
+    } catch (error) {
+      console.error(error)
+    }
+  }, 'followerCount')
+}
+
+export async function getFollowingCount () {
+  return await storeCache (async () => {
+    try {
+      const { count, error } = await supabase
+        .from('followers')
+        .select(`id`, { count: 'exact', head: true })
+        .eq('follower', store.profile.id)
+
+      if (error) throw error
+
+      return count
+    } catch (error) {
+      console.error(error)
+    }
+  }, 'followingCount')
 }
