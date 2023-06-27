@@ -197,7 +197,7 @@ $nav-height: calc(1.1em + 15px + 15px * 2);
     }
   }
 
-  .story::v-deep .preview {
+  .story:deep(.preview) {
     cursor: pointer;
   }
 }

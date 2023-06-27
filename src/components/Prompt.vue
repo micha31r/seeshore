@@ -9,7 +9,7 @@
 @import '../assets/main';
 
 @include use-theme {
-.prompt::v-deep {
+.prompt:deep() {
   display: flex;
   position: fixed;
   top: 0;

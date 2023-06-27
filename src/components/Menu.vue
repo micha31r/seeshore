@@ -52,7 +52,7 @@ function toggle (event) {
     margin: 0 0 0 auto;
   }
 
-  .list::v-deep {
+  .list:deep() {
     display: flex;
     gap: 5px;
     flex-direction: column;

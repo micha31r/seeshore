@@ -319,7 +319,7 @@ async function deleteStory (id) {
     }
   }
 
-  .story::v-deep .progress {
+  .story:deep(.progress) {
     display: none;
   }
 }

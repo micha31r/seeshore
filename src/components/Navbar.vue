@@ -129,7 +129,7 @@ nav {
   }
 }
 
-nav::v-deep {
+nav:deep() {
   .menu {
     @media (max-width: 500px) {
       position: static;

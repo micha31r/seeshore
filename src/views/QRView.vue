@@ -208,7 +208,7 @@ async function isFollowing (id) {
   margin: auto;
 }
 
-.profile-list::v-deep .profile {
+.profile-list:deep(.profile) {
   border: 1px solid theme('color-border-1');
   border-radius: $border-radius-round;
   padding: 5px 10px 5px 5px;
@@ -222,7 +222,7 @@ async function isFollowing (id) {
   margin: auto;
 }
 
-.scanner::v-deep {
+.scanner:deep() {
   position: fixed;
   top: 0;
   left: 0;

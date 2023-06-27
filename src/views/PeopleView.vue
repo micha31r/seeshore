@@ -298,14 +298,14 @@ async function follow(target) {
         padding-bottom: 0;
       }
 
-      .menu::v-deep .toggle {
+      .menu:deep(.toggle) {
         background: transparent;
       }
     }
   }
 }
 
-.pending::v-deep {
+.pending:deep() {
   .profile-list {
     flex-direction: row;
     gap: 5px;
