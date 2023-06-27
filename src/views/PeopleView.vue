@@ -344,6 +344,7 @@ async function follow(target) {
 .pending:deep() {
   .profile-list {
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 5px;
 
     .profile {
