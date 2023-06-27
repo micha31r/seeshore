@@ -41,7 +41,7 @@ const lifespan = 86400000 // 24 hours
 const code = ref('')
 const showScanner = ref(false)
 const video = ref(null)
-const overlay = ref(null)
+const scanSize = 300
 
 // UUID regex (Melvin George, 2021)
 // https://melvingeorge.me/blog/check-if-string-valid-uuid-regex-javascript
@@ -58,7 +58,25 @@ onMounted(async () => {
   code.value = URLPrefix + await getFollowCode()
 
   qrScanner = new QrScanner(video.value, scanCallback, {
-    highlightScanRegion: true
+    highlightScanRegion: true,
+    calculateScanRegion (video) {
+      let minVideoDimension = video.videoHeight
+      let minWindowDimension =  window.innerHeight
+
+      if (video.videoWidth < video.videoHeight) {
+        minVideoDimension = video.videoWidth
+        minWindowDimension = window.innerWidth
+      } 
+
+      const scanRegionSize = scanSize / minWindowDimension * minVideoDimension
+
+      return {
+          x: (video.videoWidth - scanRegionSize) / 2,
+          y: (video.videoHeight - scanRegionSize) / 2,
+          width: scanRegionSize,
+          height: scanRegionSize
+      }
+    }
   })
 
   qrScanner.setInversionMode('both')
@@ -246,7 +264,10 @@ async function isFollowing (id) {
     bottom: 15px;
     left: 50%;
     transform: translate(-50%, 0);
+    width: 100px;
     border-radius: $border-radius-round;
+    background: #FFF;
+    color: #000;
   }
 }
 }
