@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import { ref, toRefs, defineProps, defineExpose, onMounted, watch } from 'vue'
+import { ref, toRefs, defineExpose, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { download } from '../supabase'
 import { isValidURL, isMobile } from '../utils'

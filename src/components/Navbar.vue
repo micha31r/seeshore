@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
 import store from '../store'
 import Avatar from './Avatar.vue'

@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import { ref, toRefs, defineProps, onMounted, watch } from 'vue'
+import { ref, toRefs, onMounted, watch } from 'vue'
 import { encodeData, rendererRound } from 'beautify-qrcode';
 import store from '../store'
 import Navbar from '../components/Navbar.vue'

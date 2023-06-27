@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps } from 'vue'
+import { ref } from 'vue'
 import Avatar from './Avatar.vue'
 
 const element = ref(null)

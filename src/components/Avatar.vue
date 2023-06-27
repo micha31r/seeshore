@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import { ref, toRefs, defineProps, onMounted, watch } from 'vue'
+import { ref, toRefs, onMounted, watch } from 'vue'
 import { minidenticon } from 'minidenticons'
 import store from '../store'
 import { download } from '../supabase'

@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { ref, toRefs, defineProps, onMounted } from 'vue'
+import { ref, toRefs, onMounted } from 'vue'
 import feather from 'feather-icons'
 
 const props = defineProps(['checked'])
