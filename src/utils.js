@@ -56,5 +56,5 @@ export function isMobile () {
 
 // Check if an element is scrolled to the bottom
 export function isScrolledBottom(element) {
-  return (element.offsetHeight <= Math.ceil(element.scrollTop + element.clientHeight))
+  return element.scrollHeight - element.scrollTop - element.clientHeight < 1
 }
