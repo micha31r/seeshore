@@ -28,7 +28,7 @@ import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import QrScanner from 'qr-scanner'
 import { uuid } from 'vue-uuid'
-import store from '../store'
+import store, { forceExpire } from '../store'
 import { supabase } from '../supabase'
 import Navbar from '../components/Navbar.vue'
 import QRCode from '../components/QRCode.vue'
@@ -176,6 +176,8 @@ async function createFollowRequest (id) {
       .select()
 
     if (error) throw error
+
+    forceExpire('pendingFollowing')
 
     router.push({ name: 'people' })
   } catch (error) {
