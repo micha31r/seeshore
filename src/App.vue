@@ -1,5 +1,5 @@
 <template>
-  <div class='main'>
+  <div class='main' ref='main'>
     <link rel='preconnect' href='https://fonts.googleapis.com'>
     <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
     <link href='https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;900&family=Urbanist:wght@500;600&display=swap' rel='stylesheet'>
@@ -10,11 +10,14 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { RouterView } from 'vue-router'
 import { supabase } from './supabase'
 import store from './store'
 import Auth from './components/Auth.vue'
+
+const root = document.querySelector(':root')
+const main = ref(null)
 
 // Watch for theme changes (Mark Szabo, 2019) (mikemaccana, 2022)
 // https://stackoverflow.com/questions/56393880/how-do-i-detect-dark-mode-using-javascript
@@ -39,7 +42,14 @@ onMounted(async () => {
   supabase.auth.onAuthStateChange((_, _session) => {
     store.session = _session
   })
+
+  getAppHeight()
+  addEventListener('resize', getAppHeight)
 })
+
+function getAppHeight () {
+  root.style.setProperty('--app-height', window.innerHeight + 'px')
+}
 
 function setTheme (mode) {
   store.theme = mode

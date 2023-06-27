@@ -60,12 +60,14 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { supabase } from '../supabase'
 import store from '../store'
 import Avatar from './Avatar.vue'
 
 defineProps(['pageName'])
 
+const router = useRouter()
 const root = document.querySelector(':root')
 const nav = ref(null)
 const showLogoutPrompt = ref(false)
@@ -73,6 +75,11 @@ const showLogoutPrompt = ref(false)
 onMounted(() => {
   getNavHeight()
   addEventListener('resize', getNavHeight)
+})
+
+router.beforeEach((to, from, next) => {
+  removeEventListener('resize', getNavHeight)
+  next()
 })
 
 function getNavHeight () {

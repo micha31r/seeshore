@@ -4,12 +4,17 @@ $border-radius-2: 10px;
 $border-radius-3: 5px;
 $border-radius-round: 100px;
 
+:root {
+  // Default values in case JS fails
+  --nav-height: calc(1.1em + 15px + 30px);
+  --app-height: 100vh;
+}
+
 #app > .main {
   font-family: 'Urbanist', sans-serif;
   display: flex;
   width: 100vw;
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
+  min-height: var(--app-height);
   max-width: 1600px;
   margin: 0 auto;
 }

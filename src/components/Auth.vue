@@ -1,22 +1,20 @@
 <template>
-  <div class='wrapper'>
-    <form @submit.prevent>
-      <h1>Log In</h1>
+  <form @submit.prevent>
+    <h1>Log In</h1>
 
-      <div>
-        <label>Email</label>
-        <IconInput type='email' v-model='email' placeholder='you@example.com' icon='mail' required/>
-      </div>
+    <div>
+      <label>Email</label>
+      <IconInput type='email' v-model='email' placeholder='you@example.com' icon='mail' required/>
+    </div>
 
-      <SolidButton class='submit solid' @click='OTPLogin' :disabled='OTPState != 0'>
-        <template v-if='OTPState == 0'>Get Magic Link</template>
-        <template v-else-if='OTPState == 1'>Sending...</template>
-        <template v-else>Check Your Inbox</template>
-      </SolidButton>
-      
-      <OutlineButton class='oauth outline' @click.submit.prevent='GoogleLogin'>Continue with Google</OutlineButton>
-    </form>
-  </div>
+    <SolidButton class='submit solid' @click='OTPLogin' :disabled='OTPState != 0'>
+      <template v-if='OTPState == 0'>Get Magic Link</template>
+      <template v-else-if='OTPState == 1'>Sending...</template>
+      <template v-else>Check Your Inbox</template>
+    </SolidButton>
+    
+    <OutlineButton class='oauth outline' @click.submit.prevent='GoogleLogin'>Continue with Google</OutlineButton>
+  </form>
 </template>
 
 <script setup>
@@ -63,12 +61,6 @@ async function GoogleLogin () {
 @import '../assets/themes';
 
 @include use-theme {
-.wrapper {
-  display: flex;
-  width: 100%;
-  height: 100vh;
-}
-
 form {
   display: grid;
   gap: 10px;

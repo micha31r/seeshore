@@ -191,7 +191,6 @@ async function isFollowing (id) {
   display: grid;
   grid-template-rows: auto 1fr;
   flex: 1;
-  height: calc(100vh - var(--nav-height));
 }
 
 .qr {
@@ -227,8 +226,7 @@ async function isFollowing (id) {
   top: 0;
   left: 0;
   width: 100vw;
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
+  height: var(--app-height);
   background: theme('color-bg-1');
   z-index: 101; // appear above navbar
 
