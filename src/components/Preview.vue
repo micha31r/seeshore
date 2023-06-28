@@ -34,19 +34,7 @@ onUnmounted(() => {
 
 function resize () {
   const heightLimit = window.innerHeight * 0.8
-  let width = element.value.clientWidth
-  let height = width * aspectRatio
-
-  // If height is too big,
-  // resize width so the height fits within the limit
-  if (!isMobile() && height > heightLimit) {
-    height = heightLimit
-    width = height / aspectRatio
-
-    // Set max width
-    element.value.style.maxWidth = width + 'px'
-  }
-
+  const height = element.value.clientWidth * aspectRatio
   element.value.style.height = height + 'px'
 }
 

@@ -1,61 +1,65 @@
 <template>
-  <div class='story' v-if='story' ref='element'>
+  <div class='story' ref='element'>
     <!-- Other information such as author -->
     <div class='meta'>
-      <slot :story='story'></slot>
+      <slot :story='stories[0]'></slot>
     </div>
 
-    <!-- Media -->
-    <Preview type='image' v-if='image' :media='image' blur='true' :key='storyIndex'>
-      <div class='controls'>
-        <div class='left'  @click='cycle(-1)'>
-          <AccentButton class='icon'>
-            <Icon icon='chevron-left' />
-          </AccentButton>
-        </div>
-
-         <div class='right' @click='cycle(1)'>
-          <AccentButton class='icon'>
-            <Icon icon='chevron-right' />
-          </AccentButton>
+    <!-- Content -->
+    <div class='glide' :id='"glide-" + glideId'>
+      <div class='glide__track' data-glide-el='track'>
+        <div class='glide__slides'>
+          <Preview v-for='image in images' class='glide__slide' type='image' :media='image' blur='true' />
         </div>
       </div>
 
-      <div class='progress'>
-        <span class='dot' v-for='(_, index) in data' :data-on='storyIndex == index'></span>
+      <!-- Left right button -->
+      <div v-if='!isMobile()' class='glide__arrows' data-glide-el='controls'>
+        <SolidButton :hidden='glideIndex == 0' class='glide__arrow glide__arrow--left icon' data-glide-dir='<'>
+          <Icon icon='chevron-left' />
+        </SolidButton>
+
+        <SolidButton :hidden='glideIndex == stories.length - 1' class='glide__arrow glide__arrow--right icon' data-glide-dir='>'>
+          <Icon icon='chevron-right' />
+        </SolidButton>
       </div>
-    </Preview>
+
+      <!-- Bullet progress -->
+      <div v-if='stories.length > 1' class='glide__bullets' data-glide-el='controls[nav]'>
+        <div v-for='(_, index) in images' class='glide__bullet' :data-glide-dir='`=${index}`'></div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, toRefs, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { uuid } from 'vue-uuid'
+import Glide from '@glidejs/glide'
 import { download } from '../supabase'
+import { isMobile } from '../utils'
 import Preview from './Preview.vue'
 
-const router = useRouter()
 const props = defineProps(['data'])
 const stories = toRefs(props).data
-const storyIndex = ref(0)
 const images = ref([])
-const element = ref(null)
+const glideId = ref(uuid.v4())
+const glideIndex = ref(0)
 
-// Current data
-const story = ref()
-const image = ref()
+const glide = new Glide('#glide-' + glideId.value, {
+    type: 'slider',
+    perView: 1
+})
 
-defineExpose({ getFrameData })
+glide.on('move', () => {
+  glideIndex.value = glide.index
+})
 
 onMounted(async () => {
   await preload()
-})
 
-// Get story data at current index
-function getFrameData () {
-  story.value = stories.value[storyIndex.value]
-  image.value = images.value[storyIndex.value]
-}
+  glide.mount()
+})
 
 // Preload images and like data
 async function preload () {
@@ -63,29 +67,22 @@ async function preload () {
     const item = stories.value[i]
     images.value.push(await download('images', item.media_url))
   }
-
-  getFrameData()
-}
-
-function cycle (direction) {
-  (storyIndex.value) < stories.value.length - 1
-    ? storyIndex.value += direction 
-    : storyIndex.value = 0
-
-  getFrameData()
 }
 </script>
 
 <style scoped lang='scss'>
+// Required by Glide JS
+@import 'node_modules/@glidejs/glide/src/assets/sass/glide.core';
 @import '../assets/themes';
 @import '../assets/main';
 
 @include use-theme {
 .story {
-  display: grid;
-  grid-template-rows: auto 1fr;
+  // Glide js width calculation does NOT work with grid,
+  // so use flexbox instead
+  display: flex;
+  flex-direction: column;
   gap: 10px;
-  width: 100%;
   height: max-content;
   background: theme('color-bg-2');
   border-radius: $border-radius-1;
@@ -98,43 +95,46 @@ function cycle (direction) {
     gap: 10px;
   }
 
-  .preview {
+  .glide {
+    max-width: 350px;
     position: relative;
     margin: 0 auto;
 
-    .controls {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    .glide__track {
+      border-radius: $border-radius-2;
+    }
+
+    .glide__arrows {
+      display: flex;
+      justify-content: space-between;
+      gap: 5px;
       position: absolute;
-      top: 50%;
       left: 0;
+      top: 50%;
       transform: translate(0, -50%);
       width: 100%;
-      height: 100%;
       padding: 10px;
 
-      .left {
-        display: flex;
-        justify-content: left;
-      }
-
-      .right {
-        display: flex;
-        justify-content: right;
-      }
-
-      button {
+      .glide__arrow {
         width: calc($nav-content-height * 3 / 4);
         height: calc($nav-content-height * 3 / 4);
         border-radius: $border-radius-round;
         background: #FFF;
         color: #000;
-        opacity: 0.7;
-        margin: auto 0;
+        opacity: 0.5;
+        transition: opacity 0.2s;
+
+        &:hover {
+          opacity: 0.8;
+        }
+
+        &[hidden] {
+          visibility: hidden;
+        }
       }
     }
 
-    .progress {
+    .glide__bullets {
       position: absolute;
       left: 50%;
       bottom: 10px;
@@ -143,17 +143,17 @@ function cycle (direction) {
       gap: 5px;
       margin: auto;
 
-      .dot {
+      .glide__bullet {
         display: block;
         width: 5px;
         height: 5px;
         border-radius: 100%;
         background: #FFF;
         opacity: 0.5;
+      }
 
-        &[data-on='true'] {
-          opacity: 1;
-        }
+      .glide__bullet--active {
+        opacity: 1;
       }
     }
   }
