@@ -3,10 +3,12 @@
     <Navbar pageName='Create' />
 
     <div class='editor'>
-      <p class='help-text'>Tap to add media.</p>
-      <Preview @pointerdown='addText' @pointerup='getFile' :type='store.editor.type' :media='store.editor.previewURL' />
-      <SolidButton class='next' @click="$router.push('/share')" :disabled='!store.editor.file'>Next</SolidButton>
+      <!-- Hidden field -->
       <input type='file' accept='image/png, image/jpeg, image/webp' ref='input' @change='handleFile' hidden>
+
+      <p class='help-text'>Tap to add media.</p>
+      <Preview @click='input.click()' :type='store.editor.type' :media='store.editor.previewURL' />
+      <SolidButton class='next' @click="$router.push('/share')" :disabled='!store.editor.file'>Next</SolidButton>
     </div>
   </div>
 </template>
@@ -15,17 +17,10 @@
 import { ref } from 'vue'
 import store from '../store'
 import { toBase64 } from '../utils'
-import { onHold, onTap } from '../touch'
 import Navbar from '../components/Navbar.vue'
 import Preview from '../components/Preview.vue'
 
 const input = ref(null)
-
-function getFile(event) {
-  onTap(event => {
-    input.value.click()
-  })
-}
 
 async function handleFile(event) {
   const file = event.target.files[0]
@@ -40,12 +35,6 @@ async function handleFile(event) {
   store.editor.previewURL = url;
   store.editor.file = file
   store.editor.type = type
-}
-
-function addText(event) {
-  onHold(event => {
-    console.log('Future feature.')
-  })
 }
 </script>
 

@@ -1,47 +1,92 @@
 <template>
-  <div class='story' v-if='story' ref='element'>
+  <div class='story' ref='element' @pointerdown='imageSizeHandle.start' @pointerup='imageSizeHandle.end' @mousemove='imageSizeHandle.move' @touchmove='imageSizeHandle.move'>
     <!-- Other information such as author -->
     <div class='meta'>
-      <slot :story='story'></slot>
+      <slot :story='stories[0]'></slot>
     </div>
 
-    <!-- Media -->
-    <Preview type='image' v-if='image' :media='image' blur='true' @click='cycle' :key='storyIndex'>
-      <div class='progress'>
-        <span class='dot' v-for='(_, index) in data' :data-on='storyIndex == index'></span>
+    <!-- Content -->
+    <div class='glide-wrapper'>
+      <div class='glide' :id='"glide-" + glideId'>
+        <div class='glide__track' data-glide-el='track'>
+          <div class='glide__slides'>
+            <Preview
+              v-for='(image, index) in images'
+              class='glide__slide'
+              type='image'
+              :media='image'
+              :blur='index == glideIndex'
+              :size='imageSize' />
+          </div>
+        </div>
+
+        <!-- Left right button -->
+        <div class='glide__arrows' data-glide-el='controls' hidden>
+          <button class='glide__arrow glide__arrow--left icon' data-glide-dir='<' ref='leftButton'></button>
+          <button class='glide__arrow glide__arrow--right icon' data-glide-dir='>' ref='rightButton'></button>
+        </div>
+
+        <!-- Bullet progress -->
+        <div v-if='stories.length > 1' class='glide__bullets' data-glide-el='controls[nav]'>
+          <div v-for='(_, index) in images' class='glide__bullet' :data-glide-dir='`=${index}`'></div>
+        </div>
       </div>
-    </Preview>
+
+       <!-- Left right button -->
+      <div v-if='!isMobile()' class='arrow-controls' data-glide-el='controls'>
+        <SolidButton :hidden='glideIndex == 0' class='icon' @click='leftButton.click()'>
+          <Icon icon='chevron-left' />
+        </SolidButton>
+
+        <SolidButton :hidden='glideIndex == stories.length - 1' class='icon' @click='rightButton.click()'>
+          <Icon icon='chevron-right' />
+        </SolidButton>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, toRefs, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { uuid } from 'vue-uuid'
+import Glide from '@glidejs/glide'
 import { download } from '../supabase'
+import { OnHold } from '../controls'
+import { isMobile } from '../utils'
 import Preview from './Preview.vue'
 
-const router = useRouter()
 const props = defineProps(['data'])
 const stories = toRefs(props).data
-const storyIndex = ref(0)
 const images = ref([])
-const element = ref(null)
+const imageSize = ref('cover')
+const glideId = ref(uuid.v4())
+const glideIndex = ref(0)
+const leftButton = ref(null)
+const rightButton = ref(null)
 
-// Current data
-const story = ref()
-const image = ref()
+const glide = new Glide('#glide-' + glideId.value, {
+    type: 'slider',
+    perView: 1,
+    gap: 11,
+    animationDuration: 200,
+    rewind: false
+})
 
-defineExpose({ getFrameData })
+glide.on('move', () => {
+  glideIndex.value = glide.index
+})
 
 onMounted(async () => {
   await preload()
+  glide.mount()
 })
 
-// Get story data at current index
-function getFrameData () {
-  story.value = stories.value[storyIndex.value]
-  image.value = images.value[storyIndex.value]
-}
+// Toggle image size
+const imageSizeHandle = new OnHold(() => {
+  imageSize.value = imageSize.value == 'cover'
+    ? 'contain'
+    : 'cover'
+})
 
 // Preload images and like data
 async function preload () {
@@ -49,29 +94,22 @@ async function preload () {
     const item = stories.value[i]
     images.value.push(await download('images', item.media_url))
   }
-
-  getFrameData()
-}
-
-function cycle () {
-  (storyIndex.value) < stories.value.length - 1
-    ? storyIndex.value++ 
-    : storyIndex.value = 0
-
-  getFrameData()
 }
 </script>
 
 <style scoped lang='scss'>
+// Required by Glide JS
+@import 'node_modules/@glidejs/glide/src/assets/sass/glide.core';
 @import '../assets/themes';
 @import '../assets/main';
 
 @include use-theme {
 .story {
-  display: grid;
-  grid-template-rows: auto 1fr;
+  // Glide js width calculation does NOT work with grid,
+  // so use flexbox instead
+  display: flex;
+  flex-direction: column;
   gap: 10px;
-  width: 100%;
   height: max-content;
   background: theme('color-bg-2');
   border-radius: $border-radius-1;
@@ -84,11 +122,29 @@ function cycle () {
     gap: 10px;
   }
 
-  .preview {
+  .glide-wrapper {
+    position: relative;
+  }
+
+  .glide {
+    max-width: 350px;
     position: relative;
     margin: 0 auto;
 
-    .progress {
+    .glide__track {
+      border-radius: $border-radius-2;
+      overflow: visible;
+
+      .glide__slides {
+        overflow: visible;
+      }
+    }
+
+    .glide__arrows {
+      visibility: hidden;
+    }
+
+    .glide__bullets {
       position: absolute;
       left: 50%;
       bottom: 10px;
@@ -97,16 +153,46 @@ function cycle () {
       gap: 5px;
       margin: auto;
 
-      .dot {
+      .glide__bullet {
         display: block;
         width: 5px;
         height: 5px;
         border-radius: 100%;
-        background: rgba(theme('color-text-1'), $shade-3);
+        background: #FFF;
+        opacity: 0.5;
+      }
 
-        &[data-on='true'] {
-          background: theme('color-text-1');
-        }
+      .glide__bullet--active {
+        opacity: 1;
+      }
+    }
+  }
+
+  .arrow-controls {
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(0, -50%);
+    width: 100%;
+
+    button {
+      width: calc($nav-content-height * 3 / 4);
+      height: calc($nav-content-height * 3 / 4);
+      border-radius: $border-radius-round;
+      background: #FFF;
+      color: #000;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+
+      &:hover {
+        opacity: 0.8;
+      }
+
+      &[hidden] {
+        visibility: hidden;
       }
     }
   }
