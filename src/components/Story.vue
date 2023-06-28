@@ -1,5 +1,5 @@
 <template>
-  <div class='story' ref='element'>
+  <div class='story' ref='element' @pointerdown='imageSizeHandle.start' @pointerup='imageSizeHandle.end' @mousemove='imageSizeHandle.move' @touchmove='imageSizeHandle.move'>
     <!-- Other information such as author -->
     <div class='meta'>
       <slot :story='stories[0]'></slot>
@@ -10,7 +10,13 @@
       <div class='glide' :id='"glide-" + glideId'>
         <div class='glide__track' data-glide-el='track'>
           <div class='glide__slides'>
-            <Preview v-for='(image, index) in images' class='glide__slide' type='image' :media='image' :blur='index == glideIndex' />
+            <Preview
+              v-for='(image, index) in images'
+              class='glide__slide'
+              type='image'
+              :media='image'
+              :blur='index == glideIndex'
+              :size='imageSize' />
           </div>
         </div>
 
@@ -45,12 +51,14 @@ import { ref, toRefs, onMounted } from 'vue'
 import { uuid } from 'vue-uuid'
 import Glide from '@glidejs/glide'
 import { download } from '../supabase'
+import { OnHold } from '../controls'
 import { isMobile } from '../utils'
 import Preview from './Preview.vue'
 
 const props = defineProps(['data'])
 const stories = toRefs(props).data
 const images = ref([])
+const imageSize = ref('cover')
 const glideId = ref(uuid.v4())
 const glideIndex = ref(0)
 const leftButton = ref(null)
@@ -59,7 +67,9 @@ const rightButton = ref(null)
 const glide = new Glide('#glide-' + glideId.value, {
     type: 'slider',
     perView: 1,
-    gap: 11
+    gap: 11,
+    animationDuration: 200,
+    rewind: false
 })
 
 glide.on('move', () => {
@@ -68,8 +78,14 @@ glide.on('move', () => {
 
 onMounted(async () => {
   await preload()
-
   glide.mount()
+})
+
+// Toggle image size
+const imageSizeHandle = new OnHold(() => {
+  imageSize.value = imageSize.value == 'cover'
+    ? 'contain'
+    : 'cover'
 })
 
 // Preload images and like data

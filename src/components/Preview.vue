@@ -1,9 +1,13 @@
 <template>
   <div class='preview' ref='element'>
     <div v-if="type == 'image'" class='wrapper'>
+      <!-- Background blue -->
       <div v-if='blur' class='blur' :style='`background-image: url(${url})`'></div>
-      <div class='image' :style='`background-image: url(${url})`'></div>
+
+      <!-- Image -->
+      <div class='image' :style='`background-image: url(${url}); background-size: ${size};`'></div>
     </div>
+
     <slot></slot>
   </div>
 </template>
@@ -13,7 +17,7 @@ import { ref, toRefs, onMounted, onUnmounted, watch } from 'vue'
 import { download } from '../supabase'
 import { isValidURL, isMobile } from '../utils'
 
-const props = defineProps(['type', 'media', 'blur'])
+const props = defineProps(['type', 'media', 'blur', 'size'])
 const { type, media } = toRefs(props)
 const url = ref('')
 const element = ref(null)
