@@ -6,27 +6,35 @@
     </div>
 
     <!-- Content -->
-    <div class='glide' :id='"glide-" + glideId'>
-      <div class='glide__track' data-glide-el='track'>
-        <div class='glide__slides'>
-          <Preview v-for='image in images' class='glide__slide' type='image' :media='image' blur='true' />
+    <div class='glide-wrapper'>
+      <div class='glide' :id='"glide-" + glideId'>
+        <div class='glide__track' data-glide-el='track'>
+          <div class='glide__slides'>
+            <Preview v-for='(image, index) in images' class='glide__slide' type='image' :media='image' :blur='index == glideIndex' />
+          </div>
+        </div>
+
+        <!-- Left right button -->
+        <div class='glide__arrows' data-glide-el='controls' hidden>
+          <button class='glide__arrow glide__arrow--left icon' data-glide-dir='<' ref='leftButton'></button>
+          <button class='glide__arrow glide__arrow--right icon' data-glide-dir='>' ref='rightButton'></button>
+        </div>
+
+        <!-- Bullet progress -->
+        <div v-if='stories.length > 1' class='glide__bullets' data-glide-el='controls[nav]'>
+          <div v-for='(_, index) in images' class='glide__bullet' :data-glide-dir='`=${index}`'></div>
         </div>
       </div>
 
-      <!-- Left right button -->
-      <div v-if='!isMobile()' class='glide__arrows' data-glide-el='controls'>
-        <SolidButton :hidden='glideIndex == 0' class='glide__arrow glide__arrow--left icon' data-glide-dir='<'>
+       <!-- Left right button -->
+      <div v-if='!isMobile()' class='arrow-controls' data-glide-el='controls'>
+        <SolidButton :hidden='glideIndex == 0' class='icon' @click='leftButton.click()'>
           <Icon icon='chevron-left' />
         </SolidButton>
 
-        <SolidButton :hidden='glideIndex == stories.length - 1' class='glide__arrow glide__arrow--right icon' data-glide-dir='>'>
+        <SolidButton :hidden='glideIndex == stories.length - 1' class='icon' @click='rightButton.click()'>
           <Icon icon='chevron-right' />
         </SolidButton>
-      </div>
-
-      <!-- Bullet progress -->
-      <div v-if='stories.length > 1' class='glide__bullets' data-glide-el='controls[nav]'>
-        <div v-for='(_, index) in images' class='glide__bullet' :data-glide-dir='`=${index}`'></div>
       </div>
     </div>
   </div>
@@ -45,10 +53,13 @@ const stories = toRefs(props).data
 const images = ref([])
 const glideId = ref(uuid.v4())
 const glideIndex = ref(0)
+const leftButton = ref(null)
+const rightButton = ref(null)
 
 const glide = new Glide('#glide-' + glideId.value, {
     type: 'slider',
-    perView: 1
+    perView: 1,
+    gap: 11
 })
 
 glide.on('move', () => {
@@ -95,6 +106,10 @@ async function preload () {
     gap: 10px;
   }
 
+  .glide-wrapper {
+    position: relative;
+  }
+
   .glide {
     max-width: 350px;
     position: relative;
@@ -102,36 +117,15 @@ async function preload () {
 
     .glide__track {
       border-radius: $border-radius-2;
+      overflow: visible;
+
+      .glide__slides {
+        overflow: visible;
+      }
     }
 
     .glide__arrows {
-      display: flex;
-      justify-content: space-between;
-      gap: 5px;
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translate(0, -50%);
-      width: 100%;
-      padding: 10px;
-
-      .glide__arrow {
-        width: calc($nav-content-height * 3 / 4);
-        height: calc($nav-content-height * 3 / 4);
-        border-radius: $border-radius-round;
-        background: #FFF;
-        color: #000;
-        opacity: 0.5;
-        transition: opacity 0.2s;
-
-        &:hover {
-          opacity: 0.8;
-        }
-
-        &[hidden] {
-          visibility: hidden;
-        }
-      }
+      visibility: hidden;
     }
 
     .glide__bullets {
@@ -154,6 +148,35 @@ async function preload () {
 
       .glide__bullet--active {
         opacity: 1;
+      }
+    }
+  }
+
+  .arrow-controls {
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(0, -50%);
+    width: 100%;
+
+    button {
+      width: calc($nav-content-height * 3 / 4);
+      height: calc($nav-content-height * 3 / 4);
+      border-radius: $border-radius-round;
+      background: #FFF;
+      color: #000;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+
+      &:hover {
+        opacity: 0.8;
+      }
+
+      &[hidden] {
+        visibility: hidden;
       }
     }
   }
