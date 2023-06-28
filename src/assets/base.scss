@@ -4,6 +4,8 @@
 @include use-theme {
 html, body {
   overscroll-behavior-x: none;
+  // Prevent highlighting when clicking on mobile
+  -webkit-tap-highlight-color: transparent;
 } 
 
 body {
