@@ -6,7 +6,21 @@
     </div>
 
     <!-- Media -->
-    <Preview type='image' v-if='image' :media='image' blur='true' @click='cycle' :key='storyIndex'>
+    <Preview type='image' v-if='image' :media='image' blur='true' :key='storyIndex'>
+      <div class='controls'>
+        <div class='left'  @click='cycle(-1)'>
+          <AccentButton class='icon'>
+            <Icon icon='chevron-left' />
+          </AccentButton>
+        </div>
+
+         <div class='right' @click='cycle(1)'>
+          <AccentButton class='icon'>
+            <Icon icon='chevron-right' />
+          </AccentButton>
+        </div>
+      </div>
+
       <div class='progress'>
         <span class='dot' v-for='(_, index) in data' :data-on='storyIndex == index'></span>
       </div>
@@ -53,9 +67,9 @@ async function preload () {
   getFrameData()
 }
 
-function cycle () {
+function cycle (direction) {
   (storyIndex.value) < stories.value.length - 1
-    ? storyIndex.value++ 
+    ? storyIndex.value += direction 
     : storyIndex.value = 0
 
   getFrameData()
@@ -88,6 +102,38 @@ function cycle () {
     position: relative;
     margin: 0 auto;
 
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translate(0, -50%);
+      width: 100%;
+      height: 100%;
+      padding: 10px;
+
+      .left {
+        display: flex;
+        justify-content: left;
+      }
+
+      .right {
+        display: flex;
+        justify-content: right;
+      }
+
+      button {
+        width: calc($nav-content-height * 3 / 4);
+        height: calc($nav-content-height * 3 / 4);
+        border-radius: $border-radius-round;
+        background: #FFF;
+        color: #000;
+        opacity: 0.7;
+        margin: auto 0;
+      }
+    }
+
     .progress {
       position: absolute;
       left: 50%;
@@ -102,10 +148,11 @@ function cycle () {
         width: 5px;
         height: 5px;
         border-radius: 100%;
-        background: rgba(theme('color-text-1'), $shade-3);
+        background: #FFF;
+        opacity: 0.5;
 
         &[data-on='true'] {
-          background: theme('color-text-1');
+          opacity: 1;
         }
       }
     }
