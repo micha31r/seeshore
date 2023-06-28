@@ -4,53 +4,46 @@
 
     <div class='editor'>
       <p class='help-text'>Tap to add media.</p>
-      <Preview @mousedown='addText' @mouseup='getFile' :type='store.editor.type' :media='store.editor.previewURL' />
+      <Preview @pointerdown='addText' @pointerup='getFile' :type='store.editor.type' :media='store.editor.previewURL' />
       <SolidButton class='next' @click="$router.push('/share')" :disabled='!store.editor.file'>Next</SolidButton>
+      <input type='file' accept='image/png, image/jpeg, image/webp' ref='input' @change='handleFile' hidden>
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import store from '../store'
 import { toBase64 } from '../utils'
 import { onHold, onTap } from '../touch'
 import Navbar from '../components/Navbar.vue'
 import Preview from '../components/Preview.vue'
 
+const input = ref(null)
+
 function getFile(event) {
-  onTap(async (event) => {
-    const [fileHandle] = await window.showOpenFilePicker({
-      types: [
-        {
-          description: 'images',
-          accept: {
-            'image/jpeg': '.jpg',
-            'image/jpeg': '.jpeg',
-            'image/webp': '.webp',
-            'image/png': '.png'
-          },
-        },
-      ],
-      excludeAcceptAllOption: true
-    })
-
-    const file = await fileHandle.getFile()
-    const type = file.type.split('/')[0]
-
-    // Generate preview URL
-    let url;
-    if (type == 'image') {
-      url = await toBase64(file);
-    }
-
-    store.editor.previewURL = url;
-    store.editor.file = file
-    store.editor.type = type
+  onTap(event => {
+    input.value.click()
   })
 }
 
+async function handleFile(event) {
+  const file = event.target.files[0]
+  const type = file.type.split('/')[0]
+
+  // Generate preview URL
+  let url;
+  if (type == 'image') {
+    url = await toBase64(file);
+  }
+
+  store.editor.previewURL = url;
+  store.editor.file = file
+  store.editor.type = type
+}
+
 function addText(event) {
-  onHold((event) => {
+  onHold(event => {
     console.log('Future feature.')
   })
 }
