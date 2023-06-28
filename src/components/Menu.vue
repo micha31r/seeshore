@@ -11,21 +11,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 defineProps(['align'])
 
-const router = useRouter()
 const menu = ref(null)
 const button = ref(null)
 const show = ref(false)
 
 onMounted(() => addEventListener('click', toggle))
 
-router.beforeEach((to, from, next) => {
+onUnmounted(() => {
   removeEventListener('click', toggle)
-  next()
 })
 
 function toggle (event) {

@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import QrScanner from 'qr-scanner'
 import { uuid } from 'vue-uuid'
@@ -48,11 +48,6 @@ const scanSize = 300
 const UUIDRegex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
 
 let qrScanner
-
-router.beforeEach((to, from, next) => {
-  qrScanner.stop()
-  next()
-})
 
 onMounted(async () => {
   code.value = URLPrefix + await getFollowCode()
@@ -80,6 +75,10 @@ onMounted(async () => {
   })
 
   qrScanner.setInversionMode('both')
+})
+
+onUnmounted(() => {
+  qrScanner.stop()
 })
 
 async function scanCallback (result) {

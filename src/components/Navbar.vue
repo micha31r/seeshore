@@ -59,15 +59,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { supabase } from '../supabase'
 import store from '../store'
 import Avatar from './Avatar.vue'
 
 defineProps(['pageName'])
 
-const router = useRouter()
 const root = document.querySelector(':root')
 const nav = ref(null)
 const showLogoutPrompt = ref(false)
@@ -77,9 +75,8 @@ onMounted(() => {
   addEventListener('resize', getNavHeight)
 })
 
-router.beforeEach((to, from, next) => {
+onUnmounted(() => {
   removeEventListener('resize', getNavHeight)
-  next()
 })
 
 function getNavHeight () {

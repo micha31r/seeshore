@@ -9,12 +9,10 @@
 </template>
 
 <script setup>
-import { ref, toRefs, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, toRefs, onMounted, onUnmounted, watch } from 'vue'
 import { download } from '../supabase'
 import { isValidURL, isMobile } from '../utils'
 
-const router = useRouter()
 const props = defineProps(['type', 'media', 'blur'])
 const { type, media } = toRefs(props)
 const url = ref('')
@@ -30,9 +28,8 @@ onMounted(() => {
   addEventListener('resize', resize)
 })
 
-router.beforeEach((to, from, next) => {
+onUnmounted(() => {
   removeEventListener('resize', resize)
-  next()
 })
 
 function resize () {
