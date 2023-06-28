@@ -7,9 +7,12 @@ export class OnHold {
   constructor (callback, options = {}) {
     this.timeOutId = null
     this.callback = callback
-    this.mouseDistance = 0
-    this.mousePosX = null
-    this.mousePosY = null
+
+    // Mouse / touch
+    this.distance = 0
+    this.clientX = null
+    this.clientY = null
+
     this.options = {
       ...this.constructor.options,
       ...options
@@ -31,22 +34,29 @@ export class OnHold {
 
   move (event) {
     if (this.timeOutId) {
-      if(this.mousePosX) {
-        this.mouseDistance += Math.sqrt((this.mousePosY - event.clientY) ** 2 + (this.mousePosX - event.clientX) ** 2);
+      const source = event.touches
+        ? event.touches[0]
+        : event
+
+      const clientX = source.clientX
+      const clientY = source.clientY
+
+      if(this.clientX) {
+        this.distance += Math.sqrt((this.clientX - clientX) ** 2 + (this.clientY - clientY) ** 2);
         
-        if (this.mouseDistance > this.options.maxTravel) {
+        if (this.distance > this.options.maxTravel) {
           this.end(event)
         }
       }
-      this.mousePosX = event.clientX
-      this.mousePosY = event.clientY
+      this.clientX = clientX
+      this.clientY = clientY
     }
   }
 
   reset () {
     this.timeOutId = null
-    this.mouseDistance = 0
-    this.mousePosX = null
-    this.mousePosY = null
+    this.distance = 0
+    this.clientX = null
+    this.clientY = null
   }
 }
