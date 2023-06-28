@@ -142,6 +142,7 @@ async function createStory () {
         last_story_at: new Date()
       })
       .eq('id', store.profile.id)
+      .limit(100)
 
     if (error) throw error
   } catch (error) {
