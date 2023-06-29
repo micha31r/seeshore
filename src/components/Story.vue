@@ -1,5 +1,5 @@
 <template>
-  <div v-if='stories.length' class='story' ref='element' @pointerdown='imageSizeHandle.start' @pointerup='imageSizeHandle.end' @mousemove='imageSizeHandle.move' @touchmove='imageSizeHandle.move'>
+  <div class='story' :data-loaded='isLoaded' ref='element' @pointerdown='imageSizeHandle.start' @pointerup='imageSizeHandle.end' @mousemove='imageSizeHandle.move' @touchmove='imageSizeHandle.move'>
     <!-- Other information such as author -->
     <div class='meta'>
       <slot :story='stories[0]'></slot>
@@ -63,6 +63,7 @@ const glideId = ref(uuid.v4())
 const glideIndex = ref(0)
 const leftButton = ref(null)
 const rightButton = ref(null)
+const isLoaded = ref(false)
 
 const glide = new Glide('#glide-' + glideId.value, {
     type: 'slider',
@@ -79,6 +80,7 @@ glide.on('move', () => {
 onMounted(async () => {
   await preload()
   glide.mount()
+  isLoaded.value = true
 })
 
 // Toggle image size
@@ -115,6 +117,11 @@ async function preload () {
   border-radius: $border-radius-1;
   padding: 10px;
   overflow: hidden;
+  visibility: hidden;
+
+  &[data-loaded='true'] {
+    visibility: visible;
+  }
 
   .meta {
     display: grid;
