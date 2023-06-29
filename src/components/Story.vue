@@ -1,5 +1,5 @@
 <template>
-  <div class='story' ref='element' @pointerdown='imageSizeHandle.start' @pointerup='imageSizeHandle.end' @mousemove='imageSizeHandle.move' @touchmove='imageSizeHandle.move'>
+  <div v-if='stories.length' class='story' ref='element' @pointerdown='imageSizeHandle.start' @pointerup='imageSizeHandle.end' @mousemove='imageSizeHandle.move' @touchmove='imageSizeHandle.move'>
     <!-- Other information such as author -->
     <div class='meta'>
       <slot :story='stories[0]'></slot>
