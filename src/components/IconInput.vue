@@ -1,7 +1,7 @@
 <template>
   <div class='icon-input' ref='element'>
     <Icon class='secondary' :icon='$props.icon'/>
-    <input :='$attrs' :value='modelValue' @input="$emit('update:modelValue', $event.target.value)">
+    <input :='$attrs' :value='modelValue' @input="$emit('update:modelValue', $event.target.value)" @change="$emit('change', $event.target.value)">
   </div>
 </template>
 
@@ -11,7 +11,7 @@ import { ref, onMounted } from 'vue'
 const element = ref(null)
 
 defineExpose({ element })
-defineEmits(['update:modelValue'])
+defineEmits(['update:modelValue', 'change'])
 defineProps(['icon', 'modelValue'])
 </script>
 

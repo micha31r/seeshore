@@ -12,7 +12,7 @@
 
       <div class='contacts'>
         <!-- Search box -->
-        <IconInput icon='search' placeholder='Search' v-model='keyword'/>
+        <IconInput icon='search' placeholder='Search' v-model='keyword' @change='filterFollowers' />
 
         <!-- Selected users -->
         <div class='recipients' v-if='recipients.length'>
@@ -26,21 +26,19 @@
           </div>
         </div>
 
+        <p class='subheading'>Followers</p>
+
         <!-- All followers -->
-        <div class='followers'>
-          <p class='category'>Followers</p>
+        <div class='followers' ref='list'>
+          <div v-for='follower in followers' class='item' @click='toggle(follower)'>
+            <Avatar  width='35' height='35' :profile='follower'/>
+            <p class='name'>{{ follower.full_name }}</p>
 
-          <template v-for='follower in followers'>
-            <div class='item' v-show='filter(follower)' @click='toggle(follower)'>
-              <Avatar  width='35' height='35' :profile='follower'/>
-              <p class='name'>{{ follower.full_name }}</p>
-
-              <RadioInput
-                :checked='recipients.findIndex(item => item.id == follower.id) > -1'
-                :key='recipients.length'
-              />
-            </div>
-          </template>
+            <RadioInput
+              :checked='recipients.findIndex(item => item.id == follower.id) > -1'
+              :key='recipients.length'
+            />
+          </div>
         </div>
       </div>
 
@@ -50,13 +48,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { uuid } from 'vue-uuid'
 import { supabase } from '../supabase'
 import { joinPaths } from '../utils'
 import { uploadImage } from '../upload'
 import { getFollowers } from '../api'
+import { isScrolledBottom } from '../utils'
 import store, { forceExpire } from '../store'
 import Navbar from '../components/Navbar.vue'
 import Preview from '../components/Preview.vue'
@@ -67,15 +66,42 @@ const type = store.editor.type
 const file = store.editor.file
 const path = joinPaths([store.profile.id, uuid.v4()]) // without extension
 
+const list = ref(null)
 const followers = ref([])
 const recipients = ref([])
 const keyword = ref('')
 
-onMounted(async () => {
+onMounted(() => {
   if (!file) router.push('/create')
     
-  followers.value = await getFollowers()
+  filterFollowers()
+  list.value.addEventListener('scroll', loadOnScroll)
 })
+
+onBeforeUnmount(() => {
+  list.value.removeEventListener('scroll', loadOnScroll)
+})
+
+function getFilterString () {
+  return keyword.value 
+    ? `%${keyword.value}%`
+    : '%'
+}
+
+async function filterFollowers () {
+  forceExpire('followersFiltered')
+  followers.value = await getFollowers(getFilterString(), { name: 'followersFiltered' })
+}
+
+async function loadOnScroll () {
+  if (isScrolledBottom(list.value)) {
+    followers.value = followers.value.concat(await getFollowers(getFilterString(), {
+      name: 'followersFiltered',
+      append: true,
+      nextPage: true
+    }))
+  }
+}
 
 async function createStory () {
   let uploadResponse;
@@ -162,7 +188,6 @@ async function createStory () {
 }
 
 function toggle (profile) {
-  // console.log(profile)
   // Add/remove profile from recipients
   const index = recipients.value.findIndex(item => item.id == profile.id)
   if (index > -1) {
@@ -170,12 +195,6 @@ function toggle (profile) {
   } else {
     recipients.value.push(profile)
   }
-}
-
-function filter (profile) {
-  const key = keyword.value.toLowerCase()
-  const name = profile.full_name.toLowerCase()
-  return !key || name.indexOf(key) > -1
 }
 </script>
 
@@ -220,11 +239,20 @@ function filter (profile) {
     flex-direction: column;
     gap: 20px;
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
     margin: 0 auto;
+
+    .subheading {
+      color: theme('color-text-2');
+      margin: 0 10px;
+    }
 
     .avatar {
       margin: auto 0;
+    }
+
+    .icon-input {
+      margin: 0 10px;
     }
 
     .recipients {
@@ -232,6 +260,7 @@ function filter (profile) {
       gap: 10px;
       flex-wrap: wrap;
       max-height: 150px;
+      padding: 0 10px;
       overflow: auto;
 
       .tag {
@@ -267,11 +296,9 @@ function filter (profile) {
       display: flex;
       flex-direction: column;
       gap: 20px;
-
-      .category {
-        color: theme('color-text-2');
-        margin: 0;
-      }
+      max-height: 400px;
+      padding: 10px;
+      overflow: auto;
 
       .item {
         position: relative;
@@ -310,10 +337,10 @@ function filter (profile) {
   }
 
   .share {
-    border-radius: $border-radius-round;
-    padding: 10px 15px;
-    margin: 0 auto;
-  }
+      border-radius: $border-radius-round;
+      padding: 10px 15px;
+      margin: 0 auto;
+    }
 }
 }
 </style>
