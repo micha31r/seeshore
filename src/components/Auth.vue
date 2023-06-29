@@ -1,22 +1,31 @@
 <template>
-  <form @submit.prevent>
-    <h2 class='heading'>Sign In</h2>
+  <div class='auth'>
+    <section>
+      <p class='heading'>Seeshore</p>
+      <p>Seeshore (see and share) is a tiny social media platform for sharing photo stories <a class='hidden-link' href='https://www.instagram.com/micha31r/' target='_blank'><Icon icon='smile' /></a> with friends • personal project • invite only</p>
+    </section>
 
-    <div>
-      <label>Email</label>
-      <IconInput type='email' v-model='email' placeholder='you@example.com' icon='mail' required @change='state = 0' />
-    </div>
+    <section>
+      <p class='heading'>Sign In</p>
 
-    <SolidButton class='submit solid' @click='OTPLogin' :disabled='state != 0'>
-      <template v-if='state == 0'>Send magic link</template>
-      <template v-else-if='state == 1'>Loading...</template>
-      <template v-else-if='state == 2'>Link has been sent</template>
-      <template v-else-if='state == 3'>You don't have access</template>
-      <template v-else-if='state == 4'>Too many attempts</template>
-    </SolidButton>
-    
-    <!-- <OutlineButton class='oauth outline' @click.submit.prevent='GoogleLogin'>Continue with Google</OutlineButton> -->
-  </form>
+      <form @submit.prevent>
+        <div>
+          <label>Email</label>
+          <IconInput type='email' v-model='email' placeholder='you@example.com' icon='mail' required @change='state = 0' />
+        </div>
+
+        <SolidButton class='submit solid' @click='OTPLogin' :disabled='state != 0'>
+          <template v-if='state == 0'>Send magic link</template>
+          <template v-else-if='state == 1'>Loading...</template>
+          <template v-else-if='state == 2'>Link has been sent</template>
+          <template v-else-if='state == 3'>You don't have access</template>
+          <template v-else-if='state == 4'>Too many attempts</template>
+        </SolidButton>
+        
+        <!-- <OutlineButton class='oauth outline' @click.submit.prevent='GoogleLogin'>Continue with Google</OutlineButton> -->
+      </form>
+    </section>
+  </div>
 </template>
 
 <script setup>
@@ -67,10 +76,11 @@ async function OTPLogin() {
 @import '../assets/themes';
 
 @include use-theme {
-form {
-  display: grid;
-  gap: 10px;
-  width: 400px;
+.auth {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 450px;
   max-width: 100%;
   margin: auto;
   padding: 15px;
@@ -79,12 +89,45 @@ form {
     padding: 10px;
   }
 
-  .heading {
-    margin: 0 0 20px;
-  }
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 
-  .icon-input {
-    margin: 8px 0 0;
+    p {
+      color: theme('color-text-2');
+      margin: 0;
+
+      &.heading {
+        color: theme('color-text-1');
+      }
+    }
+
+    a {
+      color: theme('color-text-2');
+
+      &:hover {
+        color: theme('color-text-1');
+      }
+    }
+
+    .hidden-link {
+      outline: 0;
+    }
+
+    .feather.feather-smile {
+      transform: rotate(20deg);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .icon-input {
+        margin: 8px 0 0;
+      }
+    }
   }
 }
 }
