@@ -13,7 +13,7 @@
       <template v-else>Check Your Inbox</template>
     </SolidButton>
     
-    <OutlineButton class='oauth outline' @click.submit.prevent='GoogleLogin'>Continue with Google</OutlineButton>
+    <!-- <OutlineButton class='oauth outline' @click.submit.prevent='GoogleLogin'>Continue with Google</OutlineButton> -->
   </form>
 </template>
 
@@ -47,14 +47,14 @@ async function OTPLogin() {
   }
 }
 
-async function GoogleLogin () {
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      shouldCreateUser: false
-    }
-  })
-}
+// async function GoogleLogin () {
+//   const { data, error } = await supabase.auth.signInWithOAuth({
+//     provider: 'google',
+//     options: {
+//       shouldCreateUser: false
+//     }
+//   })
+// }
 </script>
 
 <style scoped lang='scss'>
