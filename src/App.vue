@@ -6,7 +6,7 @@
 
     <RouterView v-if='store.session && store.profile' />
     <Auth v-else-if='store.isAuthLoaded' />
-    <Loader ref='loader' />
+    <Loader ref='loader' message='Loading Seeshore' />
   </div>
 </template>
 
@@ -36,7 +36,7 @@ if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').match
 setTheme('dark') // Default to dark if can't get device preference
 
 onMounted(async () => {
-  loader.value.show('Loading Seeshore')
+  loader.value.show()
 
   const { data } = await supabase.auth.getSession()
   store.session = data.session
