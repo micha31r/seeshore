@@ -7,7 +7,7 @@
       <div class='requests' v-if='requests.length'>
         <h3 class='heading'>Requests</h3>
 
-        <ProfileList :data='requests'>
+        <ProfileList :data-empty='!requests.length' :data='requests'>
           <template #default='{profile}'>
             <div class='actions'>
               <SolidButton @click='approveFollowRequest(profile)'>Approve</SolidButton>
@@ -39,7 +39,7 @@
       <div class='followers'>
         <h3 class='heading'>Follower</h3>
 
-        <ProfileList :data='followers' fallback="You don't have any followers." ref='followerList'>
+        <ProfileList :data-empty='!followers.length' :data='followers' fallback="You don't have any followers." ref='followerList'>
           <template #default='{profile}'>
             <div class='actions'>
               <Menu align='right'>
@@ -63,7 +63,7 @@
       <div class='following'>
         <h3 class='heading'>Following</h3>
         
-        <ProfileList :data='following' fallback="You are not following anyone." ref='followingList'>
+        <ProfileList :data-empty='!following.length' :data='following' fallback="You are not following anyone." ref='followingList'>
           <template #default='{profile}'>
             <div class='actions'>
               <AccentButton v-if='profile.isUnfollowed' @click='follow(profile)'>Follow</AccentButton>
@@ -320,7 +320,7 @@ async function follow(target) {
   }
 
   .profile-list {
-    max-height: 500px;
+    max-height: 400px;
     overflow: auto;
 
     .actions {
@@ -341,6 +341,12 @@ async function follow(target) {
       .menu:deep(.toggle) {
         background: transparent;
       }
+    }
+  }
+
+  .requests, .followers, .following {
+    .profile-list[data-empty='false'] {
+      min-height: 200px;
     }
   }
 }
