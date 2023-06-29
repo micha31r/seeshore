@@ -34,6 +34,10 @@ defineProps(['data', 'fallback'])
     display: flex;
     gap: 15px;
 
+    @media (max-width: 500px) {
+      gap: 10px;
+    }
+
     & > * {
       margin: auto 0;
     }
