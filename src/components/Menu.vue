@@ -67,6 +67,7 @@ function toggle (event) {
     & > * {
       width: 100%;
       border-radius: $border-radius-3;
+      padding: 7px;
     }
   }
 }

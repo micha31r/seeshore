@@ -148,6 +148,10 @@ nav:deep() {
         border: 0;
         border-radius: 0;
         z-index: -1;
+
+        button {
+          padding: 10px;
+        }
       }
     }
   }
