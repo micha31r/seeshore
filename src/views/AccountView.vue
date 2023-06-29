@@ -50,7 +50,7 @@
         </Story>
       </div>
 
-      <p class='fallback' v-else>No recent stories.</p>
+      <p class='fallback' v-else-if='isLoaded'>No recent stories.</p>
 
       <!-- Account settings -->
       <AccountEditor ref='accountEditor' @deleteAccount='toggleDeleteAccount'/>
@@ -89,12 +89,14 @@ const accountEditor = ref(null)
 const deleteAccount = ref(null)
 const followerCount = ref(0)
 const followingCount = ref(0)
+const isLoaded = ref(false)
 const app = document.querySelector('#app')
 
 onMounted(async () => {
   stories.value = await getOwnStories()
   followerCount.value = await getFollowerCount()
   followingCount.value = await getFollowingCount()
+  isLoaded.value = true
 
   app.addEventListener('scroll', loadOnScroll)
 })
