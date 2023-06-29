@@ -328,6 +328,10 @@ async function follow(target) {
       gap: 15px;
       margin-left: auto;
 
+      @media (max-width: 500px) {
+        gap: 10px;
+      }
+
       & > * {
         margin: auto 0;
       }
@@ -339,6 +343,7 @@ async function follow(target) {
       }
 
       .menu:deep(.toggle) {
+        width: max-content;
         background: transparent;
       }
     }
