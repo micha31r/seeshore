@@ -59,6 +59,7 @@ async function updateURL () {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+  flex-shrink: 0;
 }
 }
 </style>
