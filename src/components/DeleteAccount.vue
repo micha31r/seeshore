@@ -11,6 +11,8 @@
 
       <AccentButton @click='deleteAccount'>Delete Account</AccentButton>
       <SolidButton @click='show = false'>Cancel</SolidButton>
+
+      <Loader ref='loader' message='Deleting account' />
     </form>
   </Prompt>
 </template>
@@ -24,6 +26,7 @@ import { supabase } from '../supabase'
 const router = useRouter()
 const email = ref('')
 const show = ref(false)
+const loader = ref(null)
 
 function toggle () {
   show.value = show.value ? false : true
@@ -37,11 +40,14 @@ async function deleteAccount () {
   }
 
   try {
+    loader.value.show()
+
     const { error } = await supabase
       .rpc('delete_user')
 
     if (error) throw error
 
+    loader.value.hide()
     supabase.auth.signOut()
     router.push('/')
   } catch (error) {
