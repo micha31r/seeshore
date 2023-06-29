@@ -45,7 +45,7 @@
     </div>
   </div>
 
-  <Loader ref='loader' message='Loading stories' />
+  <Loader ref='loader' message='Loading media' />
 </template>
 
 <script setup>
