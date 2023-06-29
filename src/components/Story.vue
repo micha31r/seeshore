@@ -2,7 +2,7 @@
   <div class='story' :data-loaded='isLoaded' ref='element' @pointerdown='imageSizeHandle.start' @pointerup='imageSizeHandle.end' @mousemove='imageSizeHandle.move' @touchmove='imageSizeHandle.move'>
     <!-- Other information such as author -->
     <div class='meta'>
-      <slot :story='stories[0]'></slot>
+      <slot :story='stories[glideIndex]'></slot>
     </div>
 
     <!-- Content -->
