@@ -1,6 +1,14 @@
 import Compressor from 'compressorjs'
 import { supabase } from './supabase'
 
+const compressorDefaultOptions = {
+  quality: 0.3,
+  minWidth: 400,
+  minHeight: 400,
+  maxWidth: 2000,
+  maxHeight: 2000
+}
+
 function compressAsync(file, options) {
   return new Promise((resolve, reject) => new Compressor(file, {
     ...options,
@@ -9,13 +17,11 @@ function compressAsync(file, options) {
   }))
 }
 
-export async function uploadImage(bucket, path, file) {
+export async function uploadImage(bucket, path, file, options) {
+  options = { ...compressorDefaultOptions, ...options }
+
   const result = await compressAsync(file, {
-    quality: 0.4,
-    // minWidth: 360,
-    // minHeight: 640,
-    // maxWidth: 1920,
-    // maxHeight: 1080,
+    ...options,
     convertTypes: ['image/png', 'image/webp'],
   })
 

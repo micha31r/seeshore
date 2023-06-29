@@ -98,7 +98,12 @@ async function updateProfile () {
     // Upload new avatar
     if (newAvatar.value) {
       const path = joinPaths([store.profile.id, uuid.v4()]) // without extension
-      newAvatarURL = (await uploadImage('avatars', path + '.jpg', newAvatar.value)).path
+      newAvatarURL = (await uploadImage('avatars', path + '.jpg', newAvatar.value, {
+        quality: 0.2,
+        width: 400,
+        height: 400,
+        resize: 'cover'
+      })).path
     }
   }
 
