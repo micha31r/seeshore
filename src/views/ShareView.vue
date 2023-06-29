@@ -254,6 +254,7 @@ function toggle (profile) {
       flex-direction: row;
       flex-wrap: wrap;
       gap: 5px;
+      padding: 0 10px;
 
       .profile {
         width: max-content;
