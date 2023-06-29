@@ -26,7 +26,7 @@
         <p class='subheading'>Followers</p>
 
         <!-- Followers -->
-        <ProfileList class='follower-list' ref='list' :data='followers' @itemClick='(value) => toggle(value.profile)'>
+        <ProfileList class='follower-list' ref='list' :data='followers' @itemClick='(value) => toggle(value.profile)' fallback='You are not following anyone.'>
           <template #default='{profile}'>
             <RadioInput
               :checked='isRecipient = recipients.findIndex(item => item.id == profile.id) > -1'
