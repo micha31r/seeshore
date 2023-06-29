@@ -1,12 +1,12 @@
 <template>
   <div class='auth'>
     <section>
-      <p class='heading'>Seeshore</p>
+      <h3 class='heading'>Seeshore</h3>
       <p>Seeshore (see and share) is a tiny social media platform for sharing photo stories <a class='hidden-link' href='https://www.instagram.com/micha31r/' target='_blank'><Icon icon='smile' /></a> with friends • personal project • invite only</p>
     </section>
 
     <section>
-      <p class='heading'>Sign In</p>
+      <h3 class='heading'>Sign In</h3>
 
       <form @submit.prevent>
         <div>
@@ -94,13 +94,13 @@ async function OTPLogin() {
     flex-direction: column;
     gap: 10px;
 
+    .heading {
+      margin: 0;
+    }
+
     p {
       color: theme('color-text-2');
       margin: 0;
-
-      &.heading {
-        color: theme('color-text-1');
-      }
     }
 
     a {
