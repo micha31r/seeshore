@@ -1,16 +1,18 @@
 <template>
   <form @submit.prevent>
-    <h1>Log In</h1>
+    <h2 class='heading'>Sign In</h2>
 
     <div>
       <label>Email</label>
-      <IconInput type='email' v-model='email' placeholder='you@example.com' icon='mail' required/>
+      <IconInput type='email' v-model='email' placeholder='you@example.com' icon='mail' required @change='state = 0' />
     </div>
 
-    <SolidButton class='submit solid' @click='OTPLogin' :disabled='OTPState != 0'>
-      <template v-if='OTPState == 0'>Get Magic Link</template>
-      <template v-else-if='OTPState == 1'>Sending...</template>
-      <template v-else>Check Your Inbox</template>
+    <SolidButton class='submit solid' @click='OTPLogin' :disabled='state != 0'>
+      <template v-if='state == 0'>Send magic link</template>
+      <template v-else-if='state == 1'>Loading...</template>
+      <template v-else-if='state == 2'>Link has been sent</template>
+      <template v-else-if='state == 3'>You don't have access</template>
+      <template v-else-if='state == 4'>Too many attempts</template>
     </SolidButton>
     
     <!-- <OutlineButton class='oauth outline' @click.submit.prevent='GoogleLogin'>Continue with Google</OutlineButton> -->
@@ -21,14 +23,14 @@
 import { ref } from 'vue'
 import { supabase } from '../supabase'
 
-const OTPState = ref(0)
+const state = ref(0)
 const email = ref('')
 
 async function OTPLogin() {
   if (!email.value) return
 
   try {
-    OTPState.value = 1;
+    state.value = 1; // Sending
     
     const { error } = await supabase.auth.signInWithOtp({
       email: email.value,
@@ -38,12 +40,16 @@ async function OTPLogin() {
     })
 
     if (error) throw error
+
+    state.value = 2; // Success
   } catch (error) {
-    if (error instanceof Error) {
-      alert(error.message)
+    console.error(error.message)
+
+    if (error.status === 400) {
+      state.value = 3 // Sign up error
+    } else if (error.status === 429) {
+      state.value = 4 // Too many attempts
     }
-  } finally {
-    OTPState.value = 2;
   }
 }
 
@@ -73,7 +79,7 @@ form {
     padding: 10px;
   }
 
-  h1 {
+  .heading {
     margin: 0 0 20px;
   }
 
