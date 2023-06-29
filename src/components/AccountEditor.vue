@@ -8,7 +8,7 @@
         <label>Avatar</label>
         <Avatar width='150' height='150' :profile='store.profile' ref='avatar'>
           <div class='options'>
-            <OutlineButton @click='changeAvatar'>
+            <OutlineButton @click='fileInput.click()'>
               <Icon icon='edit-3'/>
               <span>Edit</span>
             </OutlineButton>
@@ -32,6 +32,8 @@
         <IconInput icon='mail' placeholder='Email' v-model='email' />
       </div>
 
+      <input type='file' accept='image/png, image/jpeg, image/webp' ref='fileInput' @change='changeAvatar' hidden>
+
       <!-- Save and cancel -->
       <SolidButton @click='updateProfile'>Save Changes</SolidButton>
       <AccentButton @click='toggle'>Cancel</AccentButton>
@@ -50,7 +52,7 @@ import { uuid } from 'vue-uuid'
 import store from '../store'
 import { supabase } from '../supabase'
 import Avatar from './Avatar.vue'
-import { isValidURL, toBase64, selectFile, joinPaths } from '../utils'
+import { isValidURL, toBase64, joinPaths } from '../utils'
 import { uploadImage } from '../upload'
 
 const email = ref('')
@@ -61,6 +63,7 @@ const newAvatar = ref(null)
 const hasAvatarChanged = ref(false)
 const avatarPreview = ref('')
 const loader = ref(null)
+const fileInput = ref(null)
 
 defineExpose({ toggle })
 onMounted(setInitialValues)
@@ -74,7 +77,8 @@ function updateAvatarPreview (url) {
 }
 
 async function changeAvatar (event) {
-  const { file, type } = await selectFile()
+  const file = event.target.files[0]
+  const type = file.type.split('/')[0]
 
   if (type == 'image') {
     newAvatar.value = file
