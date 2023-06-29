@@ -7,17 +7,17 @@
       <div>
         <label>Avatar</label>
         <Avatar width='150' height='150' :profile='store.profile' ref='avatar'>
-            <div class='options'>
-             <OutlineButton @click='changeAvatar'>
-                <Icon icon='edit-3'/>
-                <span>Edit</span>
-              </OutlineButton>
+          <div class='options'>
+            <OutlineButton @click='changeAvatar'>
+              <Icon icon='edit-3'/>
+              <span>Edit</span>
+            </OutlineButton>
 
-              <OutlineButton @click='preDeleteAvatar'>
-                <Icon icon='trash-2'/>
-                <span>Remove</span>
-              </OutlineButton>
-            </div>
+            <OutlineButton @click='preDeleteAvatar'>
+              <Icon icon='trash-2'/>
+              <span>Remove</span>
+            </OutlineButton>
+          </div>
         </Avatar>
       </div>
 
@@ -170,6 +170,7 @@ async function updateProfile () {
     transform: translate(-50%, 0);
     display: flex;
     gap: 5px;
+    width: max-content;
   }
 
   button {
