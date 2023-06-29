@@ -22,7 +22,7 @@
 
       <p class='fallback' v-else-if='isLoaded'>No recent stories</p>
 
-      <Loader ref='loader' message='Loading stories' />
+      <Loader ref='loader' />
     </div>
   </div>
 </template>
@@ -73,6 +73,7 @@ async function getLikes (groups) {
   })
 
   try {
+    loader.value.show('Loading likes')
     const { data, error } = await supabase
       .from('likes')
       .select(`story`)
@@ -84,6 +85,8 @@ async function getLikes (groups) {
     return data.map(item => item.story)
   } catch (error) {
     console.error(error)
+  } finally {
+    loader.value.hide()
   }
 }
 
@@ -128,7 +131,7 @@ async function getStoryGroups (options = {}) {
     const stories = []
 
     try {
-      loader.value.show()
+      loader.value.show('Loading stories')
       const [ range_start, range_end ] = paginator.getRange()
       const { data, error } = await supabase
         .rpc('get_feed', { range_start, range_end })
