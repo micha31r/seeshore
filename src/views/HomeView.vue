@@ -20,7 +20,7 @@
         </Story>
       </div>
 
-      <p class='fallback' v-else>No recent stories</p>
+      <p class='fallback' v-else-if='isLoaded'>No recent stories</p>
     </div>
   </div>
 </template>
@@ -38,10 +38,12 @@ import Avatar from '../components/Avatar.vue'
 const groups = ref([])
 const likes = ref([])
 const app = document.querySelector('#app')
+const isLoaded = ref(false)
 
 onMounted(async () => {
   groups.value = await getStoryGroups()
   likes.value = await getLikes(groups.value)
+  isLoaded.value = true
 
   app.addEventListener('scroll', loadOnScroll)
 })
