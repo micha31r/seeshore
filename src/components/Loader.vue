@@ -27,17 +27,23 @@ onBeforeRouteLeave((to, from , next) => {
   }
 })
 
-function toggle () {
+function toggle (msg) {
+  if (msg) message.value = msg
+
   isVisible.value = isVisible.value
     ? false
     : true
 }
 
-function show () {
+function show (msg) {
+  if (msg) message.value = msg
+
   isVisible.value = true
 }
 
-function hide () {
+function hide (msg) {
+  if (msg) message.value = msg
+    
   isVisible.value = false
 }
 </script>
