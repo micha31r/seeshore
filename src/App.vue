@@ -31,6 +31,8 @@ if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').match
   setTheme('light')
 }
 
+setTheme('dark') // Default to dark if can't get device preference
+
 onMounted(async () => {
   const { data } = await supabase.auth.getSession()
   store.session = data.session
