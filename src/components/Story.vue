@@ -152,6 +152,7 @@ async function preload () {
       display: flex;
       gap: 5px;
       margin: auto;
+      pointer-events: none;
 
       .glide__bullet {
         display: block;
