@@ -96,9 +96,8 @@ const isLoaded = ref(false) // Initial load
 const app = document.querySelector('#app')
 
 onMounted(async () => {
+  loader.value.show('Loading stories')
   stories.value = await getOwnStories()
-
-  loader.value.show('Counting followers and following')
   followerCount.value = await getFollowerCount()
   followingCount.value = await getFollowingCount()
   loader.value.hide()
@@ -139,8 +138,6 @@ async function getOwnStories(options = {}) {
 
   return await storeCache (async (paginator) => {
     try {
-      loader.value.show('Loading stories')
-
       const { data, error } = await supabase
         .from('stories')
         .select(`
@@ -163,8 +160,6 @@ async function getOwnStories(options = {}) {
       return data
     } catch (error) {
       console.error(error)
-    } finally {
-      loader.value.hide()
     }
   }, options)
 }
