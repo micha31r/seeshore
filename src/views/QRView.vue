@@ -133,7 +133,7 @@ async function createFollowCode () {
       .upsert({
         profile: store.profile.id,
         code: uuid.v4(),
-        created_at: new Date()
+        created_at: new Date().toISOString()
       })
       .select(`code`)
       .single()

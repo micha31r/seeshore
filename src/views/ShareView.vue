@@ -171,10 +171,9 @@ async function createStory () {
     const { error } = await supabase
       .from('profiles')
       .update({
-        last_story_at: new Date()
+        last_story_at: new Date().toISOString()
       })
       .eq('id', store.profile.id)
-      .limit(100)
 
     if (error) throw error
   } catch (error) {
