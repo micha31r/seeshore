@@ -2,6 +2,8 @@ import { supabase } from './supabase'
 import store, { storeCache } from './store'
 
 export async function getFollowers (options = {}) {
+  options = { name: 'followers', ...options }
+
   return await storeCache (async (paginator) => {
     try {
       const { data, error } = await supabase
@@ -23,10 +25,12 @@ export async function getFollowers (options = {}) {
     } catch (error) {
       console.error(error)
     }
-  }, 'followers', options)
+  }, options)
 }
 
-export async function getFollowing (options = {}) {
+export async function getFollowing (options = { name: 'following' }) {
+  options = { name: 'following', ...options }
+
   return await storeCache (async (paginator) => {
     try {
       const { data, error } = await supabase
@@ -48,10 +52,10 @@ export async function getFollowing (options = {}) {
     } catch (error) {
       console.error(error)
     }
-  }, 'following', options)
+  }, options)
 }
 
-export async function getFollowerCount () {
+export async function getFollowerCount (options = { name: 'followerCount' }) {
   return await storeCache (async () => {
     try {
       const { count, error } = await supabase
@@ -65,10 +69,10 @@ export async function getFollowerCount () {
     } catch (error) {
       console.error(error)
     }
-  }, 'followerCount')
+  }, options)
 }
 
-export async function getFollowingCount () {
+export async function getFollowingCount (options = { name: 'followingCount' }) {
   return await storeCache (async () => {
     try {
       const { count, error } = await supabase
@@ -82,5 +86,5 @@ export async function getFollowingCount () {
     } catch (error) {
       console.error(error)
     }
-  }, 'followingCount')
+  }, options)
 }

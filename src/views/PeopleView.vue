@@ -173,7 +173,9 @@ async function deleteFollowRequest (profile) {
   }
 }
 
-async function getPendingFollowing () {
+async function getPendingFollowing (options = {}) {
+  options = { name: 'pendingFollowing', ...options }
+
   return await storeCache (async () => {
     try {
       const { data, error } = await supabase
@@ -194,10 +196,12 @@ async function getPendingFollowing () {
     } catch (error) {
       console.error(error)
     }
-  }, 'pendingFollowing')
+  }, options)
 }
 
-async function getFollowRequests () {
+async function getFollowRequests (options = {}) {
+  options = { name: 'followRequests', ...options }
+
   return await storeCache (async () => {
     try {
       const { data, error } = await supabase
@@ -218,7 +222,7 @@ async function getFollowRequests () {
     } catch (error) {
       console.error(error)
     }
-  }, 'followRequests')
+  }, options)
 }
 
 async function removeFollower(target) {

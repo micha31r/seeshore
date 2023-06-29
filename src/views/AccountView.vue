@@ -124,6 +124,8 @@ function toggleDeleteAccount () {
 }
 
 async function getOwnStories(options = {}) {
+  options = { name: 'ownStories', pageSize: 12, ...options }
+
   return await storeCache (async (paginator) => {
     try {
       const { data, error } = await supabase
@@ -149,10 +151,7 @@ async function getOwnStories(options = {}) {
     } catch (error) {
       console.error(error)
     }
-  }, 'ownStories', {
-    ...options,
-    pageSize: 12
-  })
+  }, options)
 }
 
 async function getLikeData (story) {

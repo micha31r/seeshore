@@ -117,6 +117,8 @@ async function toggleLike (story) {
 }
 
 async function getFollowingByActivity (options = {}) {
+  options = { name: 'followingByActivity', pageSize: 12, ...options }
+
   return await storeCache (async (paginator) => {
     try {
       const [ range_start, range_end ] = paginator.getRange()
@@ -129,13 +131,12 @@ async function getFollowingByActivity (options = {}) {
     } catch (error) {
       console.error(error)
     }
-  }, 'followingByActivity', {
-    ...options,
-    pageSize: 12
-  })
+  }, options)
 }
 
 async function getStoryGroups (following, options = {}) {
+  options = { name: 'stories', pageSize: 12, ...options }
+
   return await storeCache (async () => {
     const stories = []
 
@@ -160,7 +161,7 @@ async function getStoryGroups (following, options = {}) {
 
     // return stories
     return stories
-  }, 'stories', options)
+  }, options)
 }
 </script>
 
