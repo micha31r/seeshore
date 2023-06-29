@@ -3,7 +3,7 @@
     <Navbar pageName='QR Code' />
 
     <div class='qr'>
-      <div class='contact-card'>
+      <div class='contact-card' v-show='code'>
         <!-- Profile information -->
         <ProfileList :data='[store.profile]'/>
 
@@ -19,6 +19,8 @@
         <video ref='video'></video>
         <SolidButton class='cancel' @click='toggleScanner'>Cancel</SolidButton>
       </div>
+
+      <Loader ref='loader' />
     </div>
   </div>
 </template>
@@ -42,6 +44,7 @@ const code = ref('')
 const showScanner = ref(false)
 const video = ref(null)
 const scanSize = 300
+const loader = ref(null)
 
 // UUID regex (Melvin George, 2021)
 // https://melvingeorge.me/blog/check-if-string-valid-uuid-regex-javascript
@@ -104,6 +107,7 @@ async function getFollowCode () {
 
   // Get existing/valid code
   try {
+    loader.value.show('Loading QR code')
     let { data, count, error } = await supabase
       .from('follow_codes')
       .select(`code`, { count: 'exact' })
@@ -117,6 +121,8 @@ async function getFollowCode () {
       : await createFollowCode()
   } catch (error) {
     console.error(error)
+  } finally {
+    loader.value.hide()
   }
 }
 
@@ -159,6 +165,8 @@ async function getProfileFromCode (code) {
 async function createFollowRequest (id) {
   if (id == store.profile.id) return
 
+  loader.value.show('Following')
+
   // Return to people page if already following
   if (await isFollowing(id)) {
     router.push({ name: 'people' })
@@ -182,6 +190,8 @@ async function createFollowRequest (id) {
   } catch (error) {
     console.error(error)
   }
+
+  loader.value.hide()
 }
 
 async function isFollowing (id) {
