@@ -5,7 +5,7 @@
     <div class='qr'>
       <div class='contact-card'>
         <!-- Profile information -->
-        <ProfileList :data='[store.profile]' fallback='This story does not have any likes.'/>
+        <ProfileList :data='[store.profile]'/>
 
         <!-- QR code -->
         <QRCode v-if='code' :data='code'/>
