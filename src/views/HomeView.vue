@@ -73,7 +73,6 @@ async function getLikes (groups) {
   })
 
   try {
-    loader.value.show('Loading likes')
     const { data, error } = await supabase
       .from('likes')
       .select(`story`)
@@ -85,8 +84,6 @@ async function getLikes (groups) {
     return data.map(item => item.story)
   } catch (error) {
     console.error(error)
-  } finally {
-    loader.value.hide()
   }
 }
 
