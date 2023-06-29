@@ -20,9 +20,7 @@
         </Story>
       </div>
 
-      <div class='fallback' v-else>
-        <p>No recent stories</p>
-      </div>
+      <p class='fallback' v-else>No recent stories</p>
     </div>
   </div>
 </template>
@@ -221,16 +219,12 @@ async function getStoryGroups (options = {}) {
   }
 }
 
-.fallback {
+p.fallback {
   display: flex;
   width: max-content;
-  height: max-content;
   margin: auto;
-
-  p {
-    color: theme('color-text-2');
-    margin: 0;
-  }
+  color: theme('color-text-2');
+  padding: 10px;
 }
 }
 </style>
