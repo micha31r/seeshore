@@ -72,6 +72,8 @@
           </template>
         </ProfileList>
       </div>
+
+      <Loader ref='loader' />
     </div>
   </div>
 </template>
@@ -87,16 +89,19 @@ import ProfileList from '../components/ProfileList.vue'
 
 const followerList = ref(null)
 const followingList = ref(null)
+const loader = ref(null)
 const followers = ref([])
 const following = ref([])
 const requests = ref([])
 const pending = ref([])
 
 onMounted(async () => {
+  loader.value.show()
   followers.value = await getFollowers()
   following.value = await getFollowing()
   requests.value = await getFollowRequests()
   pending.value = await getPendingFollowing()
+  loader.value.hide()
 
   followerList.value.element.addEventListener('scroll', loadFollowersOnScroll)
   followingList.value.element.addEventListener('scroll', loadFollowingOnScroll)
@@ -109,23 +114,28 @@ onBeforeUnmount(() => {
 
 async function loadFollowersOnScroll () {
   if (isScrolledBottom(followerList.value.element)) {
+    loader.value.show('Loading followers')
     followers.value = followers.value.concat(await getFollowers('%', {
       append: true,
       nextPage: true
     }))
+    loader.value.hide()
   }
 }
 
 async function loadFollowingOnScroll () {
   if (isScrolledBottom(followingList.value.element)) {
+    loader.value.show('Loading following')
     following.value = following.value.concat(await getFollowing('%', {
       append: true,
       nextPage: true
     }))
+    loader.value.hide()
   }
 }
 
 async function approveFollowRequest (profile) {
+  loader.value.show('Accepting follow request')
   await createFollower(profile)
   await deleteFollowRequest(profile)
 
@@ -134,14 +144,17 @@ async function approveFollowRequest (profile) {
 
   followers.value = await getFollowers()
   requests.value = await getFollowRequests()
+  loader.value.hide()
 }
 
 async function rejectFollowRequest (profile) {
+  loader.value.show('Rejecting follow request')
   await deleteFollowRequest(profile)
 
   forceExpire('followRequests')
 
   requests.value = await getFollowRequests()
+  loader.value.hide()
 }
 
 async function createFollower (profile) {
@@ -227,6 +240,8 @@ async function getFollowRequests (options = {}) {
 
 async function removeFollower(target) {
   try {
+    loader.value.show('Removing follower')
+
     const { error } = await supabase
       .from('followers')
       .delete()
@@ -240,11 +255,15 @@ async function removeFollower(target) {
     followers.value = await getFollowers()
   } catch (error) {
     console.error(error)
+  } finally {
+    loader.value.hide()
   }
 }
 
 async function unfollow(target) {
   try {
+    loader.value.show('Unfollowing')
+
     const { error } = await supabase
       .from('followers')
       .delete()
@@ -264,11 +283,15 @@ async function unfollow(target) {
     })
   } catch (error) {
     console.error(error)
+  } finally {
+    loader.value.hide()
   }
 }
 
 async function follow(target) {
   try {
+    loader.value.show('following')
+
     const { error } = await supabase
       .from('followers')
       .insert({
@@ -287,6 +310,8 @@ async function follow(target) {
     })
   } catch (error) {
     console.error(error)
+  } finally {
+    loader.value.hide()
   }
 }
 </script>

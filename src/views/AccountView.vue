@@ -52,6 +52,8 @@
 
       <p class='fallback' v-else-if='isLoaded'>No recent stories.</p>
 
+      <Loader ref='loader' />
+
       <!-- Account settings -->
       <AccountEditor ref='accountEditor' @deleteAccount='toggleDeleteAccount'/>
       <DeleteAccount ref='deleteAccount' />
@@ -85,17 +87,22 @@ const stories = ref([])
 const showAccountMenu = ref(false)
 const likes = ref([])
 const showLikes = ref(false)
+const loader = ref(null)
 const accountEditor = ref(null)
 const deleteAccount = ref(null)
 const followerCount = ref(0)
 const followingCount = ref(0)
-const isLoaded = ref(false)
+const isLoaded = ref(false) // Initial load
 const app = document.querySelector('#app')
 
 onMounted(async () => {
   stories.value = await getOwnStories()
+
+  loader.value.show('Counting followers and following')
   followerCount.value = await getFollowerCount()
   followingCount.value = await getFollowingCount()
+  loader.value.hide()
+
   isLoaded.value = true
 
   app.addEventListener('scroll', loadOnScroll)
@@ -132,6 +139,8 @@ async function getOwnStories(options = {}) {
 
   return await storeCache (async (paginator) => {
     try {
+      loader.value.show('Loading stories')
+
       const { data, error } = await supabase
         .from('stories')
         .select(`
@@ -154,6 +163,8 @@ async function getOwnStories(options = {}) {
       return data
     } catch (error) {
       console.error(error)
+    } finally {
+      loader.value.hide()
     }
   }, options)
 }

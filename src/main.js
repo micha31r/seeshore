@@ -9,6 +9,7 @@ import OutlineButton from './components/OutlineButton.vue'
 import SolidButton from './components/SolidButton.vue'
 import Prompt from './components/Prompt.vue'
 import Menu from './components/Menu.vue'
+import Loader from './components/Loader.vue'
 
 const app = createApp(App)
 
@@ -22,4 +23,5 @@ app
   .component('SolidButton', SolidButton)
   .component('Prompt', Prompt)
   .component('Menu', Menu)
+  .component('Loader', Loader)
   .mount('#app')

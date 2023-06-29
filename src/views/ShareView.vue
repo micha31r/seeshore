@@ -37,12 +37,14 @@
       </div>
 
       <SolidButton class='share' @click='createStory'>Share</SolidButton>
+
+      <Loader ref='loader' />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onBeforeMount, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { uuid } from 'vue-uuid'
 import { supabase } from '../supabase'
@@ -65,10 +67,13 @@ const list = ref(null)
 const followers = ref([])
 const recipients = ref([])
 const keyword = ref('')
+const loader = ref(null)
+
+onBeforeMount(() => {
+  if (!file) router.push('/create')
+})
 
 onMounted(() => {
-  if (!file) router.push('/create')
-    
   filterFollowers()
   list.value.element.addEventListener('scroll', loadOnScroll)
 })
@@ -84,23 +89,29 @@ function getFilterString () {
 }
 
 async function filterFollowers () {
+  loader.value.show('Loading followers')
   forceExpire('followersFiltered')
   followers.value = await getFollowers(getFilterString(), { name: 'followersFiltered' })
+  loader.value.hide()
 }
 
 async function loadOnScroll () {
   if (isScrolledBottom(list.value.element)) {
+    loader.value.show('Loading followers')
     followers.value = followers.value.concat(await getFollowers(getFilterString(), {
       name: 'followersFiltered',
       append: true,
       nextPage: true
     }))
+    loader.value.hide()
   }
 }
 
 async function createStory () {
   let uploadResponse;
   let storyId;
+
+  loader.value.show('Creating story')
 
   // Upload media
   if (type == 'image' && file)  {
@@ -169,6 +180,8 @@ async function createStory () {
   } catch (error) {
     console.log(error)
   }
+
+  loader.value.hide()
 
   // Clear store.editor
   store.editor = {

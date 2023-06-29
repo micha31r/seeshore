@@ -38,6 +38,8 @@
 
       <!-- Delete account button -->
       <a class='delete' @click='$emit("deleteAccount"); toggle();'>Delete Account</a>
+
+      <Loader ref='loader' message='Saving changes' />
     </form>
   </Prompt>
 </template>
@@ -58,6 +60,7 @@ const avatar = ref(null)
 const newAvatar = ref(null)
 const hasAvatarChanged = ref(false)
 const avatarPreview = ref('')
+const loader = ref(null)
 
 defineExpose({ toggle })
 onMounted(setInitialValues)
@@ -92,6 +95,8 @@ function setInitialValues () {
 }
 
 async function updateProfile () {
+  loader.value.show()
+
   let newAvatarURL = null
 
   if (hasAvatarChanged.value) {
@@ -145,6 +150,7 @@ async function updateProfile () {
     console.error(error)
   }
 
+  loader.value.hide()
   setInitialValues()
   toggle()
 }

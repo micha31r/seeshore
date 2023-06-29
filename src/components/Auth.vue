@@ -25,6 +25,8 @@
         <!-- <OutlineButton class='oauth outline' @click.submit.prevent='GoogleLogin'>Continue with Google</OutlineButton> -->
       </form>
     </section>
+
+    <Loader :show='state == 1' :key='state' message='Sending magic link' />
   </div>
 </template>
 
