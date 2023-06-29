@@ -1,7 +1,7 @@
 import { supabase } from './supabase'
 import store, { storeCache } from './store'
 
-export async function getFollowers (options = {}) {
+export async function getFollowers (filter = '%', options = {}) {
   options = { name: 'followers', ...options }
 
   return await storeCache (async (paginator) => {
@@ -9,13 +9,14 @@ export async function getFollowers (options = {}) {
       const { data, error } = await supabase
         .from('followers')
         .select(`
-          follower (
+          follower!inner (
             id,
             full_name,
             avatar_url
           )
         `)
         .eq('profile', store.profile.id)
+        .ilike('follower.full_name', filter)
         .order('id', { ascending: false })
         .range(...paginator.getRange())
 
@@ -28,7 +29,7 @@ export async function getFollowers (options = {}) {
   }, options)
 }
 
-export async function getFollowing (options = { name: 'following' }) {
+export async function getFollowing (filter = '%', options = { name: 'following' }) {
   options = { name: 'following', ...options }
 
   return await storeCache (async (paginator) => {
@@ -36,13 +37,14 @@ export async function getFollowing (options = { name: 'following' }) {
       const { data, error } = await supabase
         .from('followers')
         .select(`
-          profile (
+          profile!inner (
             id,
             full_name,
             avatar_url
           )
         `)
         .eq('follower', store.profile.id)
+        .ilike('profile.full_name', filter)
         .order('id', { ascending: false })
         .range(...paginator.getRange())
 

@@ -109,7 +109,7 @@ onBeforeUnmount(() => {
 
 async function loadFollowersOnScroll () {
   if (isScrolledBottom(followerList.value.element)) {
-    followers.value = followers.value.concat(await getFollowers({
+    followers.value = followers.value.concat(await getFollowers('%', {
       append: true,
       nextPage: true
     }))
@@ -118,7 +118,7 @@ async function loadFollowersOnScroll () {
 
 async function loadFollowingOnScroll () {
   if (isScrolledBottom(followingList.value.element)) {
-    following.value = following.value.concat(await getFollowing({
+    following.value = following.value.concat(await getFollowing('%', {
       append: true,
       nextPage: true
     }))
