@@ -135,7 +135,7 @@ async function getFollowingByActivity (options = {}) {
 }
 
 async function getStoryGroups (following, options = {}) {
-  options = { name: 'stories', pageSize: 12, ...options }
+  options = { name: 'stories', ...options }
 
   return await storeCache (async () => {
     const stories = []
