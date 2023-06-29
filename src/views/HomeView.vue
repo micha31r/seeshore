@@ -2,21 +2,27 @@
   <div class='grid'>
     <Navbar pageName='Stories' />
 
-    <div class='feed'>
-      <Story v-for='[id, data] in groups' :data='data'>
-        <template #default='{ story, index }'>
-          <!-- Profile -->
-          <div class='profile'>
-            <Avatar :profile='story.profile' />
-            <p class='name'>{{ story.profile.full_name }}</p>
-          </div>
+    <div class='wrapper'>
+      <div class='feed' v-if='groups.length'>
+        <Story v-for='[id, data] in groups' :data='data'>
+          <template #default='{ story, index }'>
+            <!-- Profile -->
+            <div class='profile'>
+              <Avatar :profile='story.profile' />
+              <p class='name'>{{ story.profile.full_name }}</p>
+            </div>
 
-          <!-- Like button -->
-          <AccentButton class='icon like' @click='toggleLike(story)' :data-is-liked='likes.indexOf(story.id) > -1'>
-            <Icon icon='heart'/>
-          </AccentButton>
-        </template>
-      </Story>
+            <!-- Like button -->
+            <AccentButton class='icon like' @click='toggleLike(story)' :data-is-liked='likes.indexOf(story.id) > -1'>
+              <Icon icon='heart'/>
+            </AccentButton>
+          </template>
+        </Story>
+      </div>
+
+      <div class='fallback' v-else>
+        <p>No recent stories</p>
+      </div>
     </div>
   </div>
 </template>
@@ -150,12 +156,17 @@ async function getStoryGroups (options = {}) {
 
 <style scoped lang='scss'>
 @import '../assets/themes';
+@import '../assets/main';
 
 @include use-theme {
 .grid {
   display: grid;
   grid-template-rows: auto 1fr;
   flex: 1;
+}
+
+.wrapper {
+  display: flex;
 }
 
 .feed {
@@ -207,6 +218,20 @@ async function getStoryGroups (options = {}) {
 
   .story:deep(.preview) {
     cursor: pointer;
+  }
+}
+
+.fallback {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: max-content;
+  height: max-content;
+  margin: auto;
+
+  p {
+    color: theme('color-text-2');
+    margin: 0;
   }
 }
 }
