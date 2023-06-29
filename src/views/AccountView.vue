@@ -67,7 +67,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { supabase } from '../supabase'
 import store, { storeCache, forceExpire } from '../store'
 import { isScrolledBottom } from '../utils'
@@ -97,7 +97,7 @@ onMounted(async () => {
   app.addEventListener('scroll', loadOnScroll)
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
   app.removeEventListener('scroll', loadOnScroll)
 })
 

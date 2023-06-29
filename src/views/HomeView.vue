@@ -23,7 +23,7 @@
 
 <script setup>
 import { supabase } from '../supabase'
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import store, { storeCache } from '../store'
 import { isScrolledBottom } from '../utils'
 import { getFollowing } from '../api'
@@ -43,7 +43,7 @@ onMounted(async () => {
   app.addEventListener('scroll', loadOnScroll)
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
   app.removeEventListener('scroll', loadOnScroll)
 })
 
