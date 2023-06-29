@@ -165,7 +165,7 @@ async function getProfileFromCode (code) {
 async function createFollowRequest (id) {
   if (id == store.profile.id) return
 
-  loader.value.show('Following')
+  loader.value.show('Creating follow request')
 
   // Return to people page if already following
   if (await isFollowing(id)) {
