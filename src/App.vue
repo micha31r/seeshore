@@ -6,6 +6,7 @@
 
     <RouterView v-if='store.session && store.profile' />
     <Auth v-else-if='store.isAuthLoaded' />
+    <Loader ref='loader' />
   </div>
 </template>
 
@@ -18,6 +19,7 @@ import Auth from './components/Auth.vue'
 
 const root = document.querySelector(':root')
 const main = ref(null)
+const loader = ref(null)
 
 // Watch for theme changes (Mark Szabo, 2019) (mikemaccana, 2022)
 // https://stackoverflow.com/questions/56393880/how-do-i-detect-dark-mode-using-javascript
@@ -34,6 +36,8 @@ if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').match
 setTheme('dark') // Default to dark if can't get device preference
 
 onMounted(async () => {
+  loader.value.show('Loading Seeshore')
+
   const { data } = await supabase.auth.getSession()
   store.session = data.session
 
@@ -42,6 +46,7 @@ onMounted(async () => {
   }
 
   store.isAuthLoaded = true
+  loader.value.hide()
 
   supabase.auth.onAuthStateChange((_, _session) => {
     store.session = _session
