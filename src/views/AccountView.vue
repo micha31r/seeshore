@@ -52,7 +52,7 @@
 
       <p class='fallback' v-else-if='isLoaded'>No recent stories.</p>
 
-      <Loader ref='loader' message='Loading stories' />
+      <Loader ref='loader' />
 
       <!-- Account settings -->
       <AccountEditor ref='accountEditor' @deleteAccount='toggleDeleteAccount'/>
@@ -97,8 +97,12 @@ const app = document.querySelector('#app')
 
 onMounted(async () => {
   stories.value = await getOwnStories()
+
+  loader.value.show('Counting followers and following')
   followerCount.value = await getFollowerCount()
   followingCount.value = await getFollowingCount()
+  loader.value.hide()
+
   isLoaded.value = true
 
   app.addEventListener('scroll', loadOnScroll)
@@ -135,7 +139,7 @@ async function getOwnStories(options = {}) {
 
   return await storeCache (async (paginator) => {
     try {
-      loader.value.show()
+      loader.value.show('Loading stories')
 
       const { data, error } = await supabase
         .from('stories')
