@@ -5,7 +5,7 @@
     <link href='https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;900&family=Urbanist:wght@500;600&display=swap' rel='stylesheet'>
 
     <RouterView v-if='store.session && store.profile' />
-    <Auth v-else />
+    <Auth v-else-if='store.isAuthLoaded' />
   </div>
 </template>
 
@@ -40,6 +40,8 @@ onMounted(async () => {
   if (store.session) {
     store.profile = await getProfile()
   }
+
+  store.isAuthLoaded = true
 
   supabase.auth.onAuthStateChange((_, _session) => {
     store.session = _session

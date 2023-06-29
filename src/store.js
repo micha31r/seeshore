@@ -2,6 +2,7 @@ import { reactive } from 'vue'
 import Paginator from './pagination'
 
 const store = reactive({
+  isAuthLoaded: false,
   session: null,
   profile: null,
   theme: 'light',
