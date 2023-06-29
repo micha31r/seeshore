@@ -95,20 +95,6 @@ async function updateProfile () {
   let newAvatarURL = null
 
   if (hasAvatarChanged.value) {
-    // Delete old avatar file
-    if (!isValidURL(store.profile.avatar_url)) {
-      try {
-        const { error } = await supabase
-          .storage
-          .from('avatars')
-          .remove([store.profile.avatar_url])
-
-        if (error) throw error
-      } catch (error) {
-        console.error(error)
-      }
-    }
-
     // Upload new avatar
     if (newAvatar.value) {
       const path = joinPaths([store.profile.id, uuid.v4()]) // without extension
