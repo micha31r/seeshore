@@ -97,13 +97,11 @@ async function filterFollowers () {
 
 async function loadOnScroll () {
   if (isScrolledBottom(list.value.element)) {
-    loader.value.show('Loading followers')
     followers.value = followers.value.concat(await getFollowers(getFilterString(), {
       name: 'followersFiltered',
       append: true,
       nextPage: true
     }))
-    loader.value.hide()
   }
 }
 
