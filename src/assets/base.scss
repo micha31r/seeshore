@@ -25,11 +25,16 @@ label, input::placeholder {
 }
 
 a {
+  transition: color 0.2s;
   text-decoration: none;
 }
 
 p {
-  line-height: 1.3em;
+  line-height: 1.5em;
+}
+
+svg {
+  vertical-align: text-bottom;
 }
 
 button.icon {
