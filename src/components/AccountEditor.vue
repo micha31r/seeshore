@@ -1,5 +1,5 @@
 <template>
-  <Prompt class='account-editor' v-if='show'>
+  <Prompt class='account-editor' v-show='show'>
     <form @submit.prevent>
       <h3 class='heading'>Edit Profile</h3>
 

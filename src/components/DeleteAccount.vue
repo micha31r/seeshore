@@ -1,5 +1,5 @@
 <template>
-  <Prompt class='delete-account' v-if='show'>
+  <Prompt class='delete-account' v-show='show'>
     <form @submit.prevent>
       <h3 class='heading'>Delete Account</h3>
       <p class='info'>All data associated with your account will be permanently deleted! Please confirm your email address if you wish to proceed.</p>
