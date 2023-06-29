@@ -343,7 +343,6 @@ async function follow(target) {
       }
 
       .menu:deep(.toggle) {
-        width: max-content;
         background: transparent;
       }
     }
