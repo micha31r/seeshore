@@ -41,7 +41,9 @@ async function updateURL () {
     ? source
     : await download('avatars', source)
 
-  avatar.value.style.backgroundImage = `url("${source}")`
+  if (avatar.value) { // check in case avatar is unmounted due to parents
+    avatar.value.style.backgroundImage = `url("${source}")`
+  }
 }
 </script>
 
