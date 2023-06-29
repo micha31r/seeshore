@@ -14,32 +14,26 @@
         <!-- Search box -->
         <IconInput icon='search' placeholder='Search' v-model='keyword' @change='filterFollowers' />
 
-        <!-- Selected users -->
-        <div class='recipients' v-if='recipients.length'>
-          <div class='tag' v-for='follower in recipients'>
-            <Avatar width='20' height='20' :profile='follower'/>
-            <p class='name'>{{ follower.full_name }}</p>
-
-            <AccentButton class='remove icon' @click='toggle(follower)'>
+        <!-- Selected profiles -->
+        <ProfileList class='recipients' v-if='recipients.length' :data='recipients'>
+          <template #default='{profile}'>
+            <AccentButton class='remove icon' @click='toggle(profile)'>
               <Icon icon='x' />
             </AccentButton>
-          </div>
-        </div>
+          </template>
+        </ProfileList>
 
         <p class='subheading'>Followers</p>
 
-        <!-- All followers -->
-        <div class='followers' ref='list'>
-          <div v-for='follower in followers' class='item' @click='toggle(follower)'>
-            <Avatar  width='35' height='35' :profile='follower'/>
-            <p class='name'>{{ follower.full_name }}</p>
-
+        <!-- Followers -->
+        <ProfileList class='follower-list' ref='list' :data='followers' @itemClick='(value) => toggle(value.profile)'>
+          <template #default='{profile}'>
             <RadioInput
-              :checked='recipients.findIndex(item => item.id == follower.id) > -1'
-              :key='recipients.length'
-            />
-          </div>
-        </div>
+              :checked='isRecipient = recipients.findIndex(item => item.id == profile.id) > -1'
+              :key='isRecipient'
+              />
+          </template>
+        </ProfileList>
       </div>
 
       <SolidButton class='share' @click='createStory'>Share</SolidButton>
@@ -60,6 +54,7 @@ import store, { forceExpire } from '../store'
 import Navbar from '../components/Navbar.vue'
 import Preview from '../components/Preview.vue'
 import Avatar from '../components/Avatar.vue'
+import ProfileList from '../components/ProfileList.vue'
 
 const router = useRouter()
 const type = store.editor.type
@@ -75,11 +70,11 @@ onMounted(() => {
   if (!file) router.push('/create')
     
   filterFollowers()
-  list.value.addEventListener('scroll', loadOnScroll)
+  list.value.element.addEventListener('scroll', loadOnScroll)
 })
 
 onBeforeUnmount(() => {
-  list.value.removeEventListener('scroll', loadOnScroll)
+  list.value.element.removeEventListener('scroll', loadOnScroll)
 })
 
 function getFilterString () {
@@ -94,7 +89,7 @@ async function filterFollowers () {
 }
 
 async function loadOnScroll () {
-  if (isScrolledBottom(list.value)) {
+  if (isScrolledBottom(list.value.element)) {
     followers.value = followers.value.concat(await getFollowers(getFilterString(), {
       name: 'followersFiltered',
       append: true,
@@ -255,83 +250,74 @@ function toggle (profile) {
       margin: 0 10px;
     }
 
-    .recipients {
-      display: flex;
-      gap: 10px;
+    .recipients:deep() {
+      flex-direction: row;
       flex-wrap: wrap;
-      max-height: 150px;
-      padding: 0 10px;
-      overflow: auto;
+      gap: 5px;
 
-      .tag {
-        display: flex;
+      .profile {
         width: max-content;
-        gap: 7px;
         border-radius: $border-radius-2;
         background: theme('color-bg-2');
         padding: 7px;
+        gap: 7px;
 
         .name {
-          font-size: 0.8em;
-          margin: auto 0;
+          font-size: 0.9em;
         }
 
-        .remove {
-          width: max-content;
-          height: max-content;
-          padding: 0;
-          border-radius: 100%;
-          background: transparent;
-          margin: auto 0;
+        .avatar {
+          width: 20px !important;
+          height: 20px !important;
+        }
+      }
 
-          .feather {
-            width: 1em;
-            height: 1em;
-          }
+      .remove {
+        width: max-content;
+        height: max-content;
+        padding: 0;
+        border-radius: 100%;
+        background: transparent;
+        margin: auto 0;
+
+        .feather {
+          width: 1em;
+          height: 1em;
         }
       }
     }
 
-    .followers {
-      display: flex;
-      flex-direction: column;
+    .follower-list {
       gap: 20px;
+      width: 100%;
       max-height: 400px;
       padding: 10px;
       overflow: auto;
 
-      .item {
+      .radio-input {
+        margin: auto 0 auto auto;
+      }
+
+      &:deep(.profile) {
         position: relative;
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        gap: 10px;
-        border-radius: $border-radius-2;
         cursor: pointer;
 
-        .name {
-          margin: auto 0;
+        &::before {
+          content: '';
+          display: block;
+          position: absolute;
+          width: calc(100% + 20px);
+          height: calc(100% + 20px);
+          border-radius: $border-radius-2;
+          top: -10px;
+          left: -10px;
+          transition: background 0.2s;
+          z-index: -1;
         }
 
-        .radio-input {
-          margin: auto 0;
+        &:hover::before {
+          background: theme('color-bg-2');
         }
-      }
-
-      .item::before {
-        content: '';
-        display: block;
-        position: absolute;
-        width: calc(100% + 20px);
-        height: calc(100% + 20px);
-        border-radius: $border-radius-1;
-        top: -10px;
-        left: -10px;
-        transition: background 0.2s;
-        z-index: -1;
-      }
-
-      .item:hover::before {
-        background: theme('color-bg-2');
       }
     }
   }
