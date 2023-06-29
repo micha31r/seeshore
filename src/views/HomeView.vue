@@ -3,7 +3,7 @@
     <Navbar pageName='Stories' />
 
     <div class='feed'>
-      <Story v-for='data in groups' :data='data'>
+      <Story v-for='[id, data] in groups' :data='data'>
         <template #default='{ story, index }'>
           <!-- Profile -->
           <div class='profile'>
@@ -36,8 +36,7 @@ const likes = ref([])
 const app = document.querySelector('#app')
 
 onMounted(async () => {
-  const following = await getFollowingByActivity()
-  groups.value = await getStoryGroups(following)
+  groups.value = await getStoryGroups()
   likes.value = await getLikes(groups.value)
 
   app.addEventListener('scroll', loadOnScroll)
@@ -49,22 +48,19 @@ onBeforeUnmount(() => {
 
 async function loadOnScroll () {
   if (isScrolledBottom(app)) {
-    const following = await getFollowingByActivity({
+    groups.value = groups.value.concat(await getStoryGroups({
       append: true,
       nextPage: true
-    })
-    groups.value = groups.value.concat(await getStoryGroups(following, {
-      append: true 
     }))
     likes.value = await getLikes(groups.value)
   }
 }
 
-async function getLikes (stories) {
+async function getLikes (groups) {
   let ids = []
 
-  stories.forEach(group => {
-    ids = ids.concat(group.map(story => story.id))
+  groups.forEach(([id, stories]) => {
+    ids = ids.concat(stories.map(item => item.id))
   })
 
   try {
@@ -116,51 +112,38 @@ async function toggleLike (story) {
   }
 }
 
-async function getFollowingByActivity (options = {}) {
-  options = { name: 'followingByActivity', pageSize: 12, ...options }
+async function getStoryGroups (options = {}) {
+  options = { name: 'stories', pageSize: 12, ...options }
 
   return await storeCache (async (paginator) => {
+    const stories = []
+
     try {
       const [ range_start, range_end ] = paginator.getRange()
       const { data, error } = await supabase
-        .rpc('get_profile_by_activity', { range_start, range_end })
+        .rpc('get_feed', { range_start, range_end })
+        .select(`
+          *,
+          profile (id, avatar_url, full_name)
+        `)
 
       if (error) throw error
 
-      return data
+      const group = data.reduce((group, story) => {
+        const { profile } = story
+        group[profile.id] = group[profile.id] ?? []
+        group[profile.id].push(story)
+        return group
+      }, {})
+
+      const stories = Object.entries(group).sort((a, b) => {
+        return a[1][0].created_at - b[1][0].created_at
+      })
+
+      return stories
     } catch (error) {
       console.error(error)
     }
-  }, options)
-}
-
-async function getStoryGroups (following, options = {}) {
-  options = { name: 'stories', ...options }
-
-  return await storeCache (async () => {
-    const stories = []
-
-    for (let i = 0; i < following.length; i++) {
-      try {
-        const { data, error } = await supabase
-          .rpc('get_stories_from_following', { 
-            following_id: following[i].id
-          })
-          .select(`
-            *,
-            profile (id, avatar_url, full_name)
-          `)
-
-        if (error) throw error
-
-        stories.push(data)
-      } catch (error) {
-        console.error(error)
-      }
-    }
-
-    // return stories
-    return stories
   }, options)
 }
 </script>
