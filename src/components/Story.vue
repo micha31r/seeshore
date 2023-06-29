@@ -44,6 +44,8 @@
       </div>
     </div>
   </div>
+
+  <Loader ref='loader' message='Loading stories' />
 </template>
 
 <script setup>
@@ -63,7 +65,8 @@ const glideId = ref(uuid.v4())
 const glideIndex = ref(0)
 const leftButton = ref(null)
 const rightButton = ref(null)
-const isLoaded = ref(false)
+const isLoaded = ref(false) // Initial load
+const loader = ref(null)
 
 const glide = new Glide('#glide-' + glideId.value, {
     type: 'slider',
@@ -92,10 +95,12 @@ const imageSizeHandle = new OnHold(() => {
 
 // Preload images and like data
 async function preload () {
+  loader.value.show()
   for (let i = 0; i < stories.value.length; i++) {
     const item = stories.value[i]
     images.value.push(await download('images', item.media_url))
   }
+  loader.value.hide()
 }
 </script>
 

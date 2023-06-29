@@ -37,6 +37,8 @@
       </div>
 
       <SolidButton class='share' @click='createStory'>Share</SolidButton>
+
+      <Loader ref='loader' message='Creating story' />
     </div>
   </div>
 </template>
@@ -65,6 +67,7 @@ const list = ref(null)
 const followers = ref([])
 const recipients = ref([])
 const keyword = ref('')
+const loader = ref(null)
 
 onMounted(() => {
   if (!file) router.push('/create')
@@ -101,6 +104,8 @@ async function loadOnScroll () {
 async function createStory () {
   let uploadResponse;
   let storyId;
+
+  loader.value.show()
 
   // Upload media
   if (type == 'image' && file)  {
@@ -169,6 +174,8 @@ async function createStory () {
   } catch (error) {
     console.log(error)
   }
+
+  loader.value.hide()
 
   // Clear store.editor
   store.editor = {
