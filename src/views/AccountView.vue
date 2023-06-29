@@ -26,7 +26,7 @@
       </div>
 
       <!-- Stories -->
-      <div class='feed'>
+      <div class='feed' v-if='stories.length'>
         <Story v-for='frame in stories' :data='[frame]' :key='frame'>
           <template #default='{ story, index }'>
             <AccentButton class='likes' @click='toggleLikesList(story.likes)'>
@@ -49,6 +49,8 @@
           </template>
         </Story>
       </div>
+
+      <p class='fallback' v-else>No recent stories.</p>
 
       <!-- Account settings -->
       <AccountEditor ref='accountEditor' @deleteAccount='toggleDeleteAccount'/>
@@ -210,6 +212,11 @@ async function deleteStory (id) {
   flex: 1;
 }
 
+.account {
+  display: flex;
+  flex-direction: column;
+}
+
 .account-info {
   display: flex;
   gap: 15px;
@@ -315,6 +322,14 @@ async function deleteStory (id) {
   .story:deep(.progress) {
     display: none;
   }
+}
+
+p.fallback {
+  display: flex;
+  width: max-content;
+  margin: auto;
+  color: theme('color-text-2');
+  padding: 10px;
 }
 
 .like-profiles {
