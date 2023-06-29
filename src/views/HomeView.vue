@@ -223,8 +223,6 @@ async function getStoryGroups (options = {}) {
 
 .fallback {
   display: flex;
-  flex-direction: column;
-  gap: 15px;
   width: max-content;
   height: max-content;
   margin: auto;
