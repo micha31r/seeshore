@@ -44,8 +44,11 @@ const loader = ref(null)
 const isLoaded = ref(false) // Initial load
 
 onMounted(async () => {
+  loader.value.show('Loading stories')
   groups.value = await getStoryGroups()
   likes.value = await getLikes(groups.value)
+  loader.value.hide()
+  
   isLoaded.value = true
 
   app.addEventListener('scroll', loadOnScroll)
@@ -128,7 +131,6 @@ async function getStoryGroups (options = {}) {
     const stories = []
 
     try {
-      loader.value.show('Loading stories')
       const [ range_start, range_end ] = paginator.getRange()
       const { data, error } = await supabase
         .rpc('get_feed', { range_start, range_end })
@@ -153,8 +155,6 @@ async function getStoryGroups (options = {}) {
       return stories
     } catch (error) {
       console.error(error)
-    } finally {
-      loader.value.hide()
     }
   }, options)
 }
