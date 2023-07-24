@@ -24,13 +24,13 @@ export default store
 const cacheDefaultOptions = {
   append: false,
   nextPage: false,
-  duration: 3600000,
+  duration: 30000,
   pageSize: 20,
   name: 'default'
 }
 
 // Cache data for a period of time
-// Default cache duration is 1 hour
+// Default cache duration is 30 seconds
 export async function storeCache (get, options = {}) {
   options = { ...cacheDefaultOptions, ...options }
 
